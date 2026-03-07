@@ -1,0 +1,195 @@
+/* Variables y Reset */
+* { transition: all 0.2s ease-in-out; }
+
+/* Navbar Glassmorphism */
+.navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+    background: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.logo { font-size: 1.5rem; font-weight: 900; letter-spacing: -1px; }
+.logo span { color: #3b82f6; }
+
+/* Hero Gradient */
+.hero-section {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(circle at top right, #1e3a8a 0%, #0f172a 60%);
+}
+
+.stats-num { font-size: 2.5rem; font-weight: 900; color: #3b82f6; }
+
+/* Inputs Estilizados */
+.input-pro {
+    width: 100%;
+    background: #0f172a;
+    border: 1px solid #334155;
+    padding: 15px;
+    border-radius: 12px;
+    color: white;
+    outline: none;
+}
+.input-pro:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 15px rgba(59, 130, 246, 0.2);
+}
+
+.btn-login {
+    background: #1e293b;
+    padding: 8px 20px;
+    border-radius: 10px;
+    font-weight: 600;
+    border: 1px solid #334155;
+}
+.btn-login:hover { background: #3b82f6; border-color: #3b82f6; }
+
+.btn-action {
+    padding: 15px;
+    border-radius: 15px;
+    font-weight: 800;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+}
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.9);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+}
+.modal.active { display: flex; }
+.modal-box {
+    background: #1e293b;
+    padding: 40px;
+    border-radius: 24px;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    border: 1px solid #3b82f6;
+}
+/* Botón Flotante Pro */
+.fixed-whatsapp {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    z-index: 1000;
+    filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.3));
+}
+
+/* Animación de Pulso */
+.fixed-whatsapp::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: #22c55e;
+    border-radius: 9999px;
+    z-index: -1;
+    animation: pulse-green 2s infinite;
+}
+
+@keyframes pulse-green {
+    0% { transform: scale(1); opacity: 0.8; }
+    100% { transform: scale(1.5); opacity: 0; }
+}
+
+/* Glass effect para las cards */
+.glass-effect {
+    background: rgba(30, 41, 59, 0.4);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(59, 130, 246, 0.1);
+}
+/* Fondo Dinámico para Hero */
+.hero-section {
+    background: linear-gradient(rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.8)), 
+                url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
+    background-attachment: fixed;
+}
+
+/* Efecto Neón para Títulos */
+h1 span, h2 span {
+    text-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+}
+.group:hover img {
+    filter: brightness(1.2) contrast(1.1);
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+}
+h4.group-hover\:text-blue-400 {
+    text-shadow: 0 0 15px rgba(59, 130, 246, 0.8);
+    letter-spacing: 2px;
+}
+
+.shadow-2xl:hover {
+    box-shadow: 0 25px 50px -12px rgba(59, 130, 246, 0.25);
+}
+/* Botón Flotante con Pulso */
+.fixed-whatsapp {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    z-index: 999;
+}
+
+.fixed-whatsapp div::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: #22c55e;
+    border-radius: 50%;
+    z-index: -1;
+    animation: pulse-ring 2s infinite;
+}
+
+@keyframes pulse-ring {
+    0% { transform: scale(0.8); opacity: 0.5; }
+    100% { transform: scale(1.8); opacity: 0; }
+}
+
+/* Efecto Neón para que no sea simple */
+.glass-effect:hover, .relative.group:hover {
+    border-color: #3b82f6;
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+    transform: translateY(-5px);
+    transition: all 0.4s ease;
+}
+
+/* Scroll Suave */
+html {
+    scroll-behavior: smooth;
+}
+/* Animación para las secciones de CoreFix */
+.fade-section {
+    opacity: 0;
+    transform: translateY(50px);
+    transition: all 0.8s ease-out;
+}
+
+.faded-in {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Efecto Neón para el Staff Logueado */
+.border-blue-500\/50 {
+    box-shadow: 0 0 15px rgba(59, 130, 246, 0.3);
+}
+@keyframes pulse-red {
+    0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+    70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+}
+
+.animate-pulse-red {
+    animation: pulse-red 2s infinite;
+}

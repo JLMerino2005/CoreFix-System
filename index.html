@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CoreFix | Inicio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-slate-900 text-white font-sans">
+
+    <nav class="navbar fixed w-full z-50 bg-slate-900/80 backdrop-blur-md border-b border-slate-800">
+        <div class="container mx-auto flex justify-between items-center p-4">
+            <h1 class="logo text-2xl font-black">CORE<span class="text-blue-500">FIX</span></h1>
+            
+            <div class="space-x-6 hidden md:flex items-center">
+                <a href="index.html" class="text-blue-400 font-bold">Inicio</a>
+                <a href="servicios.html" class="hover:text-blue-400 transition text-sm uppercase font-bold tracking-tighter">Servicios</a>
+                
+                <a href="rastreo.html" class="bg-blue-600/10 text-blue-400 border border-blue-500/20 px-4 py-1.5 rounded-full hover:bg-blue-600 hover:text-white transition text-xs font-black uppercase tracking-widest">
+                    <i class="fas fa-search-location mr-1"></i> Rastrear pedido
+                </a>
+
+                <a href="cotizar.html" class="hover:text-blue-400 transition text-sm uppercase font-bold tracking-tighter">Cotizar</a>
+            </div>
+            
+            <div id="auth-container">
+                <button onclick="openLogin()" class="btn-login"><i class="fas fa-user-shield"></i> Staff</button>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero-section min-h-screen flex items-center justify-center text-center pt-20">
+        <div class="px-4">
+            <span class="bg-blue-600/20 text-blue-400 px-4 py-1 rounded-full text-sm font-bold uppercase tracking-widest">Ingeniería en Software Aplicada</span>
+            <h2 class="text-6xl md:text-8xl font-black mt-6 mb-6">TU CELULAR <br><span class="text-blue-600 font-italic italic">NIVEL PRO</span></h2>
+            <p class="text-xl text-slate-400 max-w-2xl mx-auto mb-10">Expertos en hardware y software sirviendo a Xochitlán Todos Santos y Tepexi de Rodríguez.</p>
+            <div class="flex flex-wrap justify-center gap-4">
+                <a href="cotizar.html" class="bg-blue-600 px-8 py-4 rounded-full font-bold hover:bg-blue-500 transition-all transform hover:scale-110 shadow-lg shadow-blue-600/30">¡Cotizar Ahora!</a>
+                <a href="rastreo.html" class="border border-blue-500/40 text-blue-400 px-8 py-4 rounded-full font-bold hover:bg-blue-600/10 transition-all">Rastrear mi equipo</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-20 bg-slate-800/30">
+        <div class="container mx-auto px-6 grid md:grid-cols-3 gap-12 text-center">
+            <div class="p-8 glass-effect rounded-3xl border border-white/5 hover:border-blue-500/30 transition">
+                <i class="fas fa-shield-alt text-5xl text-blue-500 mb-6"></i>
+                <h3 class="text-2xl font-bold mb-4">90 Días de Garantía</h3>
+                <p class="text-slate-400">Seguridad total en cada reparación de hardware realizada.</p>
+            </div>
+            <div class="p-8 glass-effect rounded-3xl border border-white/5 hover:border-blue-500/30 transition">
+                <i class="fas fa-tools text-5xl text-blue-500 mb-6"></i>
+                <h3 class="text-2xl font-bold mb-4">Express Service</h3>
+                <p class="text-slate-400">Cambios de pantalla y batería el mismo día.</p>
+            </div>
+            <div class="p-8 glass-effect rounded-3xl border border-white/5 hover:border-blue-500/30 transition">
+                <i class="fas fa-microchip text-5xl text-blue-500 mb-6"></i>
+                <h3 class="text-2xl font-bold mb-4">Soporte Técnico</h3>
+                <p class="text-slate-400">Atención profesional por estudiantes de Ingeniería en Software.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-16 bg-slate-900">
+        <div class="container mx-auto px-6 text-center">
+            <h3 class="text-2xl font-black mb-8 italic text-slate-500 uppercase tracking-widest">Explora nuestro laboratorio</h3>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                <div class="relative h-64 rounded-3xl overflow-hidden border border-blue-500/20 group shadow-2xl">
+                    <img src="https://images.unsplash.com/photo-1512446816042-444d641267d4?auto=format&fit=crop&w=500" class="w-full h-full object-cover group-hover:scale-110 transition duration-700 brightness-75 group-hover:brightness-100">
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent flex items-end p-6">
+                        <h4 class="text-xl font-black text-white group-hover:text-blue-400 transition-colors uppercase italic">Hardware</h4>
+                    </div>
+                </div>
+                <div class="relative h-64 rounded-3xl overflow-hidden border border-blue-500/20 group shadow-2xl">
+                    <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=500" class="w-full h-full object-cover group-hover:scale-110 transition duration-700 brightness-75 group-hover:brightness-100">
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent flex items-end p-6">
+                        <h4 class="text-xl font-black text-white group-hover:text-blue-400 transition-colors uppercase italic">Sistemas</h4>
+                    </div>
+                </div>
+                <div class="relative h-64 rounded-3xl overflow-hidden border border-blue-500/20 group shadow-2xl">
+                    <img src="https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=500" class="w-full h-full object-cover group-hover:scale-110 transition duration-700 brightness-75 group-hover:brightness-100">
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent flex items-end p-6">
+                        <h4 class="text-xl font-black text-white group-hover:text-blue-400 transition-colors uppercase italic">Precisión</h4>
+                    </div>
+                </div>
+                <div class="relative h-64 rounded-3xl overflow-hidden border border-blue-500/20 group shadow-2xl">
+                    <img src="https://images.unsplash.com/photo-1597740985671-2a8a3b80502e?auto=format&fit=crop&w=500" class="w-full h-full object-cover group-hover:scale-110 transition duration-700 brightness-75 group-hover:brightness-100">
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent flex items-end p-6">
+                        <h4 class="text-xl font-black text-white group-hover:text-blue-400 transition-colors uppercase italic">Software</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="py-20 bg-slate-900">
+        <div class="container mx-auto px-6">
+            <div class="grid md:grid-cols-2 items-center gap-12">
+                <div>
+                    <h2 class="text-4xl font-black mb-6 italic text-white uppercase">Respaldo <span class="text-blue-500">Ingenieril</span></h2>
+                    <p class="text-slate-400 mb-6">Procesos lógicos y precisos aplicados en cada equipo por especialistas en software.</p>
+                </div>
+                <div class="space-y-6">
+                    <div>
+                        <div class="flex justify-between mb-2 text-sm font-bold"><span>Reparación Hardware</span><span>95%</span></div>
+                        <div class="h-2 bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-blue-600 w-[95%] shadow-[0_0_10px_#3b82f6]"></div></div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between mb-2 text-sm font-bold"><span>Optimización Software</span><span>90%</span></div>
+                        <div class="h-2 bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-blue-400 w-[90%] shadow-[0_0_10px_#60a5fa]"></div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <a href="https://wa.me/5212231059545?text=¡Hola%20CoreFix!%20👋%20Necesito%20ayuda%20con%20mi%20celular." class="fixed-whatsapp" target="_blank">
+        <div class="flex items-center gap-2 bg-green-500 p-3 rounded-full shadow-2xl hover:bg-green-400 transition-all transform hover:scale-110">
+            <span class="hidden md:inline font-bold px-2 text-sm text-white">¿Necesitas ayuda rápida?</span>
+            <i class="fab fa-whatsapp text-3xl text-white"></i>
+        </div>
+    </a>
+
+    <script src="script.js"></script>
+</body>
+</html>

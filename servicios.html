@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CoreFix | Servicios</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-slate-900 text-white">
+
+    <nav class="navbar fixed w-full z-50 bg-slate-900/80 backdrop-blur-md border-b border-slate-800">
+        <div class="container mx-auto flex justify-between items-center p-4">
+            <a href="index.html" class="logo text-2xl font-black">CORE<span class="text-blue-500">FIX</span></a>
+            <div class="space-x-6 flex items-center">
+                <a href="index.html" class="hover:text-blue-400 transition text-sm">Inicio</a>
+                <a href="cotizar.html" class="hover:text-blue-400 transition text-sm">Cotizar</a>
+                <div id="auth-container"></div>
+            </div>
+        </div>
+    </nav>
+
+    <section class="py-32 container mx-auto px-6">
+        <h2 class="text-5xl font-black mb-16 text-center uppercase">Nuestros <span class="text-blue-500">Servicios</span></h2>
+        
+        <div class="grid md:grid-cols-2 gap-8">
+            <div class="bg-slate-800 p-10 rounded-3xl border border-blue-500/20 shadow-xl">
+                <h3 class="text-3xl font-bold mb-6 text-blue-400 italic">Hardware</h3>
+                <ul class="space-y-4 text-slate-300">
+                    <li><i class="fas fa-check text-green-500 mr-2"></i> Pantallas Originales / OEM</li>
+                    <li><i class="fas fa-check text-green-500 mr-2"></i> Baterías de Alta Duración</li>
+                    <li><i class="fas fa-check text-green-500 mr-2"></i> Centros de Carga</li>
+                    <li class="opacity-50 italic text-sm">* No manejamos micro-soldadura.</li>
+                </ul>
+            </div>
+            
+            <div class="bg-slate-800 p-10 rounded-3xl border border-blue-500/20 shadow-xl">
+                <h3 class="text-3xl font-bold mb-6 text-blue-400 italic">Software</h3>
+                <ul class="space-y-4 text-slate-300">
+                    <li><i class="fas fa-check text-green-500 mr-2"></i> Desbloqueo de Cuentas (FRP)</li>
+                    <li><i class="fas fa-check text-green-500 mr-2"></i> Reinstalación de Sistemas</li>
+                    <li><i class="fas fa-check text-green-500 mr-2"></i> Optimización y Virus</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <script src="script.js"></script>
+</body>
+</html>
