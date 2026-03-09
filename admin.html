@@ -23,11 +23,9 @@
                 <h2 class="text-5xl font-black italic uppercase tracking-tighter">Gestión de <span class="text-blue-500">Servicios</span></h2>
                 <p class="text-slate-500 font-bold mt-2 uppercase text-[10px] tracking-[0.3em]">Xochitlán & Tepexi Dashboard</p>
             </div>
-            
+
             <div class="bg-slate-800 border border-green-500/30 p-6 rounded-[2.5rem] flex items-center gap-6 shadow-[0_0_30px_rgba(34,197,94,0.1)]">
-                <div class="bg-green-500/20 p-4 rounded-3xl">
-                    <i class="fas fa-wallet text-2xl text-green-500"></i>
-                </div>
+                <div class="bg-green-500/20 p-4 rounded-3xl"><i class="fas fa-wallet text-2xl text-green-500"></i></div>
                 <div>
                     <p class="text-[10px] uppercase text-slate-500 font-black tracking-widest mb-1">Caja Proyectada</p>
                     <h4 class="text-4xl font-black text-green-400" id="totalMoney">$0</h4>
@@ -37,7 +35,7 @@
 
         <div class="mb-8 bg-slate-800 p-4 rounded-3xl border border-blue-500/20 shadow-xl flex items-center gap-4">
             <i class="fas fa-search text-blue-500 ml-2"></i>
-            <input type="text" id="adminSearch" placeholder="BUSCAR CLIENTE, FOLIO O FALLA EN XOCHITLÁN/TEPEXI..." 
+            <input type="text" id="adminSearch" placeholder="BUSCAR CLIENTE, FOLIO, IMEI O FALLA..." 
                    class="bg-transparent border-none outline-none w-full text-sm font-bold uppercase tracking-widest text-white placeholder:text-slate-600"
                    onkeyup="filterAdminTable()">
         </div>
@@ -55,30 +53,35 @@
                             <th class="p-8 text-right">Acciones de Control</th>
                         </tr>
                     </thead>
-                    <tbody id="adminTableBody" class="divide-y divide-slate-700/50 text-slate-300">
-                        </tbody>
+                    <tbody id="adminTableBody" class="divide-y divide-slate-700/50 text-slate-300"></tbody>
                 </table>
             </div>
         </div>
 
-        <div class="grid md:grid-cols-2 gap-8">
+        <div class="grid lg:grid-cols-3 gap-8">
             <div class="bg-slate-800 p-8 rounded-[2.5rem] border border-blue-500/20 shadow-2xl">
-                <h3 class="text-lg font-black italic uppercase mb-6 text-blue-400">
-                    <i class="fas fa-chart-pie mr-2"></i> Análisis de Fallas Comunes
-                </h3>
-                <div id="statsContainer" class="space-y-4 text-xs font-bold uppercase tracking-widest">
-                    <p class="text-slate-600 italic">Procesando datos...</p>
-                </div>
+                <h3 class="text-lg font-black italic uppercase mb-6 text-blue-400"><i class="fas fa-chart-pie mr-2"></i> Análisis de Fallas</h3>
+                <div id="statsContainer" class="space-y-4 text-xs font-bold uppercase tracking-widest"></div>
             </div>
 
-            <div id="evidencePanel" class="hidden bg-blue-600 p-8 rounded-[2.5rem] shadow-2xl animate-pulse">
-                <h3 class="text-lg font-black italic uppercase mb-4 text-white">Subir Foto Final</h3>
-                <p class="text-[10px] text-blue-100 mb-4 font-bold">CARGANDO PARA: <span id="activeFolio">---</span></p>
-                <input type="file" id="photoAfter" accept="image/*" capture="camera" class="hidden" onchange="uploadAfterPhoto(this)">
-                <label for="photoAfter" class="w-full flex items-center justify-center gap-3 bg-white text-blue-600 py-4 rounded-2xl font-black uppercase text-xs cursor-pointer hover:scale-105 transition-transform">
-                    <i class="fas fa-camera"></i> Tomar Foto del Equipo Listo
-                </label>
+            <div class="bg-slate-800 p-8 rounded-[2.5rem] border border-blue-500/20 shadow-2xl lg:col-span-2">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-lg font-black italic uppercase text-blue-400"><i class="fas fa-boxes mr-2"></i> Almacén de Refacciones</h3>
+                    <span class="text-[8px] bg-blue-500/20 text-blue-400 px-3 py-1 rounded-full font-black uppercase">Inventario Totalizado</span>
+                </div>
+                <div id="inventoryContainer" class="grid md:grid-cols-2 gap-x-8 gap-y-4 text-[10px] font-black uppercase tracking-widest"></div>
+                <button onclick="location.reload()" class="mt-8 w-full py-4 bg-blue-600/10 border border-blue-500/30 rounded-2xl text-[10px] font-black hover:bg-blue-600 transition uppercase tracking-[0.2em]">Actualizar Base de Datos del Almacén</button>
             </div>
+        </div>
+
+        <div id="evidencePanel" class="hidden fixed bottom-10 right-10 z-50 bg-blue-600 p-8 rounded-[2.5rem] shadow-[0_20px_50px_rgba(37,99,235,0.4)] animate-bounce-short">
+            <h3 class="text-lg font-black italic uppercase mb-4 text-white">Subir Foto Final</h3>
+            <p class="text-[10px] text-blue-100 mb-4 font-bold tracking-widest text-center">FOLIO: <span id="activeFolio" class="underline">---</span></p>
+            <input type="file" id="photoAfter" accept="image/*" capture="camera" class="hidden" onchange="uploadAfterPhoto(this)">
+            <label for="photoAfter" class="w-full flex items-center justify-center gap-3 bg-white text-blue-600 py-4 px-8 rounded-2xl font-black uppercase text-xs cursor-pointer hover:scale-105 transition-transform">
+                <i class="fas fa-camera"></i> Capturar Equipo Reparado
+            </label>
+            <button onclick="document.getElementById('evidencePanel').classList.add('hidden')" class="absolute -top-3 -right-3 bg-slate-900 text-white w-8 h-8 rounded-full flex items-center justify-center border-2 border-white"><i class="fas fa-times text-xs"></i></button>
         </div>
     </main>
 
@@ -89,22 +92,33 @@
                 const stats = obtenerEstadisticas();
                 const container = document.getElementById('statsContainer');
                 if (Object.keys(stats).length > 0) {
-                    container.innerHTML = Object.entries(stats).map(([falla, total]) => `
-                        <div class="flex justify-between border-b border-white/5 pb-2 hover:text-blue-400 transition-colors">
-                            <span>${falla}</span>
-                            <span class="text-blue-500">${total} servicios</span>
-                        </div>`).join('');
+                    container.innerHTML = Object.entries(stats).map(([f, t]) => `
+                        <div class="flex justify-between border-b border-white/5 pb-2"><span>${f}</span><span class="text-blue-500">${t} servicios</span></div>`).join('');
                 } else {
-                    container.innerHTML = '<p class="text-slate-500 uppercase italic">Sin datos aún.</p>';
+                    container.innerHTML = '<p class="text-slate-500 italic uppercase">Sin datos.</p>';
                 }
             }, 500);
+
+            // CARGA DE ALMACÉN PRO
+            let inv = JSON.parse(localStorage.getItem('inventario')) || [];
+            const invContainer = document.getElementById('inventoryContainer');
+            invContainer.innerHTML = inv.map(p => `
+                <div class="flex justify-between items-center border-b border-white/5 pb-2 group">
+                    <div class="flex flex-col">
+                        <span class="text-slate-300 group-hover:text-blue-400 transition-colors">${p.pieza}</span>
+                        <span class="text-[7px] text-slate-500 italic">Costo: $${p.costo || 0}</span>
+                    </div>
+                    <span class="${p.cantidad <= 2 ? 'text-red-500 animate-pulse bg-red-500/10' : 'text-green-400 bg-green-400/10'} px-2 py-0.5 rounded border border-current text-[9px]">
+                        ${p.cantidad} UNID.
+                    </span>
+                </div>`).join('');
+
+            renderAdminTable();
         });
 
-        // Abrir panel para subir foto del equipo terminado
         function showEvidencePanel(id) {
             document.getElementById('activeFolio').innerText = id;
             document.getElementById('evidencePanel').classList.remove('hidden');
-            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
         }
 
         function uploadAfterPhoto(input) {
@@ -117,7 +131,7 @@
                     if(i !== -1) {
                         logs[i].fotoDespues = e.target.result;
                         localStorage.setItem('cotizaciones', JSON.stringify(logs));
-                        alert("✅ Foto final guardada. El cliente ya puede verla.");
+                        alert("✅ Éxito: Evidencia guardada en el folio " + id);
                         document.getElementById('evidencePanel').classList.add('hidden');
                         renderAdminTable();
                     }
@@ -126,5 +140,75 @@
             }
         }
     </script>
+
+    <div class="bg-slate-800 p-8 rounded-[2.5rem] border border-blue-500/20 shadow-2xl lg:col-span-2">
+    <div class="flex justify-between items-center mb-6">
+        <h3 class="text-lg font-black italic uppercase text-blue-400"><i class="fas fa-boxes mr-2"></i> Almacén de Refacciones</h3>
+        <button onclick="agregarNuevaRefaccion()" class="text-[9px] bg-green-500/20 text-green-400 border border-green-500/30 px-4 py-2 rounded-xl font-black uppercase hover:bg-green-500 hover:text-white transition-all">
+            <i class="fas fa-plus mr-1"></i> Agregar Pieza
+        </button>
+    </div>
+    <div id="inventoryContainer" class="grid md:grid-cols-2 gap-x-8 gap-y-4 text-[10px] font-black uppercase tracking-widest">
+        </div>
+</div>
+
+<script>
+    // Actualiza la parte donde cargas el inventario en el DOMContentLoaded
+    const invContainer = document.getElementById('inventoryContainer');
+    invContainer.innerHTML = inv.map(p => `
+        <div onclick="editarCantidad('${p.pieza}')" class="flex justify-between items-center border-b border-white/5 pb-2 group cursor-pointer hover:bg-blue-500/5 p-2 rounded-lg transition-all">
+            <div class="flex flex-col">
+                <span class="text-slate-300 group-hover:text-blue-400">${p.pieza}</span>
+                <span class="text-[7px] text-slate-500 italic">Costo: $${p.costo || 0}</span>
+            </div>
+            <div class="flex items-center gap-3">
+                <span class="${p.cantidad <= 2 ? 'text-red-500 animate-pulse bg-red-500/10' : 'text-green-400 bg-green-400/10'} px-2 py-0.5 rounded border border-current text-[9px]">
+                    ${p.cantidad} UNID.
+                </span>
+                <i class="fas fa-edit text-slate-700 group-hover:text-blue-500 text-[10px]"></i>
+            </div>
+        </div>`).join('');
+</script>
+
+<div class="lg:col-span-3 bg-slate-900/50 p-8 rounded-[2.5rem] border border-slate-700 shadow-inner mt-8">
+    <h3 class="text-sm font-black uppercase text-slate-500 mb-6 tracking-[0.3em]">
+        <i class="fas fa-history mr-2"></i> Bitácora de Movimientos (Auditoría de Almacén)
+    </h3>
+    <div class="overflow-hidden rounded-2xl border border-white/5">
+        <table class="w-full text-[9px] font-bold uppercase tracking-widest">
+            <thead class="bg-slate-800 text-slate-500 text-left">
+                <tr>
+                    <th class="p-4">Fecha/Hora</th>
+                    <th class="p-4">Usuario</th>
+                    <th class="p-4">Refacción</th>
+                    <th class="p-4">Acción</th>
+                    <th class="p-4">Detalle del Cambio</th>
+                </tr>
+            </thead>
+            <tbody id="bitacoraBody" class="divide-y divide-white/5 bg-slate-800/20">
+                </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    // Inyectar en el DOMContentLoaded de admin.html
+    const bitacora = JSON.parse(localStorage.getItem('bitacoraCoreFix')) || [];
+    const bitacoraBody = document.getElementById('bitacoraBody');
+    
+    if (bitacora.length === 0) {
+        bitacoraBody.innerHTML = '<tr><td colspan="5" class="p-10 text-center text-slate-700">No hay movimientos registrados</td></tr>';
+    } else {
+        bitacoraBody.innerHTML = bitacora.map(log => `
+            <tr class="hover:bg-white/5 transition-colors">
+                <td class="p-4 text-slate-500 font-mono">${log.fecha}</td>
+                <td class="p-4 text-blue-400">${log.usuario}</td>
+                <td class="p-4 text-white">${log.pieza}</td>
+                <td class="p-4"><span class="bg-slate-700 px-2 py-1 rounded text-[7px]">${log.accion}</span></td>
+                <td class="p-4 text-slate-400 italic">${log.detalle}</td>
+            </tr>
+        `).join('');
+    }
+</script>
 </body>
 </html>

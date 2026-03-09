@@ -3,77 +3,111 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CoreFix | Cotizar</title>
+    <title>CoreFix | Cotizador Profesional</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-slate-900 text-white">
-    <nav class="navbar fixed w-full z-50 bg-slate-900/80 backdrop-blur-md border-b border-slate-800">
-        <div class="container mx-auto flex justify-between items-center p-4">
-            <a href="index.html" class="logo text-2xl font-black">CORE<span class="text-blue-500">FIX</span></a>
+<body class="bg-slate-900 text-white font-sans">
+    <nav class="navbar fixed w-full z-50 bg-slate-900/80 backdrop-blur-md border-b border-slate-800 p-4">
+        <div class="container mx-auto flex justify-between items-center">
+            <a href="index.html" class="logo text-2xl font-black italic tracking-tighter">CORE<span class="text-blue-500">FIX</span></a>
             <div id="auth-container"></div>
         </div>
     </nav>
 
-    <section class="py-32 container mx-auto px-6">
-        <div class="max-w-5xl mx-auto grid md:grid-cols-2 gap-8 bg-slate-800/40 p-10 rounded-[3rem] border border-slate-700 shadow-2xl">
-            <div class="space-y-6">
-                <h3 class="text-3xl font-black mb-6 italic text-blue-500">COTIZADOR</h3>
-                <input type="text" id="clientName" placeholder="Tu Nombre" class="input-pro w-full">
-                <input type="tel" id="clientPhone" placeholder="Tu WhatsApp" class="input-pro w-full">
-                <select id="damageType" class="input-pro w-full" onchange="updatePrice()">
-                    <option value="0">Selecciona la falla...</option>
-                    <option value="1300">Pantalla Quebrada</option>
-                    <option value="550">Batería Agotada</option>
-                    <option value="350">Centro de Carga</option>
-                    <option value="700">Software / Cuentas</option>
-                </select>
-                <select id="deliveryPoint" class="input-pro w-full">
-                    <option value="Xochitlán">📍 Entrega en Xochitlán Todos Santos</option>
-                    <option value="Tepexi">📍 Entrega en Tepexi de Rodriguez</option>
-                    <option value="Domicilio">🏠 Recolección a Domicilio</option>
-                </select>
-
-                <div class="p-4 rounded-2xl border border-red-500/20 bg-red-500/5 flex items-center justify-between group hover:bg-red-500/10 transition">
-                    <div class="flex items-center gap-3">
-                        <i class="fas fa-bolt text-red-500 animate-pulse"></i>
-                        <div>
-                            <p class="text-[10px] font-black text-red-500 uppercase italic">Servicio Prioritario</p>
-                            <p class="text-[8px] text-slate-500 uppercase">Entrega Express (+20%)</p>
-                        </div>
-                    </div>
-                    <input type="checkbox" id="expressMode" onchange="updatePrice()" class="w-5 h-5 accent-red-500 cursor-pointer">
+    <main class="pt-32 pb-20 container mx-auto px-6">
+        <div class="max-w-6xl mx-auto grid lg:grid-cols-3 gap-8">
+            
+            <div class="space-y-6 bg-slate-800/40 p-8 rounded-[2.5rem] border border-slate-700/50 shadow-xl">
+                <div class="flex items-center gap-4 mb-4">
+                    <span class="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center font-black">1</span>
+                    <h3 class="text-xl font-black italic uppercase tracking-tighter text-blue-400">Identificación</h3>
                 </div>
-
-                <div class="p-4 bg-slate-900/50 rounded-3xl border border-white/5 text-center">
-                    <p class="text-[9px] font-black uppercase text-blue-500 mb-3 tracking-widest">Foto de Recepción</p>
-                    <input type="file" id="photoBefore" accept="image/*" capture="camera" class="hidden" onchange="previewImage(this)">
-                    <label for="photoBefore" class="cursor-pointer bg-blue-600/20 text-blue-400 border border-blue-500/30 px-6 py-2 rounded-xl text-[9px] font-bold uppercase inline-block mb-2">
-                        <i class="fas fa-camera mr-2"></i> Tomar Foto
-                    </label>
-                    <img id="beforePreview" class="hidden w-full h-32 object-cover rounded-xl border-2 border-blue-500/20 mt-2">
+                <div class="space-y-4">
+                    <div class="relative">
+                        <i class="fas fa-user absolute left-4 top-1/2 -translate-y-1/2 text-slate-500"></i>
+                        <input type="text" id="clientName" placeholder="Nombre Completo" class="input-pro w-full pl-12">
+                    </div>
+                    <div class="relative">
+                        <i class="fab fa-whatsapp absolute left-4 top-1/2 -translate-y-1/2 text-slate-500"></i>
+                        <input type="tel" id="clientPhone" placeholder="Número de WhatsApp" class="input-pro w-full pl-12">
+                    </div>
+                    <div class="relative">
+                        <i class="fas fa-barcode absolute left-4 top-1/2 -translate-y-1/2 text-slate-500"></i>
+                        <input type="text" id="clientIMEI" placeholder="IMEI del Equipo" class="input-pro w-full pl-12">
+                    </div>
                 </div>
             </div>
 
-            <div class="bg-blue-600 rounded-[2.5rem] p-10 flex flex-col justify-between items-center text-center">
-                <div>
-                    <p class="text-xs font-black uppercase text-blue-100">Presupuesto Sugerido</p>
-                    <div class="text-7xl font-black my-4">$<span id="priceDisplay">0</span></div>
+            <div class="space-y-6 bg-slate-800/40 p-8 rounded-[2.5rem] border border-slate-700/50 shadow-xl">
+                <div class="flex items-center gap-4 mb-4">
+                    <span class="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center font-black">2</span>
+                    <h3 class="text-xl font-black italic uppercase tracking-tighter text-blue-400">Diagnóstico</h3>
                 </div>
+                <div class="space-y-4">
+                    <select id="damageType" class="input-pro w-full font-bold" onchange="updatePrice()">
+                        <option value="0">--- SELECCIONAR FALLA ---</option>
+                        <option value="1300">Pantalla Quebrada</option>
+                        <option value="550">Batería Agotada</option>
+                        <option value="350">Centro de Carga</option>
+                        <option value="700">Software / Desbloqueo</option>
+                    </select>
+                    
+                    <select id="deliveryPoint" class="input-pro w-full text-xs">
+                        <option value="Xochitlán">📍 Sucursal Xochitlán</option>
+                        <option value="Tepexi">📍 Sucursal Tepexi</option>
+                    </select>
 
-                <div class="w-full bg-white rounded-2xl p-2 mb-6">
-                    <p class="text-[8px] font-black uppercase text-slate-400 mb-1">Firma de Conformidad</p>
-                    <canvas id="signature-pad" class="w-full h-32 border border-slate-100 rounded-xl bg-slate-50 cursor-crosshair"></canvas>
-                    <button type="button" onclick="clearSignature()" class="text-[8px] font-bold text-red-500 uppercase mt-1">Limpiar Firma</button>
+                    <button type="button" onclick="abrirTestDiagnostico()" class="w-full p-4 bg-slate-900/50 border border-blue-500/20 rounded-2xl flex items-center justify-between group hover:border-blue-500/50 transition">
+                        <span class="text-[10px] font-black uppercase italic text-slate-400 group-hover:text-white">Auto-Test Rápido</span>
+                        <i class="fas fa-stethoscope text-blue-500"></i>
+                    </button>
+
+                    <div class="p-4 rounded-2xl border border-red-500/20 bg-red-500/5 flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <i class="fas fa-bolt text-red-500 animate-pulse"></i>
+                            <div>
+                                <p class="text-[9px] font-black text-red-500 uppercase italic">Modo Express</p>
+                                <p class="text-[8px] text-slate-500 uppercase">Prioridad Alta (+20%)</p>
+                            </div>
+                        </div>
+                        <input type="checkbox" id="expressMode" onchange="updatePrice()" class="w-5 h-5 accent-red-500 cursor-pointer">
+                    </div>
                 </div>
+            </div>
 
-                <button onclick="aceptarCotizacion()" class="w-full bg-white text-slate-900 font-black py-4 rounded-2xl hover:bg-slate-100 transition shadow-xl uppercase italic">
-                    Aceptar y Generar Ticket
-                </button>
+            <div class="space-y-6 bg-blue-600 p-8 rounded-[2.5rem] shadow-2xl relative overflow-hidden group">
+                <div class="relative z-10 flex flex-col h-full justify-between">
+                    <div class="text-center mb-6">
+                        <p class="text-xs font-black uppercase text-blue-100 italic tracking-widest">Inversión Estimada</p>
+                        <div class="text-7xl font-black my-2 drop-shadow-2xl">$<span id="priceDisplay">0</span></div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div class="flex flex-col items-center">
+                            <input type="file" id="photoBefore" accept="image/*" capture="camera" class="hidden" onchange="previewImage(this)">
+                            <label for="photoBefore" class="w-full bg-white/10 hover:bg-white/20 border border-white/30 py-3 rounded-2xl text-[10px] font-black uppercase cursor-pointer transition flex items-center justify-center gap-2">
+                                <i class="fas fa-camera"></i> Foto del Equipo
+                            </label>
+                            <img id="beforePreview" class="hidden w-24 h-24 object-cover rounded-xl mt-3 border-2 border-white/50 shadow-lg">
+                        </div>
+
+                        <div class="bg-white rounded-2xl p-2 shadow-inner">
+                            <canvas id="signature-pad" class="w-full h-24 bg-slate-50 rounded-xl cursor-crosshair"></canvas>
+                            <button type="button" onclick="clearSignature()" class="w-full text-[8px] font-black text-red-500 uppercase mt-1">Borrar Firma</button>
+                        </div>
+
+                        <button onclick="aceptarCotizacion()" class="w-full bg-white text-slate-900 font-black py-5 rounded-[2rem] hover:scale-105 active:scale-95 transition-all shadow-2xl uppercase italic tracking-tighter">
+                            Aceptar y Generar Ticket <i class="fas fa-chevron-right ml-2"></i>
+                        </button>
+                    </div>
+                </div>
+                <i class="fas fa-shield-alt absolute -bottom-10 -right-10 text-9xl text-white/5 rotate-12"></i>
             </div>
         </div>
-    </section>
+    </main>
+
     <script src="script.js"></script>
     <script>
         function previewImage(input) {
@@ -83,6 +117,12 @@
                 reader.onload = e => { preview.src = e.target.result; preview.classList.remove('hidden'); }
                 reader.readAsDataURL(input.files[0]);
             }
+        }
+        function abrirTestDiagnostico() {
+            const falla = confirm("¿El equipo enciende?") ? 
+                         (confirm("¿Se escucha pero no da imagen?") ? "Pantalla" : "Carga/Software") : 
+                         "Tarjeta Madre";
+            alert("Sugerencia CoreFix: El problema parece ser: " + falla);
         }
     </script>
 </body>
