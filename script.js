@@ -1,11 +1,10 @@
 /**
- * CoreFix - Lógica Profesional Unificada (Ingeniería de Almacén)
+ * CoreFix - Lógica Profesional Unificada (Ingeniería de Almacén & Finanzas)
  * Administrador: merinomotajoseluis@gmail.com
  */
 
-// --- 1. MOTOR DE ACCESO Y SEGURIDAD ---
+// --- 1. MOTOR DE ACCESO ---
 document.addEventListener('submit', (e) => {
-    // Lógica para LOGIN
     if (e.target.id === 'loginForm') {
         e.preventDefault();
         const role = document.querySelector('input[name="userRole"]:checked').value;
@@ -24,48 +23,18 @@ document.addEventListener('submit', (e) => {
                 localStorage.setItem('userRole', role);
                 window.location.href = 'index.html';
             } else {
-                alert('❌ Error: Credenciales incorrectas o usuario no registrado.');
+                alert('❌ Datos incorrectos.');
             }
         }
     }
-
-    // Lógica para REGISTRO
-    if (e.target.id === 'registerForm') {
-        e.preventDefault();
-        const user = {
-            name: document.getElementById('regName').value,
-            email: document.getElementById('regEmail').value.trim(),
-            pass: document.getElementById('regPass').value
-        };
-        localStorage.setItem('staffUser', JSON.stringify(user));
-        alert("✅ Cuenta creada con éxito. Ahora inicia sesión.");
-        window.location.href = 'login.html';
-    }
 });
 
-// --- 2. GESTIÓN DE INTERFAZ (DOM) ---
+// --- 2. GESTIÓN DE INTERFAZ ---
 document.addEventListener('DOMContentLoaded', () => {
     const isLoggedIn = localStorage.getItem('isLoggedIn');
     const userRole = localStorage.getItem('userRole');
-    const authContainer = document.getElementById('auth-container');
     const path = window.location.pathname;
 
-    // Control de barra de navegación
-    if (isLoggedIn === 'true' && authContainer) {
-        const user = JSON.parse(localStorage.getItem('staffUser')) || { name: "Usuario" };
-        const colors = ['#3b82f6', '#10b981', '#8b5cf6', '#f43f5e'];
-        const avatarHTML = `<div class="w-8 h-8 rounded-full flex items-center justify-center text-white font-black text-xs" style="background-color: ${colors[0]}">${user.name.charAt(0).toUpperCase()}</div>`;
-        const panelLink = (userRole === 'admin') ? 'admin.html' : 'index.html';
-
-        authContainer.innerHTML = `
-            <div class="flex items-center gap-3 bg-slate-800 p-1.5 pr-3 rounded-full border border-blue-500/40 shadow-lg relative">
-                ${avatarHTML}
-                <a href="${panelLink}" class="text-[10px] font-black text-blue-400 uppercase tracking-widest">${userRole === 'admin' ? 'ADMIN' : user.name.split(' ')[0]}</a>
-                <button onclick="logout()" class="text-red-500 text-xs ml-1"><i class="fas fa-power-off"></i></button>
-            </div>`;
-    }
-
-    // Carga de tablas y datos según la página
     if (path.includes('admin.html')) {
         if (isLoggedIn === 'true' && userRole === 'admin') {
             renderAdminTable();
@@ -75,44 +44,83 @@ document.addEventListener('DOMContentLoaded', () => {
             window.location.href = 'login.html';
         }
     }
+    
+    // Inyectar Avatar si existe el container
+    const authCont = document.getElementById('auth-container');
+    if (isLoggedIn === 'true' && authCont) {
+        const user = JSON.parse(localStorage.getItem('staffUser')) || { name: "U" };
+        const avatarHTML = `<div class="w-8 h-8 rounded-full flex items-center justify-center text-white font-black text-xs bg-blue-600 shadow-lg">${user.name.charAt(0).toUpperCase()}</div>`;
+        authCont.innerHTML = `<div class="flex items-center gap-3 bg-slate-800 p-1.5 pr-3 rounded-full border border-blue-500/40 shadow-lg">
+            ${avatarHTML} <span class="text-[10px] font-black text-blue-400 uppercase tracking-widest">${userRole === 'admin' ? 'ADMIN' : user.name.split(' ')[0]}</span>
+            <button onclick="logout()" class="text-red-500 text-xs ml-1"><i class="fas fa-power-off"></i></button>
+        </div>`;
+    }
 });
 
-// --- 3. PANEL DE ADMINISTRACIÓN ---
-function renderAdminTable() {
+// --- 3. PANEL DE ADMINISTRACIÓN & FINANZAS ---
+function renderAdminTable(filtroSucursal = 'TODOS') {
     const tableBody = document.getElementById('adminTableBody');
-    const totalDisplay = document.getElementById('totalMoney');
     if (!tableBody) return;
 
-    const logs = JSON.parse(localStorage.getItem('cotizaciones')) || [];
+    let logs = JSON.parse(localStorage.getItem('cotizaciones')) || [];
+    if (filtroSucursal !== 'TODOS') {
+        logs = logs.filter(l => l.ubicacion.includes(filtroSucursal));
+    }
+
+    let cajaReal = 0;
+    let cajaProyectada = 0;
+    let entregadosCount = 0;
+
     if (logs.length === 0) {
         tableBody.innerHTML = `<tr><td colspan="6" class="p-32 text-center text-slate-600 uppercase font-black italic opacity-20 text-2xl">Bandeja Vacía</td></tr>`;
-        if (totalDisplay) totalDisplay.innerText = "$0";
+        actualizarWidgets(0, 0, 0);
         return;
     }
 
-    let total = 0;
     tableBody.innerHTML = logs.slice().reverse().map(log => {
-        total += parseInt(log.precio || 0);
+        const precio = parseInt(log.precio || 0);
+        if (log.estado === "ENTREGADO") {
+            cajaReal += precio;
+            entregadosCount++;
+        } else {
+            cajaProyectada += precio;
+        }
+
         let st = log.estado === "ENTREGADO" ? "bg-green-500/10 text-green-500 border-green-500/20" : "bg-blue-500/10 text-blue-400 border-blue-500/20";
 
         return `
         <tr class="hover:bg-blue-500/[0.03] border-b border-slate-700/50">
             <td class="p-8 text-xs font-mono text-slate-500">${log.fecha}<br><b class="text-blue-500 text-lg">${log.id}</b></td>
-            <td class="p-8"><b>${log.nombre}</b><br><span class="text-xs text-slate-500">${log.telefono}</span></td>
-            <td class="p-8"><span class="text-[10px] font-black uppercase">${log.falla}</span><br><span class="text-[10px] italic">📍 ${log.ubicacion}</span></td>
+            <td class="p-8"><b class="text-white">${log.nombre}</b><br><span class="text-xs text-slate-500">${log.telefono}</span></td>
+            <td class="p-8"><span class="text-[10px] font-black uppercase text-blue-400">${log.falla}</span><br><span class="text-[10px] italic text-slate-500">📍 ${log.ubicacion}</span></td>
             <td class="p-8"><b class="text-2xl font-black text-green-400">$${log.precio}</b></td>
             <td class="p-8 text-center"><span class="${st} px-4 py-1.5 rounded-full text-[10px] font-black border uppercase">${log.estado}</span></td>
-            <td class="p-8 text-right">
-                <button onclick="cambiarEstado('${log.id}', 'ENTREGADO')" class="bg-green-600 p-3 rounded-xl text-white"><i class="fas fa-check"></i></button>
-                <button onclick="showEvidencePanel('${log.id}')" class="bg-blue-600 p-3 rounded-xl text-white ml-2"><i class="fas fa-camera"></i></button>
-                <button onclick="eliminarOrden('${log.id}')" class="bg-red-600/10 p-3 rounded-xl text-red-500 ml-2"><i class="fas fa-trash-alt"></i></button>
-            </td>
+            <td class="p-8 text-right"><div class="flex gap-2 justify-end">
+                <button onclick="cambiarEstado('${log.id}', 'ENTREGADO')" class="bg-green-600 hover:bg-green-500 p-3 rounded-xl text-white transition-all"><i class="fas fa-check"></i></button>
+                <button onclick="showEvidencePanel('${log.id}')" class="bg-blue-600 hover:bg-blue-500 p-3 rounded-xl text-white transition-all"><i class="fas fa-camera"></i></button>
+                <button onclick="eliminarOrden('${log.id}')" class="bg-red-600/10 hover:bg-red-600 text-red-500 hover:text-white p-3 rounded-xl transition-all"><i class="fas fa-trash-alt"></i></button>
+            </div></td>
         </tr>`;
     }).join('');
-    if (totalDisplay) totalDisplay.innerText = `$${total}`;
+
+    const ticketProm = entregadosCount > 0 ? Math.round(cajaReal / entregadosCount) : 0;
+    actualizarWidgets(cajaReal, cajaProyectada, ticketProm);
+    
+    // Cargar Estadísticas de Fallas
+    const stats = {};
+    logs.forEach(l => { stats[l.falla] = (stats[l.falla] || 0) + 1; });
+    const statsCont = document.getElementById('statsContainer');
+    if(statsCont) statsCont.innerHTML = Object.entries(stats).map(([f, t]) => `
+        <div class="flex justify-between border-b border-white/5 pb-2"><span>${f}</span><span class="text-blue-500">${t} servicios</span></div>`).join('');
 }
 
-// --- 4. ALMACÉN Y BITÁCORA ---
+function actualizarWidgets(real, proyectado, ticket) {
+    if (document.getElementById('cajaReal')) document.getElementById('cajaReal').innerText = `$${real}`;
+    if (document.getElementById('totalMoney')) document.getElementById('totalMoney').innerText = `$${proyectado}`;
+    if (document.getElementById('ticketPromedio')) document.getElementById('ticketPromedio').innerText = `$${ticket}`;
+}
+
+// --- 4. ALMACÉN & BITÁCORA ---
 function cargarAlmacenEnInterfaz() {
     const invContainer = document.getElementById('inventoryContainer');
     if (!invContainer) return;
@@ -120,10 +128,10 @@ function cargarAlmacenEnInterfaz() {
     invContainer.innerHTML = inv.map(p => `
         <div onclick="editarCantidad('${p.pieza}')" class="flex justify-between items-center border-b border-white/5 pb-2 group cursor-pointer hover:bg-blue-500/5 p-2 rounded-lg transition-all">
             <div class="flex flex-col">
-                <span class="text-slate-300 group-hover:text-blue-400">${p.pieza}</span>
-                <span class="text-[7px] text-slate-500 italic">Costo: $${p.costo || 0}</span>
+                <span class="text-slate-300 group-hover:text-blue-400 transition-colors uppercase font-black">${p.pieza}</span>
+                <span class="text-[7px] text-slate-500 italic">Costo Ref: $${p.costo || 0}</span>
             </div>
-            <span class="${p.cantidad <= 2 ? 'text-red-500 animate-pulse' : 'text-green-400'} border border-current px-2 rounded text-[9px]">
+            <span class="${p.cantidad <= 2 ? 'text-red-500 animate-pulse bg-red-500/10' : 'text-green-400 bg-green-400/10'} border border-current px-2 py-0.5 rounded text-[9px] font-black">
                 ${p.cantidad} UNID.
             </span>
         </div>`).join('');
@@ -131,195 +139,136 @@ function cargarAlmacenEnInterfaz() {
 
 function registrarMovimiento(pieza, accion, anterior, nueva) {
     let bitacora = JSON.parse(localStorage.getItem('bitacoraCoreFix')) || [];
+    const user = JSON.parse(localStorage.getItem('staffUser'))?.name || "Admin";
     bitacora.unshift({
         fecha: new Date().toLocaleString(),
-        usuario: JSON.parse(localStorage.getItem('staffUser'))?.name || "Admin",
-        pieza: pieza, accion: accion, detalle: `De ${anterior} a ${nueva}`
+        usuario: user, pieza: pieza, accion: accion, detalle: `De ${anterior} a ${nueva}`
     });
     localStorage.setItem('bitacoraCoreFix', JSON.stringify(bitacora.slice(0, 50)));
+    cargarBitacoraEnInterfaz();
 }
 
-function editarCantidad(nombrePieza) {
+function cargarBitacoraEnInterfaz() {
+    const bitBody = document.getElementById('bitacoraBody');
+    if (!bitBody) return;
+    const bitacora = JSON.parse(localStorage.getItem('bitacoraCoreFix')) || [];
+    bitBody.innerHTML = bitacora.map(log => `
+        <tr class="hover:bg-white/5"><td class="p-4 text-slate-500 font-mono">${log.fecha}</td><td class="p-4 text-blue-400">${log.usuario}</td>
+        <td class="p-4 text-white uppercase">${log.pieza}</td><td class="p-4"><span class="bg-slate-700 px-2 py-1 rounded text-[7px]">${log.accion}</span></td>
+        <td class="p-4 text-slate-400 italic">${log.detalle}</td></tr>`).join('');
+}
+
+// --- 5. LOGICA DE NEGOCIO ---
+function cambiarEstado(id, nuevo) {
+    let logs = JSON.parse(localStorage.getItem('cotizaciones')) || [];
+    const i = logs.findIndex(l => l.id === id);
+    if(i !== -1 && logs[i].estado !== "ENTREGADO") { 
+        let inv = JSON.parse(localStorage.getItem('inventario')) || [];
+        const fallaTxt = logs[i].falla.toLowerCase();
+        const idx = inv.findIndex(p => fallaTxt.includes(p.pieza.toLowerCase().split(' ')[0]));
+        
+        if (idx !== -1 && inv[idx].cantidad > 0) {
+            const ant = inv[idx].cantidad;
+            inv[idx].cantidad -= 1;
+            localStorage.setItem('inventario', JSON.stringify(inv));
+            registrarMovimiento(inv[idx].pieza, "VENTA AUTOMÁTICA", ant, inv[idx].cantidad);
+        }
+        logs[i].estado = nuevo; 
+        localStorage.setItem('cotizaciones', JSON.stringify(logs)); 
+        alert(`✅ Equipo CF-${id} entregado con éxito.`);
+        location.reload();
+    }
+}
+
+function filtrarSucursal(suc) { renderAdminTable(suc); }
+
+function generarReporteRapido() {
+    const real = document.getElementById('cajaReal').innerText;
+    const proj = document.getElementById('totalMoney').innerText;
+    const text = `📊 *COREFIX REPORT* 📊\n💰 Caja Real: ${real}\n🛠️ En Proceso: ${proj}\n✅ Reporte generado por: ${JSON.parse(localStorage.getItem('staffUser')).name}`;
+    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+}
+
+// --- 6. UTILIDADES ---
+function logout() { localStorage.clear(); window.location.href = 'index.html'; }
+function editarCantidad(pName) {
     let inv = JSON.parse(localStorage.getItem('inventario')) || [];
-    const i = inv.findIndex(p => p.pieza === nombrePieza);
-    if (i !== -1) {
+    const i = inv.findIndex(p => p.pieza === pName);
+    if(i !== -1) {
         const ant = inv[i].cantidad;
-        const nueva = prompt(`Actualizar stock ${nombrePieza}:`, ant);
-        if (nueva !== null && !isNaN(nueva)) {
+        const nueva = prompt(`Stock ${pName}:`, ant);
+        if(nueva !== null && !isNaN(nueva)) {
             inv[i].cantidad = parseInt(nueva);
             localStorage.setItem('inventario', JSON.stringify(inv));
-            registrarMovimiento(nombrePieza, "EDICIÓN MANUAL", ant, nueva);
+            registrarMovimiento(pName, "MANUAL", ant, nueva);
             location.reload();
         }
     }
 }
-
-// --- 5. LÓGICA DE COTIZACIÓN ---
-function aceptarCotizacion() {
-    const name = document.getElementById('clientName').value;
-    const phone = document.getElementById('clientPhone').value;
-    const damage = document.getElementById('damageType');
-    const area = document.getElementById('deliveryPoint').value;
-    const imei = document.getElementById('clientIMEI')?.value || "N/A";
-    
-    if (!name || !phone || damage.value === "0") return alert("Faltan datos");
-
-    const order = { 
-        id: "CF-" + Math.floor(1000 + Math.random() * 9999), 
-        fecha: new Date().toLocaleDateString(), 
-        nombre: name, telefono: phone, ubicacion: area, imei: imei,
-        falla: damage.options[damage.selectedIndex].text, 
-        precio: document.getElementById('priceDisplay').innerText, 
-        estado: "PENDIENTE",
-        fotoAntes: document.getElementById('beforePreview')?.src || null
-    };
-    
-    let logs = JSON.parse(localStorage.getItem('cotizaciones')) || [];
-    logs.push(order);
-    localStorage.setItem('cotizaciones', JSON.stringify(logs));
-    localStorage.setItem('currentOrder', JSON.stringify(order));
-    window.location.href = 'orden.html';
-}
-
-// --- 6. RASTREO ---
-function buscarEstado() {
-    const p = document.getElementById('searchPhone').value.trim();
-    const res = document.getElementById('resultContainer');
-    const logs = JSON.parse(localStorage.getItem('cotizaciones')) || [];
-    const my = logs.filter(l => l.telefono === p);
-    
-    if (my.length === 0) {
-        res.classList.remove('hidden');
-        res.innerHTML = "<p class='text-red-500 font-bold'>No se encontraron reparaciones.</p>";
-        return;
+function agregarNuevaRefaccion() {
+    const n = prompt("Nombre:"); const c = prompt("Cantidad:"); const cost = prompt("Costo:");
+    if(n && c) {
+        let inv = JSON.parse(localStorage.getItem('inventario')) || [];
+        inv.push({pieza: n, cantidad: parseInt(c), costo: parseInt(cost) || 0});
+        localStorage.setItem('inventario', JSON.stringify(inv));
+        registrarMovimiento(n, "ALTA", 0, c);
+        location.reload();
     }
-    
-    const last = my[my.length - 1];
-    res.classList.remove('hidden');
-    res.innerHTML = `
-        <div class="bg-blue-600/10 border border-blue-500/30 p-8 rounded-[2rem] shadow-2xl">
-            <h4 class="text-blue-400 font-black">FOLIO: ${last.id}</h4>
-            <h3 class="text-3xl font-black uppercase my-2">${last.estado}</h3>
-            <p class="text-xs text-slate-400 uppercase tracking-widest">📍 Sucursal: ${last.ubicacion}</p>
-        </div>`;
 }
-
-// --- UTILIDADES ---
-function logout() { localStorage.removeItem('isLoggedIn'); window.location.href = 'login.html'; }
-
-function updatePrice() { 
-    const sel = document.getElementById('damageType');
-    const express = document.getElementById('expressMode')?.checked;
-    let base = parseInt(sel.value);
-    if(express && base > 0) base = Math.round(base * 1.20);
-    const display = document.getElementById('priceDisplay');
-    if(display) display.innerText = base; 
-}
-
 function filterAdminTable() {
     const val = document.getElementById('adminSearch').value.toLowerCase();
-    document.querySelectorAll('#adminTableBody tr').forEach(row => {
-        row.style.display = row.innerText.toLowerCase().includes(val) ? '' : 'none';
-    });
+    document.querySelectorAll('#adminTableBody tr').forEach(row => { row.style.display = row.innerText.toLowerCase().includes(val) ? '' : 'none'; });
 }
 
-function openLogin() { window.location.href = 'login.html'; }
-
-// --- INICIALIZACIÓN DE ALMACÉN COMPLETO ---
+// Inicialización
 if (!localStorage.getItem('inventario')) {
-    const stockInicial = [
-        { pieza: "Pantalla iPhone OLED", cantidad: 5, costo: 1200 },
-        { pieza: "Pantalla iPhone Incell", cantidad: 8, costo: 650 },
-        { pieza: "Pantalla Samsung A/M", cantidad: 6, costo: 850 },
-        { pieza: "Batería iPhone", cantidad: 12, costo: 250 },
-        { pieza: "Batería Android", cantidad: 15, costo: 160 },
-        { pieza: "Centro de Carga", cantidad: 40, costo: 30 },
-        { pieza: "Cristal de Cámara", cantidad: 25, costo: 45 },
-        { pieza: "Mica de Cerámica", cantidad: 50, costo: 40 }
-    ];
-    localStorage.setItem('inventario', JSON.stringify(stockInicial));
+    localStorage.setItem('inventario', JSON.stringify([{pieza:"Pantalla iPhone OLED",cantidad:5,costo:1200},{pieza:"Batería iPhone",cantidad:10,costo:250},{pieza:"Centro Carga",cantidad:20,costo:30}]));
 }
-// ========================================================
-// NÚCLEO DE OPERACIONES COREFIX (LOGIN + ENTREGAS)
-// ========================================================
+// --- MÓDULO DE COMPRAS Y EGRESOS COREFIX ---
 
-// 1. ESCUCHA DE FORMULARIOS (LOGIN Y REGISTRO)
-document.addEventListener('submit', (e) => {
-    // Manejo del Login
-    if (e.target.id === 'loginForm') {
-        e.preventDefault();
-        const role = document.querySelector('input[name="userRole"]:checked').value;
-        const userInput = document.getElementById('logEmail').value.trim();
-        const pass = document.getElementById('logPass').value;
+function registrarCompra() {
+    const material = prompt("¿Qué refacciones compraste? (Ej: 5 Pantallas iPhone 11)");
+    const proveedor = prompt("¿A qué proveedor?");
+    const monto = prompt("¿Cuánto pagaste en total?");
 
-        if (role === 'admin' && userInput === "merinomotajoseluis@gmail.com" && pass === "CoreFix2026") {
-            localStorage.setItem('isLoggedIn', 'true');
-            localStorage.setItem('userRole', 'admin');
-            localStorage.setItem('staffUser', JSON.stringify({ name: "José Luis" }));
-            window.location.href = 'admin.html';
-        } else {
-            const savedUser = JSON.parse(localStorage.getItem('staffUser'));
-            if (savedUser && (savedUser.email === userInput || savedUser.phone === userInput) && savedUser.pass === pass) {
-                localStorage.setItem('isLoggedIn', 'true');
-                localStorage.setItem('userRole', role);
-                window.location.href = 'index.html';
-            } else {
-                alert('❌ Datos incorrectos o usuario no registrado.');
-            }
-        }
-    }
-
-    // Manejo del Registro
-    if (e.target.id === 'registerForm') {
-        e.preventDefault();
-        const user = {
-            name: document.getElementById('regName').value,
-            email: document.getElementById('regEmail').value.trim(),
-            pass: document.getElementById('regPass').value
+    if (material && monto && !isNaN(monto)) {
+        let compras = JSON.parse(localStorage.getItem('comprasCoreFix')) || [];
+        const nuevaCompra = {
+            fecha: new Date().toLocaleDateString(),
+            material: material,
+            proveedor: proveedor,
+            monto: parseInt(monto),
+            usuario: JSON.parse(localStorage.getItem('staffUser'))?.name || "Admin"
         };
-        localStorage.setItem('staffUser', JSON.stringify(user));
-        alert("✅ Cuenta de Staff creada. Ya puedes iniciar sesión.");
-        window.location.href = 'login.html';
-    }
-});
-
-// 2. FUNCIÓN MAESTRA DE CAMBIO DE ESTADO (CONFIRMAR PEDIDOS)
-function cambiarEstado(id, nuevo) {
-    let logs = JSON.parse(localStorage.getItem('cotizaciones')) || [];
-    const i = logs.findIndex(l => l.id === id);
-    
-    if(i !== -1) { 
-        // Si se marca como entregado, intentamos descontar stock automáticamente
-        if (nuevo === "ENTREGADO" && logs[i].estado !== "ENTREGADO") {
-            let inv = JSON.parse(localStorage.getItem('inventario')) || [];
-            const fallaTxt = logs[i].falla.toLowerCase();
-            
-            // Buscamos coincidencia en el almacén por la primera palabra de la falla
-            const idx = inv.findIndex(p => fallaTxt.includes(p.pieza.toLowerCase().split(' ')[0]));
-            
-            if (idx !== -1 && inv[idx].cantidad > 0) {
-                const ant = inv[idx].cantidad;
-                inv[idx].cantidad -= 1;
-                localStorage.setItem('inventario', JSON.stringify(inv));
-                
-                // Si tienes la función de bitácora, registramos el movimiento
-                if(typeof registrarMovimiento === 'function') {
-                    registrarMovimiento(inv[idx].pieza, "VENTA AUTOMÁTICA", ant, inv[idx].cantidad);
-                }
-            }
-        }
-
-        logs[i].estado = nuevo; 
-        localStorage.setItem('cotizaciones', JSON.stringify(logs)); 
-        alert(`✅ Pedido ${id} actualizado a ${nuevo}`);
         
-        // Refrescar para ver cambios en tabla y almacén
-        if (window.location.pathname.includes('admin.html')) {
-            renderAdminTable();
-            location.reload(); 
-        }
+        compras.push(nuevaCompra);
+        localStorage.setItem('comprasCoreFix', JSON.stringify(compras));
+        
+        // Registrar en bitácora para auditoría
+        registrarMovimiento("COMPRA MATERIAL", "EGRESO CAJA", 0, monto);
+        
+        alert("✅ Compra registrada. El balance se ha actualizado.");
+        location.reload();
     }
 }
 
-// 3. VÍNCULOS DE BOTONES EXTERNOS
-function openLogin() { window.location.href = 'login.html'; }
+// Actualización de la función que calcula los widgets
+const originalActualizarWidgets = actualizarWidgets; 
+actualizarWidgets = function(real, proyectado, ticket) {
+    // Llamamos a la lógica anterior
+    if (document.getElementById('cajaReal')) document.getElementById('cajaReal').innerText = `$${real}`;
+    if (document.getElementById('totalMoney')) document.getElementById('totalMoney').innerText = `$${proyectado}`;
+    if (document.getElementById('ticketPromedio')) document.getElementById('ticketPromedio').innerText = `$${ticket}`;
+
+    // Nueva lógica de Gastos y Utilidad
+    const compras = JSON.parse(localStorage.getItem('comprasCoreFix')) || [];
+    const totalGastos = compras.reduce((acc, c) => acc + c.monto, 0);
+    const utilidad = real - totalGastos;
+
+    if (document.getElementById('totalGastos')) document.getElementById('totalGastos').innerText = `$${totalGastos}`;
+    if (document.getElementById('utilidadNeta')) {
+        document.getElementById('utilidadNeta').innerText = `$${utilidad}`;
+        // Si la utilidad es negativa (gastaste más de lo que ganaste), poner en rojo
+        document.getElementById('utilidadNeta').className = utilidad < 0 ? "text-3xl font-black text-red-400" : "text-3xl font-black text-white";
+    }
+};

@@ -7,24 +7,29 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
+    <style>
+        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
+        .animate-float { animation: float 4s ease-in-out infinite; }
+        .glass-card { background: rgba(30, 41, 59, 0.4); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.05); }
+    </style>
 </head>
-<body class="bg-slate-900 text-white font-sans overflow-x-hidden">
+<body class="bg-slate-900 text-white font-sans overflow-x-hidden selection:bg-blue-500 selection:text-white">
 
     <nav class="navbar fixed w-full z-50 bg-slate-900/80 backdrop-blur-xl border-b border-blue-500/20">
         <div class="container mx-auto flex justify-between items-center p-5">
-            <h1 class="logo text-3xl font-black italic tracking-tighter uppercase">
+            <h1 class="logo text-3xl font-black italic tracking-tighter uppercase cursor-pointer" onclick="window.location.href='index.html'">
                 CORE<span class="text-blue-500">FIX</span>
             </h1>
             
             <div class="space-x-8 hidden md:flex items-center text-[10px] font-black uppercase tracking-widest">
                 <a href="#servicios" class="hover:text-blue-400 transition">Servicios</a>
                 <a href="rastreo.html" class="hover:text-blue-400 transition">Rastrear Orden</a>
-                <a href="cotizar.html" class="bg-blue-600 px-6 py-2 rounded-full hover:bg-blue-500 transition shadow-lg shadow-blue-600/20">Cotizar</a>
+                <a href="cotizar.html" class="bg-blue-600 px-6 py-2.5 rounded-full hover:bg-blue-500 transition shadow-lg shadow-blue-600/20">Cotizar</a>
             </div>
             
             <div id="auth-container">
                 <button onclick="window.location.href='login.html'" class="text-[10px] font-black uppercase border border-slate-700 px-5 py-2 rounded-full hover:bg-white hover:text-slate-900 transition-all">
-                    <i class="fas fa-user-shield mr-2"></i> Staff
+                    <i class="fas fa-user-shield mr-2"></i> Staff Access
                 </button>
             </div>
         </div>
@@ -34,7 +39,7 @@
         <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-blue-600/10 rounded-full blur-[120px] -z-10 animate-pulse"></div>
         
         <div class="container mx-auto px-6 text-center">
-            <div class="inline-flex items-center gap-2 bg-blue-500/10 border border-blue-500/30 px-4 py-1.5 rounded-full mb-8">
+            <div class="inline-flex items-center gap-2 bg-blue-500/10 border border-blue-500/30 px-4 py-1.5 rounded-full mb-8 animate-float">
                 <span class="relative flex h-2 w-2">
                     <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
                     <span class="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
@@ -52,7 +57,7 @@
             
             <div class="flex flex-wrap justify-center gap-6">
                 <a href="cotizar.html" class="bg-blue-600 px-12 py-5 rounded-2xl font-black text-xs uppercase italic tracking-widest hover:scale-105 active:scale-95 transition-all shadow-[0_20px_50px_rgba(37,99,235,0.3)]">
-                    Iniciar Cotización <i class="fas fa-arrow-right ml-2"></i>
+                    Iniciar Cotización <i class="fas fa-microchip ml-2"></i>
                 </a>
                 <a href="rastreo.html" class="border border-slate-700 px-12 py-5 rounded-2xl font-black text-xs uppercase italic tracking-widest hover:bg-white hover:text-slate-900 transition-all">
                     Estado de mi Equipo
@@ -62,22 +67,22 @@
     </section>
 
     <section class="py-24 border-y border-white/5 bg-slate-900/50">
-        <div class="container mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-12 text-center">
+        <div class="container mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-12 text-center font-black italic">
             <div>
-                <h4 class="text-5xl font-black text-blue-500 mb-2 italic">90</h4>
-                <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Días de Garantía</p>
+                <h4 class="text-5xl text-blue-500 mb-2">90</h4>
+                <p class="text-[10px] text-slate-500 uppercase tracking-widest">Días de Garantía</p>
             </div>
             <div>
-                <h4 class="text-5xl font-black text-blue-500 mb-2 italic">100%</h4>
-                <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Piezas OEM/Originales</p>
+                <h4 class="text-5xl text-blue-500 mb-2">100%</h4>
+                <p class="text-[10px] text-slate-500 uppercase tracking-widest">Piezas OEM</p>
             </div>
             <div>
-                <h4 class="text-5xl font-black text-blue-500 mb-2 italic">24h</h4>
-                <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Servicio Express</p>
+                <h4 class="text-5xl text-blue-500 mb-2">24h</h4>
+                <p class="text-[10px] text-slate-500 uppercase tracking-widest">Servicio Express</p>
             </div>
             <div>
-                <h4 class="text-5xl font-black text-blue-500 mb-2 italic">UT</h4>
-                <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Ingeniería Aplicada</p>
+                <h4 class="text-5xl text-blue-500 mb-2">UT</h4>
+                <p class="text-[10px] text-slate-500 uppercase tracking-widest">Ingeniería Aplicada</p>
             </div>
         </div>
     </section>
@@ -87,59 +92,109 @@
         <h2 class="text-center text-5xl font-black uppercase mb-20 italic">Servicios de <span class="text-blue-500">Alto Nivel</span></h2>
         
         <div class="grid lg:grid-cols-3 gap-8">
-            <div class="p-10 rounded-[3rem] bg-slate-800/50 border border-white/5 hover:border-blue-500/40 transition-all group">
+            <div class="p-10 rounded-[3rem] glass-card hover:border-blue-500/40 transition-all group">
                 <div class="w-16 h-16 bg-blue-600/10 rounded-2xl flex items-center justify-center mb-8 group-hover:bg-blue-600 transition-colors">
                     <i class="fas fa-microchip text-3xl text-blue-500 group-hover:text-white"></i>
                 </div>
                 <h4 class="text-2xl font-black uppercase italic mb-4">Arquitectura Hardware</h4>
-                <p class="text-slate-400 text-sm mb-6 uppercase tracking-tighter">Reemplazo de pantallas OLED/AMOLED, baterías de alta densidad y reconstrucción de puertos de carga con estándares de ingeniería.</p>
-                <ul class="space-y-3 text-[10px] font-black uppercase text-blue-400 tracking-widest">
-                    <li><i class="fas fa-check-circle mr-2"></i> Pantallas Certificadas</li>
-                    <li><i class="fas fa-check-circle mr-2"></i> Gestión de Energía</li>
-                </ul>
+                <p class="text-slate-400 text-sm mb-6 uppercase tracking-tighter">Reemplazo de pantallas OLED, baterías y reconstrucción de puertos con estándares de precisión.</p>
             </div>
 
             <div class="p-10 rounded-[3rem] bg-blue-600 shadow-2xl transform lg:-translate-y-8 group">
                 <div class="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mb-8">
                     <i class="fas fa-code text-3xl text-white"></i>
                 </div>
-                <h4 class="text-2xl font-black uppercase italic mb-4">Sistemas & Optimización</h4>
-                <p class="text-blue-100 text-sm mb-6 uppercase tracking-tighter">Desbloqueos FRP, reinstalación de firmware oficial, eliminación de malware y optimización de recursos del procesador.</p>
-                <ul class="space-y-3 text-[10px] font-black uppercase text-white tracking-widest">
-                    <li><i class="fas fa-shield-virus mr-2"></i> Seguridad Digital</li>
-                    <li><i class="fas fa-bolt mr-2"></i> Flash de Sistema</li>
-                </ul>
+                <h4 class="text-2xl font-black uppercase italic mb-4 text-white">Sistemas & Optimización</h4>
+                <p class="text-blue-100 text-sm mb-6 uppercase tracking-tighter">Desbloqueos FRP, reinstalación de firmware oficial y eliminación de malware de raíz.</p>
             </div>
 
-            <div class="p-10 rounded-[3rem] bg-slate-800/50 border border-white/5 hover:border-blue-500/40 transition-all group">
+            <div class="p-10 rounded-[3rem] glass-card hover:border-blue-500/40 transition-all group">
                 <div class="w-16 h-16 bg-blue-600/10 rounded-2xl flex items-center justify-center mb-8 group-hover:bg-blue-600 transition-colors">
-                    <i class="fas fa-running text-3xl text-blue-500 group-hover:text-white"></i>
+                    <i class="fas fa-bolt text-3xl text-blue-500 group-hover:text-white"></i>
                 </div>
                 <h4 class="text-2xl font-black uppercase italic mb-4">Prioridad Express</h4>
-                <p class="text-slate-400 text-sm mb-6 uppercase tracking-tighter">Sabemos que tu tiempo es dinero. Servicios prioritarios para entrega el mismo día en reparaciones modulares críticas.</p>
-                <ul class="space-y-3 text-[10px] font-black uppercase text-blue-400 tracking-widest">
-                    <li><i class="fas fa-clock mr-2"></i> Menos de 4 Horas</li>
-                    <li><i class="fas fa-star mr-2"></i> Atención VIP</li>
-                </ul>
+                <p class="text-slate-400 text-sm mb-6 uppercase tracking-tighter">Servicios modulares críticos con entrega el mismo día para usuarios de alto rendimiento.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-32 bg-slate-950/30">
+        <div class="container mx-auto px-6 max-w-4xl">
+            <h3 class="text-center text-xs font-black text-blue-500 uppercase tracking-[0.5em] mb-4 italic">Soporte Técnico</h3>
+            <h2 class="text-center text-4xl font-black uppercase mb-16 italic">Dudas de <span class="text-blue-500">Ingeniería</span></h2>
+
+            <div class="space-y-4">
+                <details class="group glass-card rounded-3xl overflow-hidden transition-all duration-300 open:border-blue-500/30">
+                    <summary class="flex justify-between items-center p-6 cursor-pointer list-none">
+                        <span class="text-[11px] font-black uppercase tracking-widest text-slate-300 group-open:text-blue-400">¿Cuánto tiempo tarda la reparación?</span>
+                        <i class="fas fa-plus text-xs text-blue-500 group-open:rotate-45 transition-transform"></i>
+                    </summary>
+                    <div class="p-6 pt-0 text-sm text-slate-500 uppercase tracking-tighter italic">
+                        Pantallas y baterías en <b class="text-blue-400">menos de 4 horas</b> con servicio express. Software se entrega el mismo día.
+                    </div>
+                </details>
+
+                <details class="group glass-card rounded-3xl overflow-hidden transition-all duration-300 open:border-blue-500/30">
+                    <summary class="flex justify-between items-center p-6 cursor-pointer list-none">
+                        <span class="text-[11px] font-black uppercase tracking-widest text-slate-300 group-open:text-blue-400">¿Cómo funciona la garantía?</span>
+                        <i class="fas fa-plus text-xs text-blue-500 group-open:rotate-45 transition-transform"></i>
+                    </summary>
+                    <div class="p-6 pt-0 text-sm text-slate-500 uppercase tracking-tighter italic">
+                        90 días de cobertura total en refacciones. Tu <b class="text-white">Ticket Digital CF</b> es tu póliza oficial.
+                    </div>
+                </details>
             </div>
         </div>
     </section>
 
     <footer class="py-20 bg-slate-950 border-t border-white/5">
-        <div class="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-10 text-center md:text-left">
-            <div>
-                <h1 class="text-3xl font-black italic mb-2 uppercase">CORE<span class="text-blue-500">FIX</span></h1>
-                <p class="text-[10px] text-slate-600 uppercase font-black tracking-[0.3em]">Engineering Repair Services &copy; 2026</p>
+        <div class="container mx-auto px-6">
+            <div class="grid md:grid-cols-3 gap-12 mb-16 text-center md:text-left">
+                <div>
+                    <h1 class="text-3xl font-black italic mb-4 uppercase">CORE<span class="text-blue-500">FIX</span></h1>
+                    <p class="text-[10px] text-slate-600 uppercase font-black tracking-[0.3em]">Engineering Services &copy; 2026</p>
+                    <div class="flex justify-center md:justify-start gap-6 mt-6">
+                        <a href="#" class="text-slate-500 hover:text-blue-500 transition"><i class="fab fa-facebook-f text-xl"></i></a>
+                        <a href="#" class="text-slate-500 hover:text-blue-500 transition"><i class="fab fa-instagram text-xl"></i></a>
+                    </div>
+                </div>
+                <div class="flex flex-col gap-2">
+                    <p class="text-xs font-black uppercase text-blue-500 mb-2 italic">Ubicaciones Operativas</p>
+                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest"><i class="fas fa-map-marker-alt text-blue-500 mr-2"></i> Xochitlán Todos Santos, Pue.</p>
+                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest"><i class="fas fa-map-marker-alt text-blue-500 mr-2"></i> Tepexi de Rodríguez, Pue.</p>
+                </div>
+                <div class="flex flex-col gap-2">
+                    <p class="text-xs font-black uppercase text-blue-500 mb-2 italic">Contacto Directo</p>
+                    <a href="https://wa.me/5212231059545" class="text-[10px] text-slate-400 font-bold uppercase hover:text-green-500 transition-colors tracking-widest">
+                        <i class="fab fa-whatsapp text-green-500 mr-2"></i> +52 1 223 105 9545
+                    </a>
+                    <p class="text-[10px] text-slate-500 uppercase mt-2">Atención: Estudiantes UTTECAM</p>
+                </div>
             </div>
-            <div class="flex gap-8">
-                <a href="#" class="text-slate-500 hover:text-blue-500 transition"><i class="fab fa-facebook-f text-2xl"></i></a>
-                <a href="#" class="text-slate-500 hover:text-blue-500 transition"><i class="fab fa-instagram text-2xl"></i></a>
-                <a href="https://wa.me/5212231059545" class="text-slate-500 hover:text-green-500 transition"><i class="fab fa-whatsapp text-2xl"></i></a>
+            <div class="border-t border-white/5 pt-8 text-center">
+                <p class="text-[8px] text-slate-700 font-black uppercase tracking-[0.5em]">Desarrollado con rigor ingenieril por JL Merino Mota</p>
             </div>
-            <p class="text-xs text-slate-500 font-bold uppercase tracking-tighter">Xochitlán Todos Santos | Tepexi de Rodríguez, Puebla</p>
         </div>
     </footer>
 
     <script src="script.js"></script>
+    <a href="https://wa.me/5212231059545?text=¡Hola%20CoreFix!%20👋%20Vengo%20desde%20la%20web%20y%20necesito%20ayuda%20con%20un%20equipo." 
+       target="_blank" 
+       class="fixed bottom-8 right-8 z-[100] group">
+        <span class="absolute -top-2 -right-1 flex h-5 w-5 z-10">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-5 w-5 bg-green-500 text-[10px] items-center justify-center font-black">1</span>
+        </span>
+        
+        <div class="flex items-center gap-3 bg-slate-900 border border-white/10 p-2 pr-6 rounded-full shadow-[0_20px_50px_rgba(0,0,0,0.5)] group-hover:border-green-500/50 transition-all duration-500 group-hover:scale-105">
+            <div class="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(34,197,94,0.4)]">
+                <i class="fab fa-whatsapp text-2xl text-white"></i>
+            </div>
+            <div class="flex flex-col">
+                <span class="text-[9px] font-black uppercase tracking-widest text-slate-500 group-hover:text-green-500 transition-colors">Soporte Live</span>
+                <span class="text-[11px] font-black uppercase italic tracking-tighter">¿Dudas? Escríbenos</span>
+            </div>
+        </div>
+    </a>
 </body>
 </html>
