@@ -182,11 +182,28 @@ function cambiarEstado(id, nuevo) {
 
 function filtrarSucursal(suc) { renderAdminTable(suc); }
 
+// --- REPORTE DE INGENIERÍA FINANCIERA PARA WHATSAPP ---
 function generarReporteRapido() {
     const real = document.getElementById('cajaReal').innerText;
-    const proj = document.getElementById('totalMoney').innerText;
-    const text = `📊 *COREFIX REPORT* 📊\n💰 Caja Real: ${real}\n🛠️ En Proceso: ${proj}\n✅ Reporte generado por: ${JSON.parse(localStorage.getItem('staffUser')).name}`;
-    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+    const gastos = document.getElementById('totalGastos').innerText;
+    const utilidad = document.getElementById('utilidadNeta').innerText;
+    const proyectado = document.getElementById('totalMoney').innerText;
+    
+    const user = JSON.parse(localStorage.getItem('staffUser'))?.name || "Admin";
+    const fecha = new Date().toLocaleDateString();
+
+    const text = `📊 *COREFIX - REPORTE DE OPERACIONES* 📊%0A` +
+                 `📅 *Fecha:* ${fecha}%0A` +
+                 `👤 *Responsable:* ${user}%0A%0A` +
+                 `━━━━━━━━━━━━━━━━━━%0A` +
+                 `💰 *INGRESOS (Ventas):* ${real}%0A` +
+                 `💸 *INVERSIÓN (Gastos):* ${gastos}%0A` +
+                 `📈 *UTILIDAD NETA:* ${utilidad}%0A` +
+                 `━━━━━━━━━━━━━━━━━━%0A` +
+                 `🛠️ *EN PROCESO (Caja Proyectada):* ${proyectado}%0A%0A` +
+                 `✅ *Reporte generado automáticamente por CoreFix System.*`;
+
+    window.open(`https://wa.me/?text=${text}`, '_blank');
 }
 
 // --- 6. UTILIDADES ---
