@@ -149,7 +149,6 @@ function renderAdminTable(filtroSucursal = 'TODOS') {
         let st = log.estado === "ENTREGADO" ? "bg-green-500/10 text-green-500 border-green-500/20" : "bg-blue-500/10 text-blue-400 border-blue-500/20";
         let semaforo = log.estado !== "ENTREGADO" ? calcularSemaforo(log.fecha) : "text-green-500";
 
-        // AQUI SE AGREGO LA MARCA Y MODELO EN LA INTERFAZ DEL ADMIN
         return `
         <tr class="hover:bg-blue-500/[0.03] border-b border-slate-700/50">
             <td class="p-8 text-xs font-mono text-slate-500">${log.fecha}<br><b class="${semaforo} text-lg">${log.id}</b></td>
@@ -308,7 +307,7 @@ function actualizarAlertasStock(inv) {
         alertContainer.innerHTML = `
             <div class="animate-bounce bg-red-600/10 border border-red-500 p-4 rounded-2xl flex items-center justify-between shadow-[0_0_15px_rgba(239,68,68,0.3)]">
                 <div class="flex items-center gap-3">
-                    <i class="fas fa-exclamation-triangle text-red-500 shadow-[0_0_10px_rgba(239,68,68,0.5)]"></i>
+                    <i class="fas fa-exclamation-triangle text-red-500"></i>
                     <div>
                         <p class="text-[10px] font-black uppercase text-red-200 tracking-widest">Alerta de Suministros</p>
                         <p class="text-[8px] text-red-400 uppercase font-bold">Faltan ${bajas.length} tipos de refacciones. ¡Surtir!</p>
@@ -450,7 +449,7 @@ async function descargarTicketPDF(id) {
 }
 
 // ==========================================
-// 7. INICIALIZACIÓN GLOBAL
+// 7. INICIALIZACIÓN GLOBAL (CORREGIDO)
 // ==========================================
 function filtrarSucursal(sucursal) { renderAdminTable(sucursal); }
 function logout() { localStorage.removeItem('isLoggedIn'); localStorage.removeItem('userRole'); window.location.href = 'index.html'; }
@@ -465,7 +464,6 @@ function generarReporteRapido() {
     window.open(`https://wa.me/?text=📊 *COREFIX REPORT*%0A💰 Ingresos: ${real}%0A💸 Gastos: ${gastos}`, '_blank');
 }
 
-// Filtro de búsqueda en tiempo real
 function filterAdminTable() {
     const input = document.getElementById('adminSearch').value.toUpperCase();
     const rows = document.getElementById('adminTableBody').getElementsByTagName('tr');
@@ -475,33 +473,34 @@ function filterAdminTable() {
     }
 }
 
+// NUEVO MOTOR DE ARRANQUE MÁS SEGURO
 document.addEventListener('DOMContentLoaded', () => {
-    if (window.location.pathname.includes('admin.html')) {
+    // Verificar si estamos en la vista de Admin (si existe la tabla)
+    if (document.getElementById('adminTableBody')) {
         renderAdminTable();
         cargarAlmacenEnInterfaz();
     }
+    
+    // Motor de Auth Contenedor
     const authCont = document.getElementById('auth-container');
     if (authCont && localStorage.getItem('isLoggedIn') === 'true') {
         const user = JSON.parse(localStorage.getItem('staffUser'));
-        authCont.innerHTML = `<div class="flex items-center gap-3 bg-slate-800 p-1.5 pr-3 rounded-full border border-blue-500/40"><div class="w-8 h-8 rounded-full flex items-center justify-center text-white font-black text-xs bg-blue-600">${user.name.charAt(0).toUpperCase()}</div><span class="text-[10px] font-black text-blue-400 uppercase tracking-widest">${user.name.split(' ')[0]}</span><button onclick="logout()" class="text-red-500 text-xs ml-1"><i class="fas fa-power-off"></i></button></div>`;
+        if(user && user.name) {
+            authCont.innerHTML = `<div class="flex items-center gap-3 bg-slate-800 p-1.5 pr-3 rounded-full border border-blue-500/40"><div class="w-8 h-8 rounded-full flex items-center justify-center text-white font-black text-xs bg-blue-600">${user.name.charAt(0).toUpperCase()}</div><span class="text-[10px] font-black text-blue-400 uppercase tracking-widest">${user.name.split(' ')[0]}</span><button onclick="logout()" class="text-red-500 text-xs ml-1"><i class="fas fa-power-off"></i></button></div>`;
+        }
     }
 });
+
 // ==========================================
-// 8. EXPORTACIÓN A EXCEL (NUEVO)
+// 8. EXPORTACIÓN A EXCEL 
 // ==========================================
 function exportarExcel() {
     const logs = JSON.parse(localStorage.getItem('cotizaciones')) || [];
     if(logs.length === 0) return alert("⚠️ No hay datos para exportar.");
-    
-    // Crear cabeceras
     let csv = "Folio,Fecha,Cliente,Telefono,Marca,Modelo,Falla,Precio,Sede,Estado\n";
-    
-    // Llenar filas
     logs.forEach(l => {
         csv += `${l.id},${l.fecha},${l.nombre},${l.telefono},${l.marca || 'N/A'},${l.modelo || 'N/A'},${l.falla},${l.precio},${l.ubicacion},${l.estado}\n`;
     });
-    
-    // Descargar archivo
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement("a");
     const url = URL.createObjectURL(blob);
