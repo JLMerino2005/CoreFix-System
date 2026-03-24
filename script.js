@@ -66,21 +66,30 @@ function updatePrice() {
 function aceptarCotizacion() {
     const name = document.getElementById('clientName').value;
     const phone = document.getElementById('clientPhone').value;
-    const imei = document.getElementById('clientIMEI').value;
+    const brand = document.getElementById('clientBrand').value; // MARCA
+    const model = document.getElementById('clientModel').value; // MODELO
     const fallaSel = document.getElementById('damageType');
     const fallaTxt = fallaSel.options[fallaSel.selectedIndex].text;
     const precio = document.getElementById('priceDisplay').innerText;
     const ubi = document.getElementById('deliveryPoint').value;
     const photoBefore = document.getElementById('beforePreview');
 
-    if(!name || !phone || fallaSel.value === "0") return alert("⚠️ Completa tu Nombre, WhatsApp y selecciona una Falla.");
+    if(!name || !phone || !brand || !model || fallaSel.value === "0") {
+        return alert("⚠️ Completa Nombre, WhatsApp, Marca, Modelo y selecciona una Falla.");
+    }
 
     const newOrder = {
         id: 'CF-' + Math.floor(1000 + Math.random() * 9000),
-        nombre: name, telefono: phone, imei: imei, falla: fallaTxt,
-        precio: parseInt(precio), ubicacion: ubi,
-        fecha: new Date().toLocaleDateString(), estado: "EN REVISIÓN",
-        fotoAntes: photoBefore && photoBefore.src ? photoBefore.src : null
+        nombre: name, 
+        telefono: phone, 
+        marca: brand,   
+        modelo: model,  
+        falla: fallaTxt,
+        precio: parseInt(precio), 
+        ubicacion: ubi,
+        fecha: new Date().toLocaleDateString(), 
+        estado: "EN REVISIÓN",
+        fotoAntes: photoBefore && photoBefore.src && !photoBefore.classList.contains('hidden') ? photoBefore.src : null
     };
 
     let logs = JSON.parse(localStorage.getItem('cotizaciones')) || [];
@@ -88,11 +97,6 @@ function aceptarCotizacion() {
     localStorage.setItem('cotizaciones', JSON.stringify(logs));
     localStorage.setItem('currentOrder', JSON.stringify(newOrder));
     window.location.href = 'ticket.html';
-}
-
-function clearSignature() {
-    const canvas = document.getElementById('signature-pad');
-    if(canvas) canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
 }
 
 function buscarEstado() {
@@ -145,11 +149,16 @@ function renderAdminTable(filtroSucursal = 'TODOS') {
         let st = log.estado === "ENTREGADO" ? "bg-green-500/10 text-green-500 border-green-500/20" : "bg-blue-500/10 text-blue-400 border-blue-500/20";
         let semaforo = log.estado !== "ENTREGADO" ? calcularSemaforo(log.fecha) : "text-green-500";
 
+        // AQUI SE AGREGO LA MARCA Y MODELO EN LA INTERFAZ DEL ADMIN
         return `
         <tr class="hover:bg-blue-500/[0.03] border-b border-slate-700/50">
             <td class="p-8 text-xs font-mono text-slate-500">${log.fecha}<br><b class="${semaforo} text-lg">${log.id}</b></td>
             <td class="p-8"><b class="text-white">${log.nombre}</b><br><span class="text-xs text-slate-500">${log.telefono}</span></td>
-            <td class="p-8"><span class="text-[10px] font-black uppercase text-blue-400">${log.falla}</span><br><span class="text-[10px] italic text-slate-500">📍 ${log.ubicacion}</span></td>
+            <td class="p-8">
+                <span class="text-[10px] font-black uppercase text-blue-400">${log.falla}</span><br>
+                <span class="text-[9px] font-bold text-white uppercase">${log.marca || 'N/A'} ${log.modelo || ''}</span><br>
+                <span class="text-[10px] italic text-slate-500">📍 ${log.ubicacion}</span>
+            </td>
             <td class="p-8"><b class="text-2xl font-black text-green-400">$${log.precio}</b></td>
             <td class="p-8 text-center"><span class="${st} px-4 py-1.5 rounded-full text-[10px] font-black border uppercase">${log.estado}</span></td>
             <td class="p-8 text-right"><div class="flex gap-2 justify-end">
@@ -211,7 +220,7 @@ function actualizarAnalisis(logs) {
 }
 
 // ==========================================
-// 4. ADMIN: BOTONES DE ACCIÓN (LOS QUE FALTABAN)
+// 4. ADMIN: BOTONES DE ACCIÓN 
 // ==========================================
 function cambiarEstado(id, nuevo) {
     let logs = JSON.parse(localStorage.getItem('cotizaciones')) || [];
@@ -456,6 +465,16 @@ function generarReporteRapido() {
     window.open(`https://wa.me/?text=📊 *COREFIX REPORT*%0A💰 Ingresos: ${real}%0A💸 Gastos: ${gastos}`, '_blank');
 }
 
+// Filtro de búsqueda en tiempo real
+function filterAdminTable() {
+    const input = document.getElementById('adminSearch').value.toUpperCase();
+    const rows = document.getElementById('adminTableBody').getElementsByTagName('tr');
+    for (let i = 0; i < rows.length; i++) {
+        let textContent = rows[i].innerText.toUpperCase();
+        rows[i].style.display = textContent.includes(input) ? "" : "none";
+    }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     if (window.location.pathname.includes('admin.html')) {
         renderAdminTable();
@@ -467,3 +486,29 @@ document.addEventListener('DOMContentLoaded', () => {
         authCont.innerHTML = `<div class="flex items-center gap-3 bg-slate-800 p-1.5 pr-3 rounded-full border border-blue-500/40"><div class="w-8 h-8 rounded-full flex items-center justify-center text-white font-black text-xs bg-blue-600">${user.name.charAt(0).toUpperCase()}</div><span class="text-[10px] font-black text-blue-400 uppercase tracking-widest">${user.name.split(' ')[0]}</span><button onclick="logout()" class="text-red-500 text-xs ml-1"><i class="fas fa-power-off"></i></button></div>`;
     }
 });
+// ==========================================
+// 8. EXPORTACIÓN A EXCEL (NUEVO)
+// ==========================================
+function exportarExcel() {
+    const logs = JSON.parse(localStorage.getItem('cotizaciones')) || [];
+    if(logs.length === 0) return alert("⚠️ No hay datos para exportar.");
+    
+    // Crear cabeceras
+    let csv = "Folio,Fecha,Cliente,Telefono,Marca,Modelo,Falla,Precio,Sede,Estado\n";
+    
+    // Llenar filas
+    logs.forEach(l => {
+        csv += `${l.id},${l.fecha},${l.nombre},${l.telefono},${l.marca || 'N/A'},${l.modelo || 'N/A'},${l.falla},${l.precio},${l.ubicacion},${l.estado}\n`;
+    });
+    
+    // Descargar archivo
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.setAttribute("href", url);
+    link.setAttribute("download", `Reporte_CoreFix_${new Date().toLocaleDateString().replace(/\//g, '-')}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}

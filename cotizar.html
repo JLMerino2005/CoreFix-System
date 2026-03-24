@@ -34,8 +34,12 @@
                         <input type="tel" id="clientPhone" placeholder="Número de WhatsApp" class="input-pro w-full pl-12">
                     </div>
                     <div class="relative">
-                        <i class="fas fa-barcode absolute left-4 top-1/2 -translate-y-1/2 text-slate-500"></i>
-                        <input type="text" id="clientIMEI" placeholder="IMEI del Equipo" class="input-pro w-full pl-12">
+                        <i class="fas fa-mobile-alt absolute left-4 top-1/2 -translate-y-1/2 text-slate-500"></i>
+                        <input type="text" id="clientBrand" placeholder="Marca (Ej. Samsung, Apple)" class="input-pro w-full pl-12">
+                    </div>
+                    <div class="relative">
+                        <i class="fas fa-info-circle absolute left-4 top-1/2 -translate-y-1/2 text-slate-500"></i>
+                        <input type="text" id="clientModel" placeholder="Modelo (Ej. S22 Ultra, iPhone 11)" class="input-pro w-full pl-12">
                     </div>
                 </div>
             </div>
@@ -58,11 +62,6 @@
                         <option value="Xochitlán">📍 Sucursal Xochitlán Todos Santos</option>
                         <option value="Tepexi">📍 Sucursal Tepexi de Rodriguez</option>
                     </select>
-
-                    <button type="button" onclick="abrirTestDiagnostico()" class="w-full p-4 bg-slate-900/50 border border-blue-500/20 rounded-2xl flex items-center justify-between group hover:border-blue-500/50 transition">
-                        <span class="text-[10px] font-black uppercase italic text-slate-400 group-hover:text-white">Auto-Test Rápido</span>
-                        <i class="fas fa-stethoscope text-blue-500"></i>
-                    </button>
 
                     <div class="p-4 rounded-2xl border border-red-500/20 bg-red-500/5 flex items-center justify-between">
                         <div class="flex items-center gap-3">
@@ -93,12 +92,7 @@
                             <img id="beforePreview" class="hidden w-24 h-24 object-cover rounded-xl mt-3 border-2 border-white/50 shadow-lg">
                         </div>
 
-                        <div class="bg-white rounded-2xl p-2 shadow-inner">
-                            <canvas id="signature-pad" class="w-full h-24 bg-slate-50 rounded-xl cursor-crosshair"></canvas>
-                            <button type="button" onclick="clearSignature()" class="w-full text-[8px] font-black text-red-500 uppercase mt-1">Borrar Firma</button>
-                        </div>
-
-                        <button onclick="aceptarCotizacion()" class="w-full bg-white text-slate-900 font-black py-5 rounded-[2rem] hover:scale-105 active:scale-95 transition-all shadow-2xl uppercase italic tracking-tighter">
+                        <button onclick="aceptarCotizacion()" class="w-full bg-white text-slate-900 font-black py-5 rounded-[2rem] hover:scale-105 active:scale-95 transition-all shadow-2xl uppercase italic tracking-tighter mt-4">
                             Aceptar y Generar Ticket <i class="fas fa-chevron-right ml-2"></i>
                         </button>
                     </div>
@@ -117,12 +111,6 @@
                 reader.onload = e => { preview.src = e.target.result; preview.classList.remove('hidden'); }
                 reader.readAsDataURL(input.files[0]);
             }
-        }
-        function abrirTestDiagnostico() {
-            const falla = confirm("¿El equipo enciende?") ? 
-                         (confirm("¿Se escucha pero no da imagen?") ? "Pantalla" : "Carga/Software") : 
-                         "Tarjeta Madre";
-            alert("Sugerencia CoreFix: El problema parece ser: " + falla);
         }
     </script>
 </body>

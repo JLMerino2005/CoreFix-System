@@ -10,10 +10,12 @@
 </head>
 <body class="bg-slate-900 text-white font-sans min-h-screen">
 
-    <nav class="navbar bg-slate-800/50 backdrop-blur-md border-b border-blue-500/30 p-4 sticky top-0 z-50">
+<nav class="navbar bg-slate-800/50 backdrop-blur-md border-b border-blue-500/30 p-4 sticky top-0 z-50">
         <div class="container mx-auto flex justify-between items-center">
             <h1 class="text-2xl font-black italic tracking-tighter">CORE<span class="text-blue-500">FIX</span> <span class="text-xs uppercase font-bold text-slate-500 ml-2 tracking-widest">Admin Control</span></h1>
             <div class="flex gap-4">
+                <button onclick="exportarExcel()" class="text-[9px] font-black bg-green-600/20 text-green-400 px-4 py-2 rounded-full border border-green-500/30 uppercase transition-all hover:bg-green-600 hover:text-white"><i class="fas fa-file-excel mr-1"></i> Excel</button>
+                
                 <button onclick="generarReporteRapido()" class="text-[9px] font-black bg-blue-600/20 text-blue-400 px-4 py-2 rounded-full border border-blue-500/30 uppercase transition-all hover:bg-blue-600 hover:text-white"><i class="fas fa-file-export mr-1"></i> Reporte Diario</button>
                 <a href="index.html" onclick="logout()" class="text-xs font-black bg-slate-700 px-6 py-2.5 rounded-full hover:bg-slate-600 transition-all border border-slate-600 uppercase">Cerrar Sesión</a>
             </div>
