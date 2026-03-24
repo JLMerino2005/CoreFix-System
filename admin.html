@@ -21,7 +21,7 @@
     </nav>
 
     <main class="container mx-auto py-10 px-6">
-        <div id="stockAlertContainer" class="max-w-md mb-6"></div>
+        <div id="stockAlertContainer" class="max-w-md mx-auto md:mx-0 mb-6"></div>
         
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-12">
             <div class="bg-slate-800 border border-green-500/30 p-6 rounded-[2rem] shadow-xl relative overflow-hidden group">
@@ -87,6 +87,27 @@
             </div>
         </div>
 
+        <div class="bg-slate-800/40 p-8 rounded-[2.5rem] border border-blue-500/20 shadow-xl mb-12">
+            <h3 class="text-sm font-black uppercase text-blue-400 mb-6 tracking-[0.3em]">
+                <i class="fas fa-shield-alt mr-2"></i> Monitoreo de Garantías (90 Días)
+            </h3>
+            <div class="overflow-hidden rounded-2xl border border-white/5 bg-slate-900/30">
+                <table class="w-full text-[9px] font-bold uppercase tracking-widest text-center">
+                    <thead class="bg-slate-800 text-slate-500">
+                        <tr>
+                            <th class="p-4">Folio</th>
+                            <th class="p-4">Cliente</th>
+                            <th class="p-4">Fecha Entrega</th>
+                            <th class="p-4">Días Restantes</th>
+                            <th class="p-4">Estado</th>
+                            <th class="p-4">Ticket</th>
+                        </tr>
+                    </thead>
+                    <tbody id="garantiasTableBody" class="divide-y divide-white/5 text-slate-400"></tbody>
+                </table>
+            </div>
+        </div>
+
         <div class="grid lg:grid-cols-3 gap-8 mb-12">
             <div class="bg-slate-800 p-8 rounded-[2.5rem] border border-blue-500/20 shadow-2xl">
                 <h3 class="text-lg font-black italic uppercase mb-6 text-blue-400"><i class="fas fa-chart-pie mr-2"></i> Análisis de Fallas</h3>
@@ -124,40 +145,10 @@
                 </table>
             </div>
         </div>
-        <div class="bg-slate-800/40 p-8 rounded-[2.5rem] border border-blue-500/20 shadow-xl mb-8">
-    <h3 class="text-sm font-black uppercase text-blue-400 mb-6 tracking-[0.3em]">
-        <i class="fas fa-shield-alt mr-2"></i> Monitoreo de Garantías (90 Días)
-    </h3>
-    <div class="overflow-hidden rounded-2xl border border-white/5 bg-slate-900/30">
-        <table class="w-full text-[9px] font-bold uppercase tracking-widest text-center">
-            <thead class="bg-slate-800 text-slate-500">
-                <tr>
-                    <th class="p-4">Folio</th>
-                    <th class="p-4">Cliente</th>
-                    <th class="p-4">Fecha Entrega</th>
-                    <th class="p-4">Días Restantes</th>
-                    <th class="p-4">Estado</th>
-                </tr>
-            </thead>
-            <tbody id="garantiasTableBody" class="divide-y divide-white/5 text-slate-400">
-                </tbody>
-        </table>
-    </div>
-</div>
-
-<thead class="bg-slate-800 text-slate-500">
-    <tr>
-        <th class="p-4">Folio</th>
-        <th class="p-4">Cliente</th>
-        <th class="p-4">Fecha Entrega</th>
-        <th class="p-4">Días Restantes</th>
-        <th class="p-4">Estado</th>
-        <th class="p-4">Ticket</th> </tr>
-</thead>
 
         <div class="bg-slate-900/50 p-8 rounded-[2.5rem] border border-slate-700 shadow-inner mt-8">
             <h3 class="text-sm font-black uppercase text-slate-500 mb-6 tracking-[0.3em]">
-                <i class="fas fa-history mr-2"></i> Bitácora de Auditoría (Movimientos de Almacén)
+                <i class="fas fa-history mr-2"></i> Bitácora de Auditoría
             </h3>
             <div class="overflow-hidden rounded-2xl border border-white/5">
                 <table class="w-full text-[9px] font-bold uppercase tracking-widest">
@@ -175,19 +166,18 @@
             </div>
         </div>
 
-        <div id="evidencePanel" class="hidden fixed bottom-10 right-10 z-50 bg-blue-600 p-8 rounded-[2.5rem] shadow-2xl">
+        <div id="evidencePanel" class="hidden fixed bottom-10 right-10 z-[100] bg-blue-600 p-8 rounded-[2.5rem] shadow-2xl">
             <h3 class="text-lg font-black italic uppercase mb-4 text-white">Subir Foto Final</h3>
             <p class="text-[10px] text-blue-100 mb-4 font-bold tracking-widest text-center italic">FOLIO: <span id="activeFolio" class="underline">---</span></p>
             <input type="file" id="photoAfter" accept="image/*" capture="camera" class="hidden" onchange="uploadAfterPhoto(this)">
             <label for="photoAfter" class="w-full flex items-center justify-center gap-3 bg-white text-blue-600 py-4 px-8 rounded-2xl font-black uppercase text-xs cursor-pointer hover:scale-105 transition-transform shadow-xl">
-                <i class="fas fa-camera"></i> Capturar Equipo Reparado
+                <i class="fas fa-camera"></i> Capturar Equipo
             </label>
             <button onclick="document.getElementById('evidencePanel').classList.add('hidden')" class="absolute -top-3 -right-3 bg-slate-900 text-white w-8 h-8 rounded-full flex items-center justify-center border-2 border-white transition-transform hover:scale-110"><i class="fas fa-times text-xs"></i></button>
         </div>
     </main>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
     <script src="script.js"></script>
 </body>
 </html>
