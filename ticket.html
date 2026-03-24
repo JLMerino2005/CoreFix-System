@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CoreFix | Tu Ticket de Servicio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body class="bg-slate-900 text-white font-sans min-h-screen flex items-center justify-center p-6">
+
+    <div class="max-w-md w-full bg-slate-800 rounded-[3rem] p-8 border border-blue-500/30 shadow-2xl text-center relative overflow-hidden">
+        <div class="absolute -top-10 -right-10 w-32 h-32 bg-blue-600/20 rounded-full blur-3xl"></div>
+        
+        <h1 class="text-3xl font-black italic mb-2">CORE<span class="text-blue-500">FIX</span></h1>
+        <p class="text-[10px] uppercase font-black tracking-[0.3em] text-slate-500 mb-8">Orden de Servicio Confirmada</p>
+
+        <div class="bg-slate-900/50 rounded-3xl p-6 border border-white/5 mb-8 text-left space-y-4">
+            <div class="flex justify-between border-b border-white/5 pb-2">
+                <span class="text-[10px] font-bold text-slate-500 uppercase">Folio:</span>
+                <span id="t-folio" class="text-blue-400 font-black italic">---</span>
+            </div>
+            <div class="flex justify-between border-b border-white/5 pb-2">
+                <span class="text-[10px] font-bold text-slate-500 uppercase">Cliente:</span>
+                <span id="t-nombre" class="font-bold text-white">---</span>
+            </div>
+            <div class="flex justify-between border-b border-white/5 pb-2">
+                <span class="text-[10px] font-bold text-slate-500 uppercase">Equipo:</span>
+                <span id="t-equipo" class="font-bold text-white">---</span>
+            </div>
+            <div class="flex justify-between border-b border-white/5 pb-2">
+                <span class="text-[10px] font-bold text-slate-500 uppercase">Falla:</span>
+                <span id="t-falla" class="font-bold text-blue-400">---</span>
+            </div>
+            <div class="flex justify-between">
+                <span class="text-[10px] font-bold text-slate-500 uppercase">Inversión:</span>
+                <span id="t-precio" class="text-xl font-black text-green-400">$0</span>
+            </div>
+        </div>
+
+        <div class="space-y-3">
+            <button onclick="descargarTicketPDF()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-4 rounded-2xl transition-all shadow-lg uppercase text-xs tracking-widest">
+                <i class="fas fa-file-pdf mr-2"></i> Descargar PDF
+            </button>
+            <a href="index.html" class="block w-full border border-slate-700 hover:bg-white hover:text-slate-900 text-slate-400 font-black py-4 rounded-2xl transition-all uppercase text-xs tracking-widest">
+                Regresar al Inicio
+            </a>
+        </div>
+        
+        <p class="mt-8 text-[9px] text-slate-500 leading-relaxed italic">
+            * Presenta este ticket (digital o impreso) al entregar tu equipo en la sede correspondiente.
+        </p>
+    </div>
+
+    <script>
+        // Cargar datos desde localStorage
+        document.addEventListener('DOMContentLoaded', () => {
+            const order = JSON.parse(localStorage.getItem('currentOrder'));
+            if (!order) {
+                alert("No se encontró información de la orden.");
+                window.location.href = 'index.html';
+                return;
+            }
+
+            document.getElementById('t-folio').innerText = order.id;
+            document.getElementById('t-nombre').innerText = order.nombre;
+            document.getElementById('t-equipo').innerText = `${order.marca} ${order.modelo}`;
+            document.getElementById('t-falla').innerText = order.falla;
+            document.getElementById('t-precio').innerText = `$${order.precio}`;
+        });
+
+        function descargarTicketPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({ unit: 'mm', format: [80, 150] });
+            const order = JSON.parse(localStorage.getItem('currentOrder'));
+
+            doc.setFont("helvetica", "bold");
+            doc.text("COREFIX", 40, 15, { align: "center" });
+            doc.setFontSize(8);
+            doc.text("Ticket de Recepción", 40, 20, { align: "center" });
+            doc.text("________________________________", 40, 23, { align: "center" });
+            
+            doc.setFont("helvetica", "normal");
+            doc.text(`FOLIO: ${order.id}`, 10, 35);
+            doc.text(`FECHA: ${order.fecha}`, 10, 42);
+            doc.text(`CLIENTE: ${order.nombre}`, 10, 49);
+            doc.text(`EQUIPO: ${order.marca} ${order.modelo}`, 10, 56);
+            doc.text(`FALLA: ${order.falla}`, 10, 63);
+            doc.setFont("helvetica", "bold");
+            doc.text(`TOTAL ESTIMADO: $${order.precio}.00`, 10, 75);
+            
+            doc.setFontSize(6);
+            doc.text("Este es un presupuesto estimado.", 40, 100, { align: "center" });
+            doc.text("Gracias por confiar en CoreFix.", 40, 105, { align: "center" });
+            
+            doc.save(`Ticket_${order.id}.pdf`);
+        }
+    </script>
+</body>
+</html>
