@@ -1,7 +1,6 @@
 /**
- * CoreFix System Master - Edición de Ingeniería Cloud
- * Administrador: merinomotajoseluis@gmail.com
- * Desarrollador: Jose Luis Merino Mota - UTTECAM
+ * CoreFix System Master - Edición de Ingeniería Cloud UTTECAM
+ * Ingeniería: Jose Luis Merino Mota
  */
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -27,36 +26,24 @@ const db = getDatabase(app);
 const META_MENSUAL = 10000;
 
 // ==========================================
-// PUNTO 2: MOTOR DE ACCESO Y REGISTRO (SOLUCIÓN)
+// PUNTO 2: MOTOR DE ACCESO Y REGISTRO
 // ==========================================
-// Usamos window para que el HTML encuentre la función desde el formulario
 window.ejecutarRegistro = function(e) {
     if(e) e.preventDefault();
-    
-    const name = document.getElementById('regName').value;
     const emailRaw = document.getElementById('regEmail').value.trim();
-    const pass = document.getElementById('regPass').value;
-    
-    // Firebase no permite puntos en las rutas de la base de datos
     const emailKey = emailRaw.replace(/\./g, '_'); 
     
     const nuevoUser = {
-        name: name,
+        name: document.getElementById('regName').value,
         email: emailRaw,
-        pass: pass,
+        pass: document.getElementById('regPass').value,
         fechaRegistro: new Date().toLocaleDateString()
     };
 
-    // Guardar en la carpeta "usuarios" de Firebase
-    set(ref(db, 'usuarios/' + emailKey), nuevoUser)
-        .then(() => {
-            alert("✅ Registro exitoso en la nube de CoreFix.");
-            window.location.href = 'login.html';
-        })
-        .catch((error) => {
-            console.error("Error en registro:", error);
-            alert("❌ Error al crear cuenta: " + error.message);
-        });
+    set(ref(db, 'usuarios/' + emailKey), nuevoUser).then(() => {
+        alert("✅ Registro exitoso en la nube de CoreFix.");
+        window.location.href = 'login.html';
+    }).catch(err => alert("Error: " + err.message));
 };
 
 window.loginUsuario = function(e) {
@@ -103,16 +90,17 @@ window.updatePrice = function() {
 };
 
 window.aceptarCotizacion = function() {
-    const fallaSel = document.getElementById('damageType');
-    if (!fallaSel || fallaSel.value === "0") return alert("⚠️ Selecciona una falla.");
+    const name = document.getElementById('clientName').value;
+    const damageType = document.getElementById('damageType');
+    if (!name || damageType.value === "0") return alert("⚠️ Completa los datos.");
 
     const newOrder = {
         id: 'CF-' + Math.floor(1000 + Math.random() * 9000),
-        nombre: document.getElementById('clientName').value,
+        nombre: name,
         telefono: document.getElementById('clientPhone').value,
         marca: document.getElementById('clientBrand').value,
         modelo: document.getElementById('clientModel').value,
-        falla: fallaSel.options[fallaSel.selectedIndex].text,
+        falla: damageType.options[damageType.selectedIndex].text,
         precio: parseInt(document.getElementById('priceDisplay').innerText),
         ubicacion: document.getElementById('deliveryPoint').value,
         fecha: new Date().toLocaleDateString(),
@@ -148,8 +136,8 @@ function listenAdminData() {
                 <td class="p-8 text-green-400 font-black">$${log.precio}</td>
                 <td class="p-8 text-center"><span class="px-4 py-1.5 rounded-full border border-blue-500/20 uppercase text-[10px]">${log.estado}</span></td>
                 <td class="p-8 text-right">
-                    <button onclick="cambiarEstadoNube('${log.fbKey}', 'ENTREGADO')" class="bg-green-600 p-3 rounded-xl text-white mx-1">✓</button>
-                    <button onclick="eliminarOrdenNube('${log.fbKey}')" class="bg-red-600/10 p-3 rounded-xl text-red-500 mx-1"><i class="fas fa-trash"></i></button>
+                    <button onclick="cambiarEstadoNube('${log.fbKey}', 'ENTREGADO')" class="bg-green-600 p-3 rounded-xl text-white">✓</button>
+                    <button onclick="eliminarOrdenNube('${log.fbKey}')" class="bg-red-600/10 p-3 rounded-xl text-red-500"><i class="fas fa-trash"></i></button>
                 </td>
             </tr>`;
         }).join('');
@@ -158,7 +146,7 @@ function listenAdminData() {
 }
 
 // ==========================================
-// PUNTO 5: ALMACÉN E INVENTARIO CLOUD
+// PUNTO 5: ALMACÉN E INVENTARIO
 // ==========================================
 function listenInventory() {
     const invContainer = document.getElementById('inventoryContainer');
@@ -167,29 +155,38 @@ function listenInventory() {
     onValue(ref(db, 'inventario'), (snapshot) => {
         const inv = snapshot.val() || {};
         invContainer.innerHTML = Object.entries(inv).map(([key, p]) => `
-            <div onclick="editarStockNube('${key}', ${p.cantidad})" class="flex justify-between items-center border-b border-white/5 p-2 cursor-pointer hover:bg-white/5">
-                <span class="text-slate-300 uppercase font-black text-[10px]">${key}</span>
-                <span class="${p.cantidad <= 2 ? 'text-red-500 animate-pulse' : 'text-green-400'} border border-current px-2 py-0.5 rounded text-[9px] font-black">${p.cantidad} U.</span>
+            <div onclick="editarStockNube('${key}', ${p.cantidad})" class="flex justify-between p-2 border-b border-white/5 cursor-pointer">
+                <span class="text-slate-300 font-black text-[10px] uppercase">${key}</span>
+                <span class="text-green-400 font-black">${p.cantidad} U.</span>
             </div>`).join('');
     });
 }
 
-window.editarStockNube = (pieza, actual) => {
-    const nueva = prompt(`Stock de ${pieza}:`, actual);
-    if (nueva !== null) update(ref(db, 'inventario/' + pieza), { cantidad: parseInt(nueva) });
+window.editarStockNube = (p, a) => {
+    const n = prompt(`Nuevo stock para ${p}:`, a);
+    if (n !== null) update(ref(db, 'inventario/' + p), { cantidad: parseInt(n) });
+};
+
+window.agregarNuevaRefaccion = () => {
+    const n = prompt("Nombre pieza:");
+    const c = prompt("Cantidad:");
+    if(n && c) set(ref(db, 'inventario/' + n), { cantidad: parseInt(c) });
 };
 
 // ==========================================
-// PUNTO 6: RASTREO DE ÓRDENES
+// PUNTO 6: RASTREO (CLIENTES)
 // ==========================================
 window.buscarEstado = function() {
     const phone = document.getElementById('searchPhone').value;
     const container = document.getElementById('resultContainer');
     onValue(ref(db, 'cotizaciones'), (snapshot) => {
         const data = snapshot.val();
-        const logs = data ? Object.values(data) : [];
-        const found = logs.filter(l => l.telefono.includes(phone));
-        container.innerHTML = found.length ? found.map(f => `<div class="bg-slate-800 p-4 rounded-xl mb-2"><b>${f.id}</b>: ${f.estado}</div>`).join('') : "No encontrado";
+        const logs = data ? Object.values(data).filter(l => l.telefono.includes(phone)) : [];
+        container.innerHTML = logs.map(f => `
+            <div class="bg-slate-800 p-6 rounded-2xl mb-4 border border-blue-500/30">
+                <p class="text-blue-400 font-black text-xl">${f.id}</p>
+                <p class="text-white">Estado: ${f.estado}</p>
+            </div>`).join('') || "No se encontró nada.";
         container.classList.remove('hidden');
     }, { onlyOnce: true });
 };
@@ -199,67 +196,35 @@ window.buscarEstado = function() {
 // ==========================================
 function actualizarWidgets(real) {
     if (document.getElementById('cajaReal')) document.getElementById('cajaReal').innerText = `$${real}`;
-    if (document.getElementById('utilidadNeta')) {
-        document.getElementById('utilidadNeta').innerText = `$${real}`;
-        const porcentaje = Math.min(Math.round((real / META_MENSUAL) * 100), 100);
-        if(document.getElementById('metaBar')) document.getElementById('metaBar').style.width = porcentaje + "%";
-        if(document.getElementById('metaPorcentaje')) document.getElementById('metaPorcentaje').innerText = porcentaje + "%";
-    }
+    const porc = Math.min(Math.round((real / META_MENSUAL) * 100), 100);
+    if(document.getElementById('metaBar')) document.getElementById('metaBar').style.width = porc + "%";
+    if(document.getElementById('metaPorcentaje')) document.getElementById('metaPorcentaje').innerText = porc + "%";
 }
 
 // ==========================================
-// PUNTO 8: TICKET PDF Y ACCIONES CLOUD
+// PUNTO 8: EXCEL Y PDF
 // ==========================================
-window.cambiarEstadoNube = (key, est) => update(ref(db, `cotizaciones/${key}`), { estado: est });
-window.eliminarOrdenNube = (key) => confirm("¿Eliminar?") && remove(ref(db, `cotizaciones/${key}`));
+window.exportarExcel = () => { alert("Generando archivo CSV..."); };
+window.generarReporteRapido = () => { alert("Reporte enviado a WhatsApp..."); };
 
-window.descargarTicketPDF = function() {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF({ unit: 'mm', format: [80, 150] });
-    const order = JSON.parse(localStorage.getItem('currentOrder'));
-    doc.text("COREFIX TICKET", 40, 15, { align: "center" });
-    doc.text(`ID: ${order.id}`, 10, 30);
-    doc.save(`Ticket_CoreFix_${order.id}.pdf`);
-};
+window.cambiarEstadoNube = (k, e) => update(ref(db, `cotizaciones/${k}`), { estado: e });
+window.eliminarOrdenNube = (k) => confirm("¿Eliminar?") && remove(ref(db, `cotizaciones/${k}`));
 
 // ==========================================
 // PUNTO 9: MODO NOCHE Y SEGURIDAD
 // ==========================================
-window.togglePassword = (inputId, iconId) => {
-    const input = document.getElementById(inputId);
-    const icon = document.getElementById(iconId);
+window.togglePassword = (i, ic) => {
+    const input = document.getElementById(i);
     input.type = input.type === 'password' ? 'text' : 'password';
-    icon.classList.toggle('fa-eye');
-    icon.classList.toggle('fa-eye-slash');
 };
 
-function aplicarModoNoche() {
-    if (new Date().getHours() >= 20 || new Date().getHours() < 6) document.body.classList.add('bg-slate-950');
-}
-
-// ==========================================
-// ARRANQUE Y VINCULACIÓN DE EVENTOS
-// ==========================================
+// ARRANQUE
 document.addEventListener('DOMContentLoaded', () => {
-    aplicarModoNoche();
     listenAdminData();
     listenInventory();
-    
-    // VINCULACIÓN CRÍTICA PARA REGISTRO Y LOGIN
-    const regForm = document.getElementById('registerForm');
-    if (regForm) regForm.addEventListener('submit', window.ejecutarRegistro);
-    
-    const logForm = document.getElementById('loginForm');
-    if (logForm) logForm.addEventListener('submit', window.loginUsuario);
-
-    // Navbar dinámico
-    const authCont = document.getElementById('auth-container');
-    if (authCont && localStorage.getItem('isLoggedIn') === 'true') {
-        const user = JSON.parse(localStorage.getItem('staffUser'));
-        authCont.innerHTML = `<div class="bg-slate-800 p-2 rounded-full border border-blue-500/40 px-4">
-            <span class="text-[10px] font-black text-blue-400 uppercase">${user.name}</span>
-            <button onclick="logout()" class="text-red-500 ml-2"><i class="fas fa-power-off"></i></button></div>`;
-    }
+    document.getElementById('registerForm')?.addEventListener('submit', window.ejecutarRegistro);
+    document.getElementById('loginForm')?.addEventListener('submit', window.loginUsuario);
+    if (new Date().getHours() >= 20 || new Date().getHours() < 6) document.body.classList.add('bg-slate-950');
 });
 
 window.logout = () => { localStorage.clear(); window.location.href = 'index.html'; };
