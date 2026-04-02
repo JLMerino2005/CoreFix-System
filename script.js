@@ -234,11 +234,11 @@ window.cambiarEstadoNube = (key, estadoActual, datos) => {
 
     if (estadoActual === "EN REVISIÓN" || estadoActual === "REPARANDO") {
         nuevoEstado = "LISTO PARA RECOGER";
-        const texto = `*COREFIX INFORMA* 📱%0A%0AHola *${datos.nombre}*, tu equipo *${datos.marca} ${datos.modelo}* ya está reparado y listo para recoger en nuestra sucursal de *${datos.ubicacion}*.%0A%0A💰 Total: *$${datos.precio}*%0A📍 Te esperamos.`;
+        const texto = `*COREFIX INFORMA* %0A%0AHola *${datos.nombre}*, tu equipo *${datos.marca} ${datos.modelo}* ya está reparado y listo para recoger en nuestra sucursal de *${datos.ubicacion}*.%0A%0A Total: *$${datos.precio}*%0A Te esperamos.`;
         window.open(`https://wa.me/52${datos.telefono}?text=${texto}`, '_blank');
     } else if (estadoActual === "LISTO PARA RECOGER") {
         nuevoEstado = "ENTREGADO";
-        alert("✅ Equipo entregado y orden finalizada.");
+        alert(" Equipo entregado y orden finalizada.");
     }
 
     if (nuevoEstado) {
