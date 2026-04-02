@@ -122,6 +122,9 @@ function listenAdminData(filtro = 'TODOS') {
 
         tableBody.innerHTML = logs.reverse().map(log => {
             if (log.estado === "ENTREGADO") cajaReal += log.precio;
+            
+            const datosString = JSON.stringify(log).replace(/"/g, '&quot;');
+
             return `
             <tr class="hover:bg-blue-500/[0.03] border-b border-slate-700/50">
                 <td class="p-8">${log.fecha}<br><b class="text-blue-500 text-lg">${log.id}</b></td>
@@ -130,7 +133,12 @@ function listenAdminData(filtro = 'TODOS') {
                 <td class="p-8 text-green-400 font-black">$${log.precio}</td>
                 <td class="p-8 text-center"><span class="px-4 py-1.5 rounded-full border border-blue-500/20 uppercase text-[10px]">${log.estado}</span></td>
                 <td class="p-8 text-right">
-                    <button onclick="cambiarEstadoNube('${log.fbKey}', 'ENTREGADO')" class="bg-green-600 p-3 rounded-xl text-white">✓</button>
+                    ${log.estado !== 'ENTREGADO' ? `
+                        <button onclick="cambiarEstadoNube('${log.fbKey}', '${log.estado}', ${datosString})" 
+                                class="${log.estado === 'LISTO PARA RECOGER' ? 'bg-blue-600' : 'bg-green-600'} p-3 rounded-xl text-white shadow-lg">
+                            <i class="fas ${log.estado === 'LISTO PARA RECOGER' ? 'fa-handshake' : 'fa-check'}"></i>
+                        </button>
+                    ` : '<span class="text-green-500 font-black text-[10px]">FINALIZADO</span>'}
                     <button onclick="eliminarOrdenNube('${log.fbKey}')" class="bg-red-600/10 p-3 rounded-xl text-red-500 mx-1"><i class="fas fa-trash"></i></button>
                 </td>
             </tr>`;
@@ -221,8 +229,22 @@ window.generarReporteRapido = () => {
     window.open(`https://wa.me/?text=📊 *REPORTE COREFIX*%0A💰 Ventas: ${real}`, '_blank');
 };
 
-window.cambiarEstadoNube = (k, e) => update(ref(db, `cotizaciones/${k}`), { estado: e });
-window.eliminarOrdenNube = (k) => confirm("¿Eliminar?") && remove(ref(db, `cotizaciones/${k}`));
+window.cambiarEstadoNube = (key, estadoActual, datos) => {
+    let nuevoEstado = "";
+
+    if (estadoActual === "EN REVISIÓN" || estadoActual === "REPARANDO") {
+        nuevoEstado = "LISTO PARA RECOGER";
+        const texto = `*COREFIX INFORMA* 📱%0A%0AHola *${datos.nombre}*, tu equipo *${datos.marca} ${datos.modelo}* ya está reparado y listo para recoger en nuestra sucursal de *${datos.ubicacion}*.%0A%0A💰 Total: *$${datos.precio}*%0A📍 Te esperamos.`;
+        window.open(`https://wa.me/52${datos.telefono}?text=${texto}`, '_blank');
+    } else if (estadoActual === "LISTO PARA RECOGER") {
+        nuevoEstado = "ENTREGADO";
+        alert("✅ Equipo entregado y orden finalizada.");
+    }
+
+    if (nuevoEstado) {
+        update(ref(db, `cotizaciones/${key}`), { estado: nuevoEstado });
+    }
+};
 
 // ==========================================
 // PUNTO 9: MODO NOCHE Y SEGURIDAD
@@ -235,7 +257,7 @@ window.togglePassword = (i, ic) => {
 };
 
 // ==========================================
-// FUNCIÓN PARA MOSTRAR PERFIL (CLIENTE/STAFF)
+// FUNCIÓN PARA MOSTRAR PERFIL
 // ==========================================
 function mostrarPerfilNavbar() {
     const authCont = document.getElementById('auth-container');
