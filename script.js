@@ -1,170 +1,274 @@
-// ==========================================
-// CONFIGURACIÓN DE FIREBASE (NUBE)
-// ==========================================
+/**
+ * CoreFix System Master - Edición de Ingeniería Cloud
+ * Administrador: merinomotajoseluis@gmail.com
+ * Desarrollador: Jose Luis Merino Mota - UTTECAM
+ */
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getDatabase, ref, set, push, onValue, update, remove } 
 from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
+// ==========================================
+// PUNTO 1: CONFIGURACIÓN Y CONEXIÓN SEGURA
+// ==========================================
 const firebaseConfig = {
   apiKey: "AIzaSyBgoQDuWsn8_alITK2FwQQ0RF3T5kW1k20",
   authDomain: "corefix-system.firebaseapp.com",
   projectId: "corefix-system",
-  databaseURL: "https://corefix-system-default-rtdb.firebaseio.com", // <-- AGREGA ESTA LÍNEA
+  databaseURL: "https://corefix-system-default-rtdb.firebaseio.com",
   storageBucket: "corefix-system.appspot.com",
   messagingSenderId: "1081209996313",
   appId: "1:1081209996313:web:6c89f5936f328da1c3d688",
   measurementId: "G-2BC2F8JBWM"
 };
 
-// Inicializar Firebase
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
+const META_MENSUAL = 10000;
 
 // ==========================================
-// 1. MOTOR DE ACCESO (USUARIOS EN NUBE)
+// PUNTO 2: MOTOR DE ACCESO Y REGISTRO (CLOUD)
 // ==========================================
 window.registrarUsuario = function(e) {
-    e.preventDefault();
-    const email = document.getElementById('regEmail').value.trim().replace('.', '_');
-    const userData = {
+    if(e) e.preventDefault();
+    const emailRaw = document.getElementById('regEmail').value.trim();
+    const emailKey = emailRaw.replace(/\./g, '_'); 
+    
+    const nuevoUser = {
         name: document.getElementById('regName').value,
+        email: emailRaw,
         pass: document.getElementById('regPass').value,
-        fecha: new Date().toLocaleDateString()
+        fechaRegistro: new Date().toLocaleDateString()
     };
-    set(ref(db, 'usuarios/' + email), userData).then(() => {
-        alert("✅ Registro exitoso en la nube.");
+
+    set(ref(db, 'usuarios/' + emailKey), nuevoUser).then(() => {
+        alert("✅ Registro exitoso en la nube de CoreFix.");
         window.location.href = 'login.html';
     });
 };
 
+window.loginUsuario = function(e) {
+    if(e) e.preventDefault();
+    const role = document.querySelector('input[name="userRole"]:checked').value;
+    const userInput = document.getElementById('logEmail').value.trim();
+    const pass = document.getElementById('logPass').value;
+
+    // Credenciales de Administrador Maestro
+    if (role === 'admin' && userInput === "merinomotajoseluis@gmail.com" && pass === "CoreFix2026") {
+        localStorage.setItem('isLoggedIn', 'true');
+        localStorage.setItem('userRole', 'admin');
+        localStorage.setItem('staffUser', JSON.stringify({ name: "José Luis" }));
+        return window.location.href = 'admin.html';
+    }
+
+    onValue(ref(db, 'usuarios'), (snapshot) => {
+        const users = snapshot.val();
+        let encontrado = false;
+        if (users) {
+            for (let key in users) {
+                if (users[key].email === userInput && users[key].pass === pass) {
+                    encontrado = true;
+                    localStorage.setItem('isLoggedIn', 'true');
+                    localStorage.setItem('userRole', role);
+                    localStorage.setItem('staffUser', JSON.stringify(users[key]));
+                    window.location.href = 'index.html';
+                    break;
+                }
+            }
+        }
+        if (!encontrado) alert('❌ Datos incorrectos.');
+    }, { onlyOnce: true });
+};
+
 // ==========================================
-// 2. COTIZADOR (ÓRDENES EN TIEMPO REAL)
+// PUNTO 3: COTIZADOR PRO Y MODO EXPRESS
 // ==========================================
+window.updatePrice = function() {
+    let base = parseInt(document.getElementById('damageType').value) || 0;
+    // Aplicar +20% si el Modo Express está activo
+    if (document.getElementById('expressMode')?.checked && base > 0) base *= 1.20;
+    if (document.getElementById('priceDisplay')) {
+        document.getElementById('priceDisplay').innerText = Math.round(base);
+    }
+};
+
 window.aceptarCotizacion = function() {
-    const orderData = {
+    const fallaSel = document.getElementById('damageType');
+    if (!fallaSel || fallaSel.value === "0") return alert("⚠️ Selecciona una falla.");
+
+    const newOrder = {
         id: 'CF-' + Math.floor(1000 + Math.random() * 9000),
         nombre: document.getElementById('clientName').value,
         telefono: document.getElementById('clientPhone').value,
         marca: document.getElementById('clientBrand').value,
         modelo: document.getElementById('clientModel').value,
-        falla: document.getElementById('damageType').options[document.getElementById('damageType').selectedIndex].text,
+        falla: fallaSel.options[fallaSel.selectedIndex].text,
         precio: parseInt(document.getElementById('priceDisplay').innerText),
         ubicacion: document.getElementById('deliveryPoint').value,
         fecha: new Date().toLocaleDateString(),
         estado: "EN REVISIÓN"
     };
 
-    const newOrderRef = push(ref(db, 'cotizaciones'));
-    set(newOrderRef, orderData).then(() => {
-        localStorage.setItem('currentOrder', JSON.stringify(orderData));
-        alert("📩 Ticket enviado a la nube. Sincronizando con sucursales...");
+    const newRef = push(ref(db, 'cotizaciones'));
+    set(newRef, newOrder).then(() => {
+        localStorage.setItem('currentOrder', JSON.stringify(newOrder));
+        alert("📩 Orden enviada a la nube.");
         window.location.href = 'ticket.html';
     });
 };
 
 // ==========================================
-// 3. DASHBOARD ANALÍTICO (GRÁFICAS)
+// PUNTO 4: PANEL ADMIN REALTIME
 // ==========================================
-function renderCharts(logs) {
-    const ctxRep = document.getElementById('reparacionesChart');
-    if (!ctxRep || typeof Chart === 'undefined') return;
-
-    new Chart(ctxRep, {
-        type: 'line',
-        data: {
-            labels: logs.slice(-5).map(l => l.id),
-            datasets: [{ label: 'Ingresos', data: logs.slice(-5).map(l => l.precio), borderColor: '#3b82f6' }]
-        }
-    });
-}
-
-// ==========================================
-// 4. PANEL ADMIN (LECTURA DESDE FIREBASE)
-// ==========================================
-function listenToAdminData() {
+function listenAdminData() {
     const tableBody = document.getElementById('adminTableBody');
     if (!tableBody) return;
 
     onValue(ref(db, 'cotizaciones'), (snapshot) => {
         const data = snapshot.val();
-        const logs = data ? Object.entries(data).map(([key, value]) => ({...value, firebaseKey: key})) : [];
-        
-        tableBody.innerHTML = logs.reverse().map(log => `
-            <tr class="hover:bg-blue-500/[0.02] border-b border-slate-700/50">
+        let cajaReal = 0;
+        let logs = data ? Object.entries(data).map(([key, val]) => ({...val, fbKey: key})) : [];
+
+        tableBody.innerHTML = logs.reverse().map(log => {
+            if (log.estado === "ENTREGADO") cajaReal += log.precio;
+            
+            return `
+            <tr class="hover:bg-blue-500/[0.03] border-b border-slate-700/50">
                 <td class="p-8">${log.fecha}<br><b class="text-blue-500 text-lg">${log.id}</b></td>
                 <td class="p-8"><b class="text-white">${log.nombre}</b></td>
-                <td class="p-8"><span class="text-blue-400 text-[10px] font-black">${log.falla}</span></td>
+                <td class="p-8"><span class="text-blue-400 text-[10px] font-black uppercase">${log.falla}</span></td>
                 <td class="p-8 text-green-400 font-black">$${log.precio}</td>
                 <td class="p-8 text-center"><span class="px-4 py-1.5 rounded-full border border-blue-500/20 uppercase text-[10px]">${log.estado}</span></td>
                 <td class="p-8 text-right">
-                    <button onclick="cambiarEstadoNube('${log.firebaseKey}', 'ENTREGADO')" class="bg-green-600 p-2 rounded-lg text-white"><i class="fas fa-check"></i></button>
-                    <button onclick="eliminarOrdenNube('${log.firebaseKey}')" class="bg-red-600/10 p-2 rounded-lg text-red-500"><i class="fas fa-trash"></i></button>
+                    <button onclick="cambiarEstadoNube('${log.fbKey}', 'ENTREGADO')" class="bg-green-600 p-3 rounded-xl text-white"><i class="fas fa-check"></i></button>
+                    <button onclick="eliminarOrdenNube('${log.fbKey}')" class="bg-red-600/10 p-3 rounded-xl text-red-500"><i class="fas fa-trash-alt"></i></button>
                 </td>
-            </tr>`).join('');
-        
-        renderCharts(logs);
+            </tr>`;
+        }).join('');
+
+        actualizarWidgets(cajaReal);
     });
 }
 
-window.cambiarEstadoNube = (key, estado) => {
-    update(ref(db, 'cotizaciones/' + key), { estado: estado });
-};
-
-window.eliminarOrdenNube = (key) => {
-    if(confirm("¿Eliminar registro de la nube?")) remove(ref(db, 'cotizaciones/' + key));
-};
-
 // ==========================================
-// 5. PDF CON IMPACTO AMBIENTAL
+// PUNTO 5: ALMACÉN E INVENTARIO CLOUD
 // ==========================================
-window.descargarTicketPDF = function(id) {
-    const log = JSON.parse(localStorage.getItem('currentOrder'));
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF({ unit: 'mm', format: [80, 150] });
-
-    doc.setFontSize(14); doc.text("COREFIX CLOUD", 40, 15, { align: "center" });
-    doc.setFontSize(8); doc.text(`FOLIO: ${log.id}`, 10, 30);
-    doc.text(`CLIENTE: ${log.nombre}`, 10, 37);
-    doc.text(`TOTAL: $${log.precio}.00`, 10, 44);
-    
-    doc.setTextColor(34, 197, 94);
-    doc.text("♻️ REPARAR ES SUSTENTABLE", 40, 60, { align: "center" });
-    doc.save(`Ticket_CoreFix_${log.id}.pdf`);
-};
-
-// ==========================================
-// 6. ALMACÉN E INVENTARIO EN NUBE
-// ==========================================
-function listenToInventory() {
-    const container = document.getElementById('inventoryContainer');
-    if (!container) return;
+function listenInventory() {
+    const invContainer = document.getElementById('inventoryContainer');
+    if (!invContainer) return;
 
     onValue(ref(db, 'inventario'), (snapshot) => {
         const inv = snapshot.val() || {};
-        container.innerHTML = Object.entries(inv).map(([key, p]) => `
-            <div onclick="editStock('${key}', ${p.cantidad})" class="flex justify-between border-b border-white/5 p-2 cursor-pointer">
-                <span class="text-slate-300 uppercase font-black">${key}</span>
-                <span class="text-green-400 font-black">${p.cantidad} UNID.</span>
+        invContainer.innerHTML = Object.entries(inv).map(([key, p]) => `
+            <div onclick="editarStockNube('${key}', ${p.cantidad})" class="flex justify-between items-center border-b border-white/5 p-2 cursor-pointer hover:bg-white/5">
+                <span class="text-slate-300 uppercase font-black text-[10px]">${key}</span>
+                <span class="${p.cantidad <= 2 ? 'text-red-500 animate-pulse' : 'text-green-400'} border border-current px-2 py-0.5 rounded text-[9px] font-black">
+                    ${p.cantidad} UNID.
+                </span>
             </div>`).join('');
     });
 }
 
-window.editStock = (pieza, actual) => {
-    const nueva = prompt(`Nuevo stock para ${pieza}:`, actual);
+window.editarStockNube = (pieza, actual) => {
+    const nueva = prompt(`Stock de ${pieza}:`, actual);
     if (nueva !== null) update(ref(db, 'inventario/' + pieza), { cantidad: parseInt(nueva) });
 };
 
 // ==========================================
-// 7, 8, 9. UTILIDADES Y ARRANQUE
+// PUNTO 6: RASTREO DE ÓRDENES (CLIENTES)
 // ==========================================
-window.logout = () => { localStorage.clear(); window.location.href = 'index.html'; };
-
-document.addEventListener('DOMContentLoaded', () => {
-    listenToAdminData();
-    listenToInventory();
+window.buscarEstado = function() {
+    const phone = document.getElementById('searchPhone').value;
+    const container = document.getElementById('resultContainer');
     
-    // Modo Noche
+    onValue(ref(db, 'cotizaciones'), (snapshot) => {
+        const data = snapshot.val();
+        const logs = data ? Object.values(data) : [];
+        const found = logs.filter(l => l.telefono.includes(phone));
+
+        if(found.length > 0) {
+            container.innerHTML = found.map(f => `
+                <div class="bg-slate-800 p-6 rounded-2xl mb-4 text-left border border-blue-500/30">
+                    <p class="text-blue-400 font-black text-xl">${f.id} - ${f.falla}</p>
+                    <p class="text-white">Estado: <span class="bg-blue-600 px-3 py-1 rounded-full text-xs font-bold">${f.estado}</span></p>
+                </div>`).join('');
+        } else {
+            container.innerHTML = `<p class="text-red-400 font-bold">No se encontró el equipo.</p>`;
+        }
+        container.classList.remove('hidden');
+    }, { onlyOnce: true });
+};
+
+// ==========================================
+// PUNTO 7: WIDGETS Y METAS MENSUALES
+// ==========================================
+function actualizarWidgets(real) {
+    if (document.getElementById('cajaReal')) document.getElementById('cajaReal').innerText = `$${real}`;
+    if (document.getElementById('utilidadNeta')) {
+        document.getElementById('utilidadNeta').innerText = `$${real}`;
+        const porcentaje = Math.min(Math.round((real / META_MENSUAL) * 100), 100);
+        document.getElementById('metaBar').style.width = porcentaje + "%";
+        document.getElementById('metaPorcentaje').innerText = porcentaje + "%";
+    }
+}
+
+// ==========================================
+// PUNTO 8: TICKET PDF Y ACCIONES ADMIN
+// ==========================================
+window.cambiarEstadoNube = (key, nuevoEstado) => {
+    update(ref(db, 'cotizaciones/' + key), { estado: nuevoEstado });
+};
+
+window.eliminarOrdenNube = (key) => {
+    if(confirm("¿Eliminar de la nube?")) remove(ref(db, 'cotizaciones/' + key));
+};
+
+window.descargarTicketPDF = function() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ unit: 'mm', format: [80, 150] });
+    const order = JSON.parse(localStorage.getItem('currentOrder'));
+    if (!order) return;
+
+    doc.text("COREFIX CLOUD", 40, 15, { align: "center" });
+    doc.text(`Folio: ${order.id}`, 10, 30);
+    doc.text(`Cliente: ${order.nombre}`, 10, 37);
+    doc.text(`Falla: ${order.falla}`, 10, 44);
+    doc.save(`Ticket_CoreFix_${order.id}.pdf`);
+};
+
+// ==========================================
+// PUNTO 9: MODO NOCHE Y SEGURIDAD
+// ==========================================
+window.togglePassword = (inputId, iconId) => {
+    const input = document.getElementById(inputId);
+    const icon = document.getElementById(iconId);
+    input.type = input.type === 'password' ? 'text' : 'password';
+    icon.classList.toggle('fa-eye');
+    icon.classList.toggle('fa-eye-slash');
+};
+
+function aplicarModoNoche() {
     if (new Date().getHours() >= 20 || new Date().getHours() < 6) {
         document.body.classList.add('bg-slate-950');
     }
+}
+
+// ==========================================
+// ARRANQUE DEL SISTEMA
+// ==========================================
+document.addEventListener('DOMContentLoaded', () => {
+    aplicarModoNoche();
+    listenAdminData();
+    listenInventory();
+    
+    // Navbar Dinámica
+    const authCont = document.getElementById('auth-container');
+    if (authCont && localStorage.getItem('isLoggedIn') === 'true') {
+        const user = JSON.parse(localStorage.getItem('staffUser'));
+        authCont.innerHTML = `<div class="bg-slate-800 p-2 rounded-full border border-blue-500/40 px-4">
+            <span class="text-[10px] font-black text-blue-400 uppercase">${user.name}</span>
+            <button onclick="logout()" class="text-red-500 ml-2"><i class="fas fa-power-off"></i></button></div>`;
+    }
 });
+
+window.logout = () => { localStorage.clear(); window.location.href = 'index.html'; };
