@@ -27,24 +27,36 @@ const db = getDatabase(app);
 const META_MENSUAL = 10000;
 
 // ==========================================
-// PUNTO 2: MOTOR DE ACCESO Y REGISTRO
+// PUNTO 2: MOTOR DE ACCESO Y REGISTRO (SOLUCIÓN)
 // ==========================================
+// Usamos window para que el HTML encuentre la función desde el formulario
 window.ejecutarRegistro = function(e) {
     if(e) e.preventDefault();
+    
+    const name = document.getElementById('regName').value;
     const emailRaw = document.getElementById('regEmail').value.trim();
+    const pass = document.getElementById('regPass').value;
+    
+    // Firebase no permite puntos en las rutas de la base de datos
     const emailKey = emailRaw.replace(/\./g, '_'); 
     
     const nuevoUser = {
-        name: document.getElementById('regName').value,
+        name: name,
         email: emailRaw,
-        pass: document.getElementById('regPass').value,
+        pass: pass,
         fechaRegistro: new Date().toLocaleDateString()
     };
 
-    set(ref(db, 'usuarios/' + emailKey), nuevoUser).then(() => {
-        alert("✅ Registro exitoso en la nube de CoreFix.");
-        window.location.href = 'login.html';
-    }).catch(err => alert("Error: " + err.message));
+    // Guardar en la carpeta "usuarios" de Firebase
+    set(ref(db, 'usuarios/' + emailKey), nuevoUser)
+        .then(() => {
+            alert("✅ Registro exitoso en la nube de CoreFix.");
+            window.location.href = 'login.html';
+        })
+        .catch((error) => {
+            console.error("Error en registro:", error);
+            alert("❌ Error al crear cuenta: " + error.message);
+        });
 };
 
 window.loginUsuario = function(e) {
@@ -63,14 +75,16 @@ window.loginUsuario = function(e) {
     onValue(ref(db, 'usuarios'), (snapshot) => {
         const users = snapshot.val();
         let encontrado = false;
-        for (let key in users) {
-            if (users[key].email === userInput && users[key].pass === pass) {
-                encontrado = true;
-                localStorage.setItem('isLoggedIn', 'true');
-                localStorage.setItem('userRole', role);
-                localStorage.setItem('staffUser', JSON.stringify(users[key]));
-                window.location.href = 'index.html';
-                break;
+        if (users) {
+            for (let key in users) {
+                if (users[key].email === userInput && users[key].pass === pass) {
+                    encontrado = true;
+                    localStorage.setItem('isLoggedIn', 'true');
+                    localStorage.setItem('userRole', role);
+                    localStorage.setItem('staffUser', JSON.stringify(users[key]));
+                    window.location.href = 'index.html';
+                    break;
+                }
             }
         }
         if (!encontrado) alert('❌ Datos incorrectos.');
@@ -173,7 +187,8 @@ window.buscarEstado = function() {
     const container = document.getElementById('resultContainer');
     onValue(ref(db, 'cotizaciones'), (snapshot) => {
         const data = snapshot.val();
-        const found = data ? Object.values(data).filter(l => l.telefono.includes(phone)) : [];
+        const logs = data ? Object.values(data) : [];
+        const found = logs.filter(l => l.telefono.includes(phone));
         container.innerHTML = found.length ? found.map(f => `<div class="bg-slate-800 p-4 rounded-xl mb-2"><b>${f.id}</b>: ${f.estado}</div>`).join('') : "No encontrado";
         container.classList.remove('hidden');
     }, { onlyOnce: true });
@@ -184,9 +199,12 @@ window.buscarEstado = function() {
 // ==========================================
 function actualizarWidgets(real) {
     if (document.getElementById('cajaReal')) document.getElementById('cajaReal').innerText = `$${real}`;
-    const porcentaje = Math.min(Math.round((real / META_MENSUAL) * 100), 100);
-    if(document.getElementById('metaBar')) document.getElementById('metaBar').style.width = porcentaje + "%";
-    if(document.getElementById('metaPorcentaje')) document.getElementById('metaPorcentaje').innerText = porcentaje + "%";
+    if (document.getElementById('utilidadNeta')) {
+        document.getElementById('utilidadNeta').innerText = `$${real}`;
+        const porcentaje = Math.min(Math.round((real / META_MENSUAL) * 100), 100);
+        if(document.getElementById('metaBar')) document.getElementById('metaBar').style.width = porcentaje + "%";
+        if(document.getElementById('metaPorcentaje')) document.getElementById('metaPorcentaje').innerText = porcentaje + "%";
+    }
 }
 
 // ==========================================
@@ -200,7 +218,7 @@ window.descargarTicketPDF = function() {
     const doc = new jsPDF({ unit: 'mm', format: [80, 150] });
     const order = JSON.parse(localStorage.getItem('currentOrder'));
     doc.text("COREFIX TICKET", 40, 15, { align: "center" });
-    doc.text(`Folio: ${order.id}`, 10, 30);
+    doc.text(`ID: ${order.id}`, 10, 30);
     doc.save(`Ticket_CoreFix_${order.id}.pdf`);
 };
 
@@ -220,16 +238,19 @@ function aplicarModoNoche() {
 }
 
 // ==========================================
-// ARRANQUE Y VINCULACIÓN
+// ARRANQUE Y VINCULACIÓN DE EVENTOS
 // ==========================================
 document.addEventListener('DOMContentLoaded', () => {
     aplicarModoNoche();
     listenAdminData();
     listenInventory();
     
-    // Vinculación de formularios
-    document.getElementById('registerForm')?.addEventListener('submit', window.ejecutarRegistro);
-    document.getElementById('loginForm')?.addEventListener('submit', window.loginUsuario);
+    // VINCULACIÓN CRÍTICA PARA REGISTRO Y LOGIN
+    const regForm = document.getElementById('registerForm');
+    if (regForm) regForm.addEventListener('submit', window.ejecutarRegistro);
+    
+    const logForm = document.getElementById('loginForm');
+    if (logForm) logForm.addEventListener('submit', window.loginUsuario);
 
     // Navbar dinámico
     const authCont = document.getElementById('auth-container');
