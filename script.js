@@ -8,7 +8,7 @@ import { getDatabase, ref, set, push, onValue, update, remove }
 from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
 // ==========================================
-// PUNTO 1: CONFIGURACIÓN Y CONEXIÓN SEGURA
+// PUNTO 1: CONFIGURACIÓN Y CONEXIÓN
 // ==========================================
 const firebaseConfig = {
   apiKey: "AIzaSyBgoQDuWsn8_alITK2FwQQ0RF3T5kW1k20",
@@ -32,27 +32,25 @@ window.ejecutarRegistro = function(e) {
     if(e) e.preventDefault();
     const emailRaw = document.getElementById('regEmail').value.trim();
     const emailKey = emailRaw.replace(/\./g, '_'); 
-    
     const nuevoUser = {
         name: document.getElementById('regName').value,
         email: emailRaw,
         pass: document.getElementById('regPass').value,
         fechaRegistro: new Date().toLocaleDateString()
     };
-
     set(ref(db, 'usuarios/' + emailKey), nuevoUser).then(() => {
-        alert("✅ Registro exitoso en la nube de CoreFix.");
+        alert("✅ Registro exitoso en CoreFix Cloud.");
         window.location.href = 'login.html';
-    }).catch(err => alert("Error: " + err.message));
+    });
 };
 
 window.loginUsuario = function(e) {
     if(e) e.preventDefault();
-    const role = document.querySelector('input[name="userRole"]:checked').value;
     const userInput = document.getElementById('logEmail').value.trim();
     const pass = document.getElementById('logPass').value;
+    const role = document.querySelector('input[name="userRole"]:checked').value;
 
-    if (role === 'admin' && userInput === "merinomotajoseluis@gmail.com" && pass === "CoreFix2026") {
+    if (userInput === "merinomotajoseluis@gmail.com" && pass === "CoreFix2026") {
         localStorage.setItem('isLoggedIn', 'true');
         localStorage.setItem('userRole', 'admin');
         localStorage.setItem('staffUser', JSON.stringify({ name: "José Luis" }));
@@ -84,19 +82,14 @@ window.loginUsuario = function(e) {
 window.updatePrice = function() {
     let base = parseInt(document.getElementById('damageType').value) || 0;
     if (document.getElementById('expressMode')?.checked && base > 0) base *= 1.20;
-    if (document.getElementById('priceDisplay')) {
-        document.getElementById('priceDisplay').innerText = Math.round(base);
-    }
+    if (document.getElementById('priceDisplay')) document.getElementById('priceDisplay').innerText = Math.round(base);
 };
 
 window.aceptarCotizacion = function() {
-    const name = document.getElementById('clientName').value;
     const damageType = document.getElementById('damageType');
-    if (!name || damageType.value === "0") return alert("⚠️ Completa los datos.");
-
     const newOrder = {
         id: 'CF-' + Math.floor(1000 + Math.random() * 9000),
-        nombre: name,
+        nombre: document.getElementById('clientName').value,
         telefono: document.getElementById('clientPhone').value,
         marca: document.getElementById('clientBrand').value,
         modelo: document.getElementById('clientModel').value,
@@ -106,7 +99,6 @@ window.aceptarCotizacion = function() {
         fecha: new Date().toLocaleDateString(),
         estado: "EN REVISIÓN"
     };
-
     push(ref(db, 'cotizaciones'), newOrder).then(() => {
         localStorage.setItem('currentOrder', JSON.stringify(newOrder));
         alert("📩 Orden enviada a la nube.");
@@ -117,7 +109,7 @@ window.aceptarCotizacion = function() {
 // ==========================================
 // PUNTO 4: PANEL ADMIN REALTIME
 // ==========================================
-function listenAdminData() {
+function listenAdminData(filtro = 'TODOS') {
     const tableBody = document.getElementById('adminTableBody');
     if (!tableBody) return;
 
@@ -125,6 +117,8 @@ function listenAdminData() {
         const data = snapshot.val();
         let cajaReal = 0;
         let logs = data ? Object.entries(data).map(([key, val]) => ({...val, fbKey: key})) : [];
+        
+        if (filtro !== 'TODOS') logs = logs.filter(l => l.ubicacion === filtro);
 
         tableBody.innerHTML = logs.reverse().map(log => {
             if (log.estado === "ENTREGADO") cajaReal += log.precio;
@@ -132,18 +126,21 @@ function listenAdminData() {
             <tr class="hover:bg-blue-500/[0.03] border-b border-slate-700/50">
                 <td class="p-8">${log.fecha}<br><b class="text-blue-500 text-lg">${log.id}</b></td>
                 <td class="p-8"><b class="text-white">${log.nombre}</b></td>
-                <td class="p-8"><span class="text-blue-400 text-[10px] font-black uppercase">${log.falla}</span></td>
+                <td class="p-8"><span class="text-blue-400 text-[10px] font-black uppercase">${log.falla}</span><br><small>${log.ubicacion}</small></td>
                 <td class="p-8 text-green-400 font-black">$${log.precio}</td>
                 <td class="p-8 text-center"><span class="px-4 py-1.5 rounded-full border border-blue-500/20 uppercase text-[10px]">${log.estado}</span></td>
                 <td class="p-8 text-right">
                     <button onclick="cambiarEstadoNube('${log.fbKey}', 'ENTREGADO')" class="bg-green-600 p-3 rounded-xl text-white">✓</button>
-                    <button onclick="eliminarOrdenNube('${log.fbKey}')" class="bg-red-600/10 p-3 rounded-xl text-red-500"><i class="fas fa-trash"></i></button>
+                    <button onclick="eliminarOrdenNube('${log.fbKey}')" class="bg-red-600/10 p-3 rounded-xl text-red-500 mx-1"><i class="fas fa-trash"></i></button>
                 </td>
             </tr>`;
         }).join('');
         actualizarWidgets(cajaReal);
+        actualizarAnalitica(logs);
     });
 }
+
+window.filtrarSucursal = (suc) => listenAdminData(suc);
 
 // ==========================================
 // PUNTO 5: ALMACÉN E INVENTARIO
@@ -151,19 +148,18 @@ function listenAdminData() {
 function listenInventory() {
     const invContainer = document.getElementById('inventoryContainer');
     if (!invContainer) return;
-
     onValue(ref(db, 'inventario'), (snapshot) => {
         const inv = snapshot.val() || {};
         invContainer.innerHTML = Object.entries(inv).map(([key, p]) => `
-            <div onclick="editarStockNube('${key}', ${p.cantidad})" class="flex justify-between p-2 border-b border-white/5 cursor-pointer">
+            <div onclick="editarStockNube('${key}', ${p.cantidad})" class="flex justify-between p-2 border-b border-white/5 cursor-pointer hover:bg-white/5">
                 <span class="text-slate-300 font-black text-[10px] uppercase">${key}</span>
-                <span class="text-green-400 font-black">${p.cantidad} U.</span>
+                <span class="${p.cantidad <= 2 ? 'text-red-500 animate-pulse' : 'text-green-400'} font-black">${p.cantidad} U.</span>
             </div>`).join('');
     });
 }
 
 window.editarStockNube = (p, a) => {
-    const n = prompt(`Nuevo stock para ${p}:`, a);
+    const n = prompt(`Stock para ${p}:`, a);
     if (n !== null) update(ref(db, 'inventario/' + p), { cantidad: parseInt(n) });
 };
 
@@ -186,7 +182,7 @@ window.buscarEstado = function() {
             <div class="bg-slate-800 p-6 rounded-2xl mb-4 border border-blue-500/30">
                 <p class="text-blue-400 font-black text-xl">${f.id}</p>
                 <p class="text-white">Estado: ${f.estado}</p>
-            </div>`).join('') || "No se encontró nada.";
+            </div>`).join('') || "No se encontró el número.";
         container.classList.remove('hidden');
     }, { onlyOnce: true });
 };
@@ -196,35 +192,80 @@ window.buscarEstado = function() {
 // ==========================================
 function actualizarWidgets(real) {
     if (document.getElementById('cajaReal')) document.getElementById('cajaReal').innerText = `$${real}`;
-    const porc = Math.min(Math.round((real / META_MENSUAL) * 100), 100);
-    if(document.getElementById('metaBar')) document.getElementById('metaBar').style.width = porc + "%";
-    if(document.getElementById('metaPorcentaje')) document.getElementById('metaPorcentaje').innerText = porc + "%";
+    if (document.getElementById('utilidadNeta')) {
+        document.getElementById('utilidadNeta').innerText = `$${real}`;
+        const porc = Math.min(Math.round((real / META_MENSUAL) * 100), 100);
+        if(document.getElementById('metaBar')) document.getElementById('metaBar').style.width = porc + "%";
+        if(document.getElementById('metaPorcentaje')) document.getElementById('metaPorcentaje').innerText = porc + "%";
+    }
 }
 
 // ==========================================
-// PUNTO 8: EXCEL Y PDF
+// PUNTO 8: EXCEL Y REPORTES
 // ==========================================
-window.exportarExcel = () => { alert("Generando archivo CSV..."); };
-window.generarReporteRapido = () => { alert("Reporte enviado a WhatsApp..."); };
+window.exportarExcel = () => {
+    onValue(ref(db, 'cotizaciones'), (snapshot) => {
+        const data = snapshot.val();
+        if(!data) return;
+        let csv = "ID,Cliente,Falla,Precio,Estado\n";
+        Object.values(data).forEach(o => csv += `${o.id},${o.nombre},${o.falla},${o.precio},${o.estado}\n`);
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const a = document.createElement('a');
+        a.href = window.URL.createObjectURL(blob);
+        a.download = 'CoreFix_Reporte.csv'; a.click();
+    }, { onlyOnce: true });
+};
+
+window.generarReporteRapido = () => {
+    const real = document.getElementById('cajaReal')?.innerText || "$0";
+    window.open(`https://wa.me/?text=📊 *REPORTE COREFIX*%0A💰 Ventas: ${real}`, '_blank');
+};
 
 window.cambiarEstadoNube = (k, e) => update(ref(db, `cotizaciones/${k}`), { estado: e });
 window.eliminarOrdenNube = (k) => confirm("¿Eliminar?") && remove(ref(db, `cotizaciones/${k}`));
 
 // ==========================================
-// PUNTO 9: MODO NOCHE Y SEGURIDAD
+// PUNTO 9: MODO NOCHE Y ARRANQUE
 // ==========================================
 window.togglePassword = (i, ic) => {
     const input = document.getElementById(i);
+    const icon = document.getElementById(ic);
     input.type = input.type === 'password' ? 'text' : 'password';
+    icon.classList.toggle('fa-eye-slash');
 };
 
-// ARRANQUE
 document.addEventListener('DOMContentLoaded', () => {
     listenAdminData();
     listenInventory();
     document.getElementById('registerForm')?.addEventListener('submit', window.ejecutarRegistro);
     document.getElementById('loginForm')?.addEventListener('submit', window.loginUsuario);
+    
+    // Modo Noche
     if (new Date().getHours() >= 20 || new Date().getHours() < 6) document.body.classList.add('bg-slate-950');
+
+    // Navbar dinámico
+    const authCont = document.getElementById('auth-container');
+    if (authCont && localStorage.getItem('isLoggedIn') === 'true') {
+        const user = JSON.parse(localStorage.getItem('staffUser'));
+        authCont.innerHTML = `<div class="bg-slate-800 p-2 rounded-full border border-blue-500/40 px-4">
+            <span class="text-[10px] font-black text-blue-400 uppercase">${user.name}</span>
+            <button onclick="logout()" class="text-red-500 ml-2"><i class="fas fa-power-off"></i></button></div>`;
+    }
 });
 
 window.logout = () => { localStorage.clear(); window.location.href = 'index.html'; };
+
+// Gráficas Analíticas
+function actualizarAnalitica(logs) {
+    const ctx = document.getElementById('marcasChart');
+    if (!ctx || typeof Chart === 'undefined') return;
+    const marcas = {};
+    logs.forEach(l => marcas[l.marca] = (marcas[l.marca] || 0) + 1);
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: Object.keys(marcas),
+            datasets: [{ data: Object.values(marcas), backgroundColor: ['#3b82f6', '#10b981', '#f59e0b'] }]
+        }
+    });
+}
