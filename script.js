@@ -225,7 +225,7 @@ window.cambiarEstadoNube = (k, e) => update(ref(db, `cotizaciones/${k}`), { esta
 window.eliminarOrdenNube = (k) => confirm("¿Eliminar?") && remove(ref(db, `cotizaciones/${k}`));
 
 // ==========================================
-// PUNTO 9: MODO NOCHE Y ARRANQUE
+// PUNTO 9: MODO NOCHE Y SEGURIDAD
 // ==========================================
 window.togglePassword = (i, ic) => {
     const input = document.getElementById(i);
@@ -234,23 +234,47 @@ window.togglePassword = (i, ic) => {
     icon.classList.toggle('fa-eye-slash');
 };
 
+// ==========================================
+// FUNCIÓN PARA MOSTRAR PERFIL (CLIENTE/STAFF)
+// ==========================================
+function mostrarPerfilNavbar() {
+    const authCont = document.getElementById('auth-container');
+    const sesionActiva = localStorage.getItem('isLoggedIn');
+    
+    if (authCont && sesionActiva === 'true') {
+        const user = JSON.parse(localStorage.getItem('staffUser'));
+        if (user && user.name) {
+            const inicial = user.name.charAt(0).toUpperCase();
+            const primerNombre = user.name.split(' ')[0];
+
+            authCont.innerHTML = `
+                <div class="flex items-center gap-3 bg-slate-800 p-1.5 pr-4 rounded-full border border-blue-500/40">
+                    <div class="w-8 h-8 rounded-full flex items-center justify-center text-white font-black text-xs bg-blue-600 shadow-[0_0_10px_#2563eb]">
+                        ${inicial}
+                    </div>
+                    <span class="text-[10px] font-black text-blue-400 uppercase tracking-widest">
+                        ${primerNombre}
+                    </span>
+                    <button onclick="logout()" class="text-red-500 hover:text-red-400 transition ml-1">
+                        <i class="fas fa-power-off text-xs"></i>
+                    </button>
+                </div>`;
+        }
+    }
+}
+
+// ==========================================
+// ARRANQUE GLOBAL
+// ==========================================
 document.addEventListener('DOMContentLoaded', () => {
     listenAdminData();
     listenInventory();
+    mostrarPerfilNavbar();
+
     document.getElementById('registerForm')?.addEventListener('submit', window.ejecutarRegistro);
     document.getElementById('loginForm')?.addEventListener('submit', window.loginUsuario);
     
-    // Modo Noche
     if (new Date().getHours() >= 20 || new Date().getHours() < 6) document.body.classList.add('bg-slate-950');
-
-    // Navbar dinámico
-    const authCont = document.getElementById('auth-container');
-    if (authCont && localStorage.getItem('isLoggedIn') === 'true') {
-        const user = JSON.parse(localStorage.getItem('staffUser'));
-        authCont.innerHTML = `<div class="bg-slate-800 p-2 rounded-full border border-blue-500/40 px-4">
-            <span class="text-[10px] font-black text-blue-400 uppercase">${user.name}</span>
-            <button onclick="logout()" class="text-red-500 ml-2"><i class="fas fa-power-off"></i></button></div>`;
-    }
 });
 
 window.logout = () => { localStorage.clear(); window.location.href = 'index.html'; };
