@@ -238,11 +238,18 @@ window.cambiarEstadoNube = (key, estadoActual, datos) => {
         window.open(`https://wa.me/52${datos.telefono}?text=${texto}`, '_blank');
     } else if (estadoActual === "LISTO PARA RECOGER") {
         nuevoEstado = "ENTREGADO";
-        alert(" Equipo entregado y orden finalizada.");
+        alert("✅ Equipo entregado y orden finalizada.");
     }
 
     if (nuevoEstado) {
         update(ref(db, `cotizaciones/${key}`), { estado: nuevoEstado });
+    }
+};
+
+// CORRECCIÓN: Definición de eliminarOrdenNube para que use la llave correcta
+window.eliminarOrdenNube = (key) => {
+    if (confirm("¿Eliminar registro permanentemente?")) {
+        remove(ref(db, `cotizaciones/${key}`));
     }
 };
 
