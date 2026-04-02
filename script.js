@@ -27,9 +27,9 @@ const db = getDatabase(app);
 const META_MENSUAL = 10000;
 
 // ==========================================
-// PUNTO 2: MOTOR DE ACCESO Y REGISTRO (CLOUD)
+// PUNTO 2: MOTOR DE ACCESO Y REGISTRO
 // ==========================================
-window.registrarUsuario = function(e) {
+window.ejecutarRegistro = function(e) {
     if(e) e.preventDefault();
     const emailRaw = document.getElementById('regEmail').value.trim();
     const emailKey = emailRaw.replace(/\./g, '_'); 
@@ -44,7 +44,7 @@ window.registrarUsuario = function(e) {
     set(ref(db, 'usuarios/' + emailKey), nuevoUser).then(() => {
         alert("✅ Registro exitoso en la nube de CoreFix.");
         window.location.href = 'login.html';
-    });
+    }).catch(err => alert("Error: " + err.message));
 };
 
 window.loginUsuario = function(e) {
@@ -53,7 +53,6 @@ window.loginUsuario = function(e) {
     const userInput = document.getElementById('logEmail').value.trim();
     const pass = document.getElementById('logPass').value;
 
-    // Credenciales de Administrador Maestro
     if (role === 'admin' && userInput === "merinomotajoseluis@gmail.com" && pass === "CoreFix2026") {
         localStorage.setItem('isLoggedIn', 'true');
         localStorage.setItem('userRole', 'admin');
@@ -64,16 +63,14 @@ window.loginUsuario = function(e) {
     onValue(ref(db, 'usuarios'), (snapshot) => {
         const users = snapshot.val();
         let encontrado = false;
-        if (users) {
-            for (let key in users) {
-                if (users[key].email === userInput && users[key].pass === pass) {
-                    encontrado = true;
-                    localStorage.setItem('isLoggedIn', 'true');
-                    localStorage.setItem('userRole', role);
-                    localStorage.setItem('staffUser', JSON.stringify(users[key]));
-                    window.location.href = 'index.html';
-                    break;
-                }
+        for (let key in users) {
+            if (users[key].email === userInput && users[key].pass === pass) {
+                encontrado = true;
+                localStorage.setItem('isLoggedIn', 'true');
+                localStorage.setItem('userRole', role);
+                localStorage.setItem('staffUser', JSON.stringify(users[key]));
+                window.location.href = 'index.html';
+                break;
             }
         }
         if (!encontrado) alert('❌ Datos incorrectos.');
@@ -85,7 +82,6 @@ window.loginUsuario = function(e) {
 // ==========================================
 window.updatePrice = function() {
     let base = parseInt(document.getElementById('damageType').value) || 0;
-    // Aplicar +20% si el Modo Express está activo
     if (document.getElementById('expressMode')?.checked && base > 0) base *= 1.20;
     if (document.getElementById('priceDisplay')) {
         document.getElementById('priceDisplay').innerText = Math.round(base);
@@ -109,8 +105,7 @@ window.aceptarCotizacion = function() {
         estado: "EN REVISIÓN"
     };
 
-    const newRef = push(ref(db, 'cotizaciones'));
-    set(newRef, newOrder).then(() => {
+    push(ref(db, 'cotizaciones'), newOrder).then(() => {
         localStorage.setItem('currentOrder', JSON.stringify(newOrder));
         alert("📩 Orden enviada a la nube.");
         window.location.href = 'ticket.html';
@@ -131,7 +126,6 @@ function listenAdminData() {
 
         tableBody.innerHTML = logs.reverse().map(log => {
             if (log.estado === "ENTREGADO") cajaReal += log.precio;
-            
             return `
             <tr class="hover:bg-blue-500/[0.03] border-b border-slate-700/50">
                 <td class="p-8">${log.fecha}<br><b class="text-blue-500 text-lg">${log.id}</b></td>
@@ -140,12 +134,11 @@ function listenAdminData() {
                 <td class="p-8 text-green-400 font-black">$${log.precio}</td>
                 <td class="p-8 text-center"><span class="px-4 py-1.5 rounded-full border border-blue-500/20 uppercase text-[10px]">${log.estado}</span></td>
                 <td class="p-8 text-right">
-                    <button onclick="cambiarEstadoNube('${log.fbKey}', 'ENTREGADO')" class="bg-green-600 p-3 rounded-xl text-white"><i class="fas fa-check"></i></button>
-                    <button onclick="eliminarOrdenNube('${log.fbKey}')" class="bg-red-600/10 p-3 rounded-xl text-red-500"><i class="fas fa-trash-alt"></i></button>
+                    <button onclick="cambiarEstadoNube('${log.fbKey}', 'ENTREGADO')" class="bg-green-600 p-3 rounded-xl text-white mx-1">✓</button>
+                    <button onclick="eliminarOrdenNube('${log.fbKey}')" class="bg-red-600/10 p-3 rounded-xl text-red-500 mx-1"><i class="fas fa-trash"></i></button>
                 </td>
             </tr>`;
         }).join('');
-
         actualizarWidgets(cajaReal);
     });
 }
@@ -162,9 +155,7 @@ function listenInventory() {
         invContainer.innerHTML = Object.entries(inv).map(([key, p]) => `
             <div onclick="editarStockNube('${key}', ${p.cantidad})" class="flex justify-between items-center border-b border-white/5 p-2 cursor-pointer hover:bg-white/5">
                 <span class="text-slate-300 uppercase font-black text-[10px]">${key}</span>
-                <span class="${p.cantidad <= 2 ? 'text-red-500 animate-pulse' : 'text-green-400'} border border-current px-2 py-0.5 rounded text-[9px] font-black">
-                    ${p.cantidad} UNID.
-                </span>
+                <span class="${p.cantidad <= 2 ? 'text-red-500 animate-pulse' : 'text-green-400'} border border-current px-2 py-0.5 rounded text-[9px] font-black">${p.cantidad} U.</span>
             </div>`).join('');
     });
 }
@@ -175,64 +166,41 @@ window.editarStockNube = (pieza, actual) => {
 };
 
 // ==========================================
-// PUNTO 6: RASTREO DE ÓRDENES (CLIENTES)
+// PUNTO 6: RASTREO DE ÓRDENES
 // ==========================================
 window.buscarEstado = function() {
     const phone = document.getElementById('searchPhone').value;
     const container = document.getElementById('resultContainer');
-    
     onValue(ref(db, 'cotizaciones'), (snapshot) => {
         const data = snapshot.val();
-        const logs = data ? Object.values(data) : [];
-        const found = logs.filter(l => l.telefono.includes(phone));
-
-        if(found.length > 0) {
-            container.innerHTML = found.map(f => `
-                <div class="bg-slate-800 p-6 rounded-2xl mb-4 text-left border border-blue-500/30">
-                    <p class="text-blue-400 font-black text-xl">${f.id} - ${f.falla}</p>
-                    <p class="text-white">Estado: <span class="bg-blue-600 px-3 py-1 rounded-full text-xs font-bold">${f.estado}</span></p>
-                </div>`).join('');
-        } else {
-            container.innerHTML = `<p class="text-red-400 font-bold">No se encontró el equipo.</p>`;
-        }
+        const found = data ? Object.values(data).filter(l => l.telefono.includes(phone)) : [];
+        container.innerHTML = found.length ? found.map(f => `<div class="bg-slate-800 p-4 rounded-xl mb-2"><b>${f.id}</b>: ${f.estado}</div>`).join('') : "No encontrado";
         container.classList.remove('hidden');
     }, { onlyOnce: true });
 };
 
 // ==========================================
-// PUNTO 7: WIDGETS Y METAS MENSUALES
+// PUNTO 7: WIDGETS Y METAS
 // ==========================================
 function actualizarWidgets(real) {
     if (document.getElementById('cajaReal')) document.getElementById('cajaReal').innerText = `$${real}`;
-    if (document.getElementById('utilidadNeta')) {
-        document.getElementById('utilidadNeta').innerText = `$${real}`;
-        const porcentaje = Math.min(Math.round((real / META_MENSUAL) * 100), 100);
-        document.getElementById('metaBar').style.width = porcentaje + "%";
-        document.getElementById('metaPorcentaje').innerText = porcentaje + "%";
-    }
+    const porcentaje = Math.min(Math.round((real / META_MENSUAL) * 100), 100);
+    if(document.getElementById('metaBar')) document.getElementById('metaBar').style.width = porcentaje + "%";
+    if(document.getElementById('metaPorcentaje')) document.getElementById('metaPorcentaje').innerText = porcentaje + "%";
 }
 
 // ==========================================
-// PUNTO 8: TICKET PDF Y ACCIONES ADMIN
+// PUNTO 8: TICKET PDF Y ACCIONES CLOUD
 // ==========================================
-window.cambiarEstadoNube = (key, nuevoEstado) => {
-    update(ref(db, 'cotizaciones/' + key), { estado: nuevoEstado });
-};
-
-window.eliminarOrdenNube = (key) => {
-    if(confirm("¿Eliminar de la nube?")) remove(ref(db, 'cotizaciones/' + key));
-};
+window.cambiarEstadoNube = (key, est) => update(ref(db, `cotizaciones/${key}`), { estado: est });
+window.eliminarOrdenNube = (key) => confirm("¿Eliminar?") && remove(ref(db, `cotizaciones/${key}`));
 
 window.descargarTicketPDF = function() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({ unit: 'mm', format: [80, 150] });
     const order = JSON.parse(localStorage.getItem('currentOrder'));
-    if (!order) return;
-
-    doc.text("COREFIX CLOUD", 40, 15, { align: "center" });
+    doc.text("COREFIX TICKET", 40, 15, { align: "center" });
     doc.text(`Folio: ${order.id}`, 10, 30);
-    doc.text(`Cliente: ${order.nombre}`, 10, 37);
-    doc.text(`Falla: ${order.falla}`, 10, 44);
     doc.save(`Ticket_CoreFix_${order.id}.pdf`);
 };
 
@@ -248,20 +216,22 @@ window.togglePassword = (inputId, iconId) => {
 };
 
 function aplicarModoNoche() {
-    if (new Date().getHours() >= 20 || new Date().getHours() < 6) {
-        document.body.classList.add('bg-slate-950');
-    }
+    if (new Date().getHours() >= 20 || new Date().getHours() < 6) document.body.classList.add('bg-slate-950');
 }
 
 // ==========================================
-// ARRANQUE DEL SISTEMA
+// ARRANQUE Y VINCULACIÓN
 // ==========================================
 document.addEventListener('DOMContentLoaded', () => {
     aplicarModoNoche();
     listenAdminData();
     listenInventory();
     
-    // Navbar Dinámica
+    // Vinculación de formularios
+    document.getElementById('registerForm')?.addEventListener('submit', window.ejecutarRegistro);
+    document.getElementById('loginForm')?.addEventListener('submit', window.loginUsuario);
+
+    // Navbar dinámico
     const authCont = document.getElementById('auth-container');
     if (authCont && localStorage.getItem('isLoggedIn') === 'true') {
         const user = JSON.parse(localStorage.getItem('staffUser'));
