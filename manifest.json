@@ -1,10 +1,13 @@
 {
   "name": "CoreFix Engineering",
   "short_name": "CoreFix",
-  "start_url": "index.html",
+  "description": "Ingeniería en Reparación de Hardware de Alto Nivel",
+  "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#0f172a", 
+  "background_color": "#0f172a",
   "theme_color": "#3b82f6",
+  "orientation": "portrait",
+  "scope": "./",
   "icons": [
     {
       "src": "img/Logo.png",
