@@ -193,3 +193,101 @@ html {
 .animate-pulse-red {
     animation: pulse-red 2s infinite;
 }
+/* ============================================================
+   BLOQUE DE ADAPTACIÓN MÓVIL (PEGAR AL FINAL DEL ARCHIVO)
+   Optimizado para CoreFix & BRIQO - S22 Ultra Ready
+   ============================================================ */
+
+@media (max-width: 768px) {
+    /* 1. Ajuste de Contenedores: Evita que el contenido pegue en los bordes físicos */
+    .container, .max-w-7xl, .max-w-6xl {
+        width: 92% !important;
+        padding-left: 15px !important;
+        padding-right: 15px !important;
+        margin: 0 auto !important;
+    }
+
+    /* 2. Navbar Móvil: Escondemos menús largos para que no se amontonen */
+    .space-x-8, .hidden.lg\:block {
+        display: none !important;
+    }
+
+    nav .container, nav .max-w-7xl {
+        justify-content: space-between !important;
+        height: 70px !important;
+    }
+
+    /* 3. Tipografía: Reducimos títulos para que no se corten */
+    h1 { font-size: 2.4rem !important; }
+    h2 { font-size: 1.8rem !important; }
+    .text-6xl, .text-5xl, .md\:text-9xl { 
+        font-size: 2.8rem !important; 
+        line-height: 1.1 !important;
+    }
+
+    /* 4. Grillas: Forzamos 1 sola columna en todo el sitio */
+    .grid {
+        display: flex !important;
+        flex-direction: column !important;
+        grid-template-columns: 1fr !important;
+        gap: 20px !important;
+    }
+
+    /* 5. Video: Ajuste de marco para pantallas angostas */
+    .video-container {
+        border-width: 6px !important;
+        border-radius: 20px !important;
+        margin: 20px 0 !important;
+        width: 100% !important;
+    }
+
+    /* 6. WhatsApp: Un poco más pequeño para que no tape los botones de abajo */
+    .wa-btn, .fixed-whatsapp {
+        width: 60px !important;
+        height: 60px !important;
+        bottom: 20px !important;
+        right: 20px !important;
+    }
+
+    /* 7. Imágenes y Cards: Evita que se deformen */
+    .card, .glass-card, .stat-card {
+        width: 100% !important;
+        margin-bottom: 15px !important;
+    }
+}
+/* AJUSTE MAESTRO PARA MÓVIL Y LOGO */
+@media (max-width: 768px) {
+    /* Evita que el logo sea gigante como en tu foto */
+    .logo, nav h1 {
+        font-size: 1.5rem !important;
+    }
+    
+    .navbar img {
+        max-height: 40px !important;
+    }
+
+    /* Ajuste de títulos para que no se corten */
+    h2.text-6xl, h2.md\:text-9xl {
+        font-size: 2.5rem !important;
+        line-height: 1 !important;
+    }
+
+    /* Forzar que las grillas sean de 1 columna */
+    .grid {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 20px !important;
+    }
+
+    /* Ajuste de márgenes para que respire el contenido */
+    .container {
+        padding-left: 20px !important;
+        padding-right: 20px !important;
+    }
+}
+
+/* Animación del Loader (Añádela si no la tienes) */
+@keyframes scroll {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(200%); }
+}
