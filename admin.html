@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COREFIX | Panel de Control</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col">
+
+    <!-- BARRA DE NAVEGACIÓN ADMIN -->
+    <nav class="bg-slate-900 text-white py-3 px-4 shadow-md">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <div class="w-8 h-8 bg-azulCielo rounded flex items-center justify-center font-bold text-slate-900">CF</div>
+                <span class="font-bold tracking-wide">Panel Administrador</span>
+            </div>
+            <button onclick="cerrarSesion()" class="bg-rose-500 text-white text-xs px-3 py-1.5 rounded-md font-bold hover:bg-rose-600 transition">Cerrar Sesión</button>
+        </div>
+    </nav>
+
+    <!-- CONTENIDO DEL PANEL -->
+    <main class="max-w-4xl mx-auto px-4 py-12 flex-grow w-full">
+        <div class="bg-white p-8 rounded-2xl shadow-lg border border-slate-200">
+            <div class="border-b pb-4 mb-6">
+                <h2 class="text-2xl font-black text-slate-900">⚙️ Control Operativo COREFIX</h2>
+                <p class="text-xs text-slate-500">Administra tus ingresos financieros y publica evidencias para tus clientes.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- REGISTRO DE INGRESOS (CAJA) -->
+                <div class="bg-slate-50 p-6 rounded-xl border border-slate-200">
+                    <h3 class="font-bold text-slate-900 mb-4 flex items-center">💵 Registrar Cantidad Recibida</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 mb-1">Monto Recibido ($)</label>
+                            <input type="number" id="input-monto" placeholder="0.00" class="w-full border p-2.5 rounded-lg focus:ring-2 focus:ring-azulCielo outline-none">
+                        </div>
+                        <button onclick="registrarIngreso()" class="w-full bg-emerald-600 text-white py-2.5 rounded-lg font-bold hover:bg-emerald-700 transition">Guardar en Caja</button>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-slate-200 flex justify-between items-center">
+                        <span class="text-sm font-semibold text-slate-600">Total Recibido Acumulado:</span>
+                        <span id="caja-total" class="text-2xl font-black text-emerald-600">$0.00</span>
+                    </div>
+                </div>
+
+                <!-- CARGA DE TRABAJOS REALIZADOS -->
+                <div class="bg-slate-50 p-6 rounded-xl border border-slate-200">
+                    <h3 class="font-bold text-slate-900 mb-4 flex items-center">📸 Publicar Nuevo Trabajo</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 mb-1">URL de la Imagen de Evidencia</label>
+                            <input type="text" id="input-url" placeholder="https://enlace-imagen.com/foto.jpg" class="w-full border p-2.5 rounded-lg focus:ring-2 focus:ring-azulCielo outline-none text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 mb-1">Descripción del Trabajo Reparado</label>
+                            <input type="text" id="input-desc" placeholder="Ej: Cambio de pantalla de Motorola G54" class="w-full border p-2.5 rounded-lg focus:ring-2 focus:ring-azulCielo outline-none text-sm">
+                        </div>
+                        <button onclick="publicarTrabajo()" class="w-full bg-slate-900 text-white py-2.5 rounded-lg font-bold hover:bg-slate-800 transition">Subir al Catálogo Público</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-slate-900 text-slate-500 text-center py-4 text-xs">
+        <p>Panel protegido localmente de COREFIX</p>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        // Proteger vista de administración
+        if (sessionStorage.getItem("corefix_session") !== "activa") {
+            alert("Acceso denegado. Por favor inicia sesión.");
+            window.location.href = "login.html";
+        }
+
+        function cerrarSesion() {
+            sessionStorage.removeItem("corefix_session");
+            window.location.href = "index.html";
+        }
+    </script>
+</body>
+</html>

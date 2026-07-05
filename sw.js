@@ -3,8 +3,6 @@ const assets = [
   'index.html',
   'style.css',
   'img/Logo.png',
-  'cotizar.html',
-  'rastreo.html',
   // Si tienes un script.js asegúrate que el archivo NO esté vacío en GitHub
   'script.js' 
 ];

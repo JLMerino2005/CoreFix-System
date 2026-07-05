@@ -1,293 +1,36 @@
-/* Variables y Reset */
-* { transition: all 0.2s ease-in-out; }
-
-/* Navbar Glassmorphism */
-.navbar {
-    position: fixed;
-    top: 0;
-    width: 100%;
-    z-index: 1000;
-    background: rgba(15, 23, 42, 0.8);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+/* PALETA DE COLORES PERSONALIZADA PARA COREFIX */
+:root {
+    --azulCielo: #38bdf8;
+    --azulMarino: #0f172a;
+    --azulMedia: #1e3a8a;
 }
 
-.logo { font-size: 1.5rem; font-weight: 900; letter-spacing: -1px; }
-.logo span { color: #3b82f6; }
-
-/* Hero Gradient */
-.hero-section {
-    height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: radial-gradient(circle at top right, #1e3a8a 0%, #0f172a 60%);
+/* Clases de utilidad extendidas */
+.text-azulCielo {
+    color: var(--azulCielo);
+}
+.bg-azulCielo {
+    background-color: var(--azulCielo);
+}
+.bg-azulMarino {
+    background-color: var(--azulMarino);
 }
 
-.stats-num { font-size: 2.5rem; font-weight: 900; color: #3b82f6; }
-
-/* Inputs Estilizados */
-.input-pro {
-    width: 100%;
-    background: #0f172a;
-    border: 1px solid #334155;
-    padding: 15px;
-    border-radius: 12px;
-    color: white;
-    outline: none;
-}
-.input-pro:focus {
-    border-color: #3b82f6;
-    box-shadow: 0 0 15px rgba(59, 130, 246, 0.2);
+/* Efectos visuales de las secciones */
+.card-servicio:hover {
+    transform: translateY(-4px);
+    border-color: var(--azulCielo);
+    box-shadow: 0 10px 15px -3px rgba(56, 189, 248, 0.1);
 }
 
-.btn-login {
-    background: #1e293b;
-    padding: 8px 20px;
-    border-radius: 10px;
-    font-weight: 600;
-    border: 1px solid #334155;
-}
-.btn-login:hover { background: #3b82f6; border-color: #3b82f6; }
-
-.btn-action {
-    padding: 15px;
-    border-radius: 15px;
-    font-weight: 800;
-    text-transform: uppercase;
-    font-size: 0.9rem;
+.card-servicio {
+    transition: all 0.3s ease;
 }
 
-/* Modal */
-.modal {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.9);
-    z-index: 2000;
-    align-items: center;
-    justify-content: center;
-}
-.modal.active { display: flex; }
-.modal-box {
-    background: #1e293b;
-    padding: 40px;
-    border-radius: 24px;
-    width: 90%;
-    max-width: 400px;
-    text-align: center;
-    border: 1px solid #3b82f6;
-}
-/* Botón Flotante Pro */
-.fixed-whatsapp {
-    position: fixed;
-    bottom: 25px;
-    right: 25px;
-    z-index: 1000;
-    filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.3));
-}
-
-/* Animación de Pulso */
-.fixed-whatsapp::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: #22c55e;
-    border-radius: 9999px;
-    z-index: -1;
-    animation: pulse-green 2s infinite;
-}
-
-@keyframes pulse-green {
-    0% { transform: scale(1); opacity: 0.8; }
-    100% { transform: scale(1.5); opacity: 0; }
-}
-
-/* Glass effect para las cards */
-.glass-effect {
-    background: rgba(30, 41, 59, 0.4);
-    backdrop-filter: blur(8px);
-    border: 1px solid rgba(59, 130, 246, 0.1);
-}
-/* Fondo Dinámico para Hero */
-.hero-section {
-    background: linear-gradient(rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.8)), 
-                url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
-    background-attachment: fixed;
-}
-
-/* Efecto Neón para Títulos */
-h1 span, h2 span {
-    text-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+/* Ajustes finos para la carga de imágenes */
+img {
+    transition: transform 0.5s ease;
 }
 .group:hover img {
-    filter: brightness(1.2) contrast(1.1);
-    box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
-}
-h4.group-hover\:text-blue-400 {
-    text-shadow: 0 0 15px rgba(59, 130, 246, 0.8);
-    letter-spacing: 2px;
-}
-
-.shadow-2xl:hover {
-    box-shadow: 0 25px 50px -12px rgba(59, 130, 246, 0.25);
-}
-/* Botón Flotante con Pulso */
-.fixed-whatsapp {
-    position: fixed;
-    bottom: 30px;
-    right: 30px;
-    z-index: 999;
-}
-
-.fixed-whatsapp div::after {
-    content: '';
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background: #22c55e;
-    border-radius: 50%;
-    z-index: -1;
-    animation: pulse-ring 2s infinite;
-}
-
-@keyframes pulse-ring {
-    0% { transform: scale(0.8); opacity: 0.5; }
-    100% { transform: scale(1.8); opacity: 0; }
-}
-
-/* Efecto Neón para que no sea simple */
-.glass-effect:hover, .relative.group:hover {
-    border-color: #3b82f6;
-    box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
-    transform: translateY(-5px);
-    transition: all 0.4s ease;
-}
-
-/* Scroll Suave */
-html {
-    scroll-behavior: smooth;
-}
-/* Animación para las secciones de CoreFix */
-.fade-section {
-    opacity: 0;
-    transform: translateY(50px);
-    transition: all 0.8s ease-out;
-}
-
-.faded-in {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-/* Efecto Neón para el Staff Logueado */
-.border-blue-500\/50 {
-    box-shadow: 0 0 15px rgba(59, 130, 246, 0.3);
-}
-@keyframes pulse-red {
-    0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
-    70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
-    100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
-}
-
-.animate-pulse-red {
-    animation: pulse-red 2s infinite;
-}
-/* ============================================================
-   BLOQUE DE ADAPTACIÓN MÓVIL (PEGAR AL FINAL DEL ARCHIVO)
-   Optimizado para CoreFix & BRIQO - S22 Ultra Ready
-   ============================================================ */
-
-@media (max-width: 768px) {
-    /* 1. Ajuste de Contenedores: Evita que el contenido pegue en los bordes físicos */
-    .container, .max-w-7xl, .max-w-6xl {
-        width: 92% !important;
-        padding-left: 15px !important;
-        padding-right: 15px !important;
-        margin: 0 auto !important;
-    }
-
-    /* 2. Navbar Móvil: Escondemos menús largos para que no se amontonen */
-    .space-x-8, .hidden.lg\:block {
-        display: none !important;
-    }
-
-    nav .container, nav .max-w-7xl {
-        justify-content: space-between !important;
-        height: 70px !important;
-    }
-
-    /* 3. Tipografía: Reducimos títulos para que no se corten */
-    h1 { font-size: 2.4rem !important; }
-    h2 { font-size: 1.8rem !important; }
-    .text-6xl, .text-5xl, .md\:text-9xl { 
-        font-size: 2.8rem !important; 
-        line-height: 1.1 !important;
-    }
-
-    /* 4. Grillas: Forzamos 1 sola columna en todo el sitio */
-    .grid {
-        display: flex !important;
-        flex-direction: column !important;
-        grid-template-columns: 1fr !important;
-        gap: 20px !important;
-    }
-
-    /* 5. Video: Ajuste de marco para pantallas angostas */
-    .video-container {
-        border-width: 6px !important;
-        border-radius: 20px !important;
-        margin: 20px 0 !important;
-        width: 100% !important;
-    }
-
-    /* 6. WhatsApp: Un poco más pequeño para que no tape los botones de abajo */
-    .wa-btn, .fixed-whatsapp {
-        width: 60px !important;
-        height: 60px !important;
-        bottom: 20px !important;
-        right: 20px !important;
-    }
-
-    /* 7. Imágenes y Cards: Evita que se deformen */
-    .card, .glass-card, .stat-card {
-        width: 100% !important;
-        margin-bottom: 15px !important;
-    }
-}
-/* AJUSTE MAESTRO PARA MÓVIL Y LOGO */
-@media (max-width: 768px) {
-    /* Evita que el logo sea gigante como en tu foto */
-    .logo, nav h1 {
-        font-size: 1.5rem !important;
-    }
-    
-    .navbar img {
-        max-height: 40px !important;
-    }
-
-    /* Ajuste de títulos para que no se corten */
-    h2.text-6xl, h2.md\:text-9xl {
-        font-size: 2.5rem !important;
-        line-height: 1 !important;
-    }
-
-    /* Forzar que las grillas sean de 1 columna */
-    .grid {
-        display: flex !important;
-        flex-direction: column !important;
-        gap: 20px !important;
-    }
-
-    /* Ajuste de márgenes para que respire el contenido */
-    .container {
-        padding-left: 20px !important;
-        padding-right: 20px !important;
-    }
-}
-
-/* Animación del Loader (Añádela si no la tienes) */
-@keyframes scroll {
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(200%); }
+    transform: scale(1.05);
 }

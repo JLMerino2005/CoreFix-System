@@ -2,214 +2,125 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CoreFix | Ingeniería en Reparación Móvil</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COREFIX | Servicio Técnico Especializado</title>
+    <!-- Tailwind CSS desde CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
-    <style>
-        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
-        .animate-float { animation: float 4s ease-in-out infinite; }
-        .glass-card { background: rgba(30, 41, 59, 0.4); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.05); }
-        @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-        .animate-scroll { animation: scroll 20s linear infinite; }
-    </style>
+    <!-- Enlace al Manifiesto de la PWA -->
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#3b82f6">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <script>
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('sw.js');
-      }
-    </script>
+    <meta name="theme-color" content="#0f172a">
 </head>
+<body class="bg-slate-50 text-slate-800 font-sans flex flex-col min-h-screen">
 
-<body class="bg-slate-900 text-white font-sans overflow-x-hidden selection:bg-blue-500 selection:text-white">
-
-    <!-- NAVBAR GRID SIMÉTRICA -->
-    <nav class="navbar fixed w-full z-50 bg-slate-900/80 backdrop-blur-xl border-b border-blue-500/20">
-        <div class="container mx-auto grid grid-cols-2 md:grid-cols-3 items-center p-4 px-6">
-            
-            <!-- COLUMNA 1: LOGO -->
-            <div class="flex items-center gap-4 cursor-pointer justify-start" onclick="window.location.href='index.html'">
-                <img src="img/Logo.png" alt="CoreFix Logo" class="w-12 h-12 rounded-full border-2 border-blue-500/50 shadow-[0_0_15px_rgba(59,130,246,0.3)] object-cover">
-                <h1 class="logo text-2xl md:text-3xl font-black italic tracking-tighter uppercase text-white">
-                    CORE<span class="text-blue-500">FIX</span>
-                </h1>
+    <!-- BARRA DE NAVEGACIÓN -->
+    <nav class="bg-azulMarino text-white sticky top-0 z-50 shadow-md">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <div class="w-9 h-9 bg-azulCielo rounded-lg flex items-center justify-center font-bold text-slate-900 shadow">CF</div>
+                <span class="text-xl font-black tracking-wider text-azulCielo">CORE<span class="text-white">FIX</span></span>
             </div>
-            
-            <!-- COLUMNA 2: MENÚ -->
-            <div class="space-x-10 hidden md:flex items-center justify-center text-[12px] font-black uppercase tracking-widest text-slate-300">
-                <a href="#proceso" class="hover:text-blue-400 transition-colors">Proceso</a>
-                <a href="#marcas" class="hover:text-blue-400 transition-colors">Casos de Éxito</a>          
-                <a href="cotizar.html" class="bg-blue-600 px-7 py-3 rounded-full hover:bg-blue-500 transition-all shadow-lg shadow-blue-600/30 text-white">Cotizar</a>
+            <div class="space-x-6">
+                <a href="#servicios" class="hidden md:inline hover:text-azulCielo transition font-medium">Catálogo</a>
+                <a href="#portafolio" class="hidden md:inline hover:text-azulCielo transition font-medium">Nuestros Trabajos</a>
+                <a href="login.html" class="bg-azulCielo text-slate-900 px-4 py-1.5 rounded-md font-bold hover:bg-white transition shadow-sm">Admin</a>
             </div>
-            
-            <!-- COLUMNA 3: ATENCIÓN -->
-            <div id="auth-container" class="flex justify-end">
-                <a href="https://wa.me/5212231059545" target="_blank" class="text-[11px] font-black uppercase border border-slate-700 px-6 py-2.5 rounded-full hover:bg-white hover:text-slate-900 transition-all flex items-center gap-2">
-                    <i class="fab fa-whatsapp text-green-500"></i> Contacto Live
-                </a>
-            </div>
-            
         </div>
     </nav>
 
     <!-- HERO SECTION -->
-    <section class="relative min-h-screen flex items-center justify-center pt-24 pb-12 overflow-hidden">
-        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-blue-600/10 rounded-full blur-[120px] -z-10 animate-pulse"></div>
-        
-        <div class="container mx-auto px-6 text-center z-10">
-            <div class="w-full max-w-4xl mx-auto overflow-hidden relative mb-12 opacity-50 hover:opacity-100 transition-opacity duration-500 cursor-default">
-                <div class="absolute inset-y-0 left-0 w-20 bg-gradient-to-r from-slate-900 to-transparent z-10"></div>
-                <div class="absolute inset-y-0 right-0 w-20 bg-gradient-to-l from-slate-900 to-transparent z-10"></div>
-                <div class="flex whitespace-nowrap animate-scroll items-center gap-12 text-2xl text-slate-500">
-                    <i class="fab fa-apple hover:text-white transition-colors duration-300"></i>
-                    <span class="font-black italic tracking-tighter hover:text-blue-500 transition-colors">SAMSUNG</span>
-                    <span class="font-black uppercase tracking-widest hover:text-blue-500 transition-colors">Motorola</span>
-                    <span class="font-black tracking-tighter hover:text-blue-500 transition-colors">Xiaomi</span>
-                    <span class="font-black italic hover:text-blue-500 transition-colors">HUAWEI</span>
-                    <span class="font-black uppercase tracking-widest hover:text-blue-500 transition-colors">HONOR</span>
-                </div>
+    <header class="bg-gradient-to-br from-slate-900 via-slate-800 to-blue-900 text-white py-24 px-4 text-center header-bg">
+        <div class="max-w-3xl mx-auto">
+            <span class="bg-azulCielo/10 text-azulCielo text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full border border-azulCielo/20">Soporte Técnico de Confianza</span>
+            <h1 class="text-4xl md:text-5xl font-black mt-4 mb-6 leading-tight">Reparación Profesional de Dispositivos</h1>
+            <p class="text-base md:text-lg text-slate-300 mb-8 max-w-xl mx-auto">Soluciones rápidas y diagnósticos certeros para celulares, laptops, PCs e impresoras.</p>
+            <div class="flex justify-center space-x-4">
+                <a href="#servicios" class="bg-azulCielo text-slate-900 px-6 py-3 rounded-lg font-bold shadow-md hover:bg-white transition">Ver Catálogo</a>
+                <a href="https://wa.me/522231059545" target="_blank" class="bg-transparent border border-slate-500 text-white px-6 py-3 rounded-lg font-bold hover:bg-white/10 transition">Cotizar por WhatsApp</a>
             </div>
+        </div>
+    </header>
 
-            <div class="inline-flex items-center gap-2 bg-blue-500/10 border border-blue-500/30 px-4 py-1.5 rounded-full mb-8 animate-float">
-                <span class="relative flex h-2 w-2">
-                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-                    <span class="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
-                </span>
-                <span class="text-[10px] font-black uppercase tracking-[0.2em] text-blue-400 italic">Laboratorio Certificado en Xochitlán Todos Santos & Tepexi de Rodriguez</span>
+    <!-- CATÁLOGO POR SECCIONES -->
+    <main class="flex-grow">
+        <section id="servicios" class="max-w-6xl mx-auto px-4 py-20">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-extrabold text-slate-900">Nuestro Catálogo de Servicios</h2>
+                <p class="text-slate-500 mt-2">Especialistas en hardware y software para mantener tus equipos al 100%</p>
             </div>
             
-            <h2 class="text-6xl md:text-9xl font-black mb-8 italic leading-none uppercase tracking-tighter">
-                HARDWARE <br> <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-blue-600">REIMAGINADO</span>
-            </h2>
-            
-            <p class="text-slate-400 max-w-2xl mx-auto mb-12 text-sm md:text-lg font-medium leading-relaxed uppercase tracking-tighter">
-                No solo reparamos celulares, aplicamos procesos de <span class="text-white">Ingeniería en Software y Hardware</span> para devolverle la vida a tu tecnología.
-            </p>
-            
-            <div class="flex flex-wrap justify-center gap-6">
-                <a href="cotizar.html" class="bg-blue-600 px-12 py-5 rounded-2xl font-black text-xs uppercase italic tracking-widest hover:scale-105 active:scale-95 transition-all shadow-[0_20px_50px_rgba(37,99,235,0.3)]">
-                    Iniciar Cotización <i class="fas fa-microchip ml-2"></i>
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <!-- METRICAS -->
-    <section class="py-20 bg-slate-900/50 border-t border-white/5">
-        <div class="container mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-12 text-center font-black italic">
-            <div><h4 class="text-5xl text-blue-500 mb-2">90</h4><p class="text-[10px] text-slate-500 uppercase tracking-widest">Días de Garantía</p></div>
-            <div><h4 class="text-5xl text-blue-500 mb-2">100%</h4><p class="text-[10px] text-slate-500 uppercase tracking-widest">Piezas OEM</p></div>
-            <div><h4 class="text-5xl text-blue-500 mb-2">24h</h4><p class="text-[10px] text-slate-500 uppercase tracking-widest">Servicio Express</p></div>
-            <div><h4 class="text-5xl text-blue-500 mb-2">UT</h4><p class="text-[10px] text-slate-500 uppercase tracking-widest">Ingeniería Aplicada</p></div>
-        </div>
-    </section>
-
-    <!-- SECCIÓN: VITRINA DINÁMICA DE CASOS DE ÉXITO -->
-    <section id="marcas" class="py-24 bg-slate-950/50 border-y border-white/5">
-        <div class="container mx-auto px-6">
-            <h3 class="text-center text-xs font-black text-blue-500 uppercase tracking-[0.5em] mb-4 italic">Evidencia de Laboratorio</h3>
-            <h2 class="text-center text-4xl md:text-5xl font-black uppercase mb-20 italic">Historial de <span class="text-blue-500">Casos de Éxito</span></h2>
-            
-            <!-- PANEL DE CONTROL ADMIN (OCULTO POR DEFECTO) -->
-            <div id="adminPanelTrabajos" class="hidden max-w-4xl mx-auto mb-16 p-8 bg-slate-800 rounded-[2.5rem] border border-blue-500/30 shadow-2xl">
-                <div class="flex justify-between items-center mb-6">
-                    <h3 class="text-lg font-black uppercase italic text-blue-400"><i class="fas fa-folder-plus mr-2"></i> Publicar Nuevo Trabajo Terminado</h3>
-                    <button onclick="cerrarSesionAdmin()" class="text-[9px] bg-red-600/20 text-red-400 border border-red-500/30 px-4 py-2 rounded-xl font-black uppercase">Salir</button>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Celulares -->
+                <div class="card-servicio bg-white p-8 rounded-2xl shadow-sm border border-slate-100 transition">
+                    <div class="w-12 h-12 bg-blue-50 text-azulCielo text-2xl rounded-xl flex items-center justify-center mb-6">📱</div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-4">Celulares</h3>
+                    <ul class="text-slate-600 space-y-3 text-sm">
+                        <li class="flex items-center"><span class="text-azulCielo mr-2">✔</span> Cambio de pantallas y Gorilla Glass</li>
+                        <li class="flex items-center"><span class="text-azulCielo mr-2">✔</span> Reemplazo de baterías dañadas</li>
+                        <li class="flex items-center"><span class="text-azulCielo mr-2">✔</span> Reparación de centros de carga</li>
+                        <li class="flex items-center"><span class="text-azulCielo mr-2">✔</span> Flasheo y actualización de software</li>
+                    </ul>
                 </div>
-                <form id="formNuevoTrabajo" onsubmit="window.publicarTrabajo(event)" class="grid md:grid-cols-2 gap-4 text-xs font-bold uppercase tracking-widest">
-                    <input type="text" id="admModelo" placeholder="Modelo (Ej. iPhone 11, Galaxy S22)" class="input-pro" required>
-                    <select id="admMarca" class="input-pro font-bold" required>
-                        <option value="Apple">Apple</option>
-                        <option value="Samsung">Samsung</option>
-                        <option value="Motorola">Motorola</option>
-                        <option value="Xiaomi">Xiaomi / Otros</option>
-                    </select>
-                    <input type="text" id="admSede" placeholder="Sede (Ej. Tepexi, Xochitlán)" class="input-pro" required>
-                    <input type="text" id="admFalla" placeholder="Falla detectada" class="input-pro" required>
-                    <input type="text" id="admSolucion" placeholder="Solución aplicada" class="input-pro class md:col-span-2" required>
-                    <input type="text" id="admUrlFoto" placeholder="URL de la imagen o archivo local (Ej. img/pantalla.jpg)" class="input-pro md:col-span-2" required>
-                    <button type="submit" class="md:col-span-2 bg-blue-600 py-4 rounded-xl text-white font-black uppercase tracking-wider hover:bg-blue-500 transition-colors">Subir Evidencia a la Nube</button>
-                </form>
-            </div>
 
-            <!-- CONTENEDOR DONDE SE PINTAN LOS TRABAJOS DESDE FIREBASE -->
-            <div id="contenedorCasosExito" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Se carga dinámicamente con JS -->
-                <p class="text-center md:col-span-3 text-slate-500 uppercase tracking-widest text-xs py-12">Sincronizando vitrina con la nube...</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- EL PROCESO COREFIX -->
-    <section id="proceso" class="py-24 container mx-auto px-6">
-        <h3 class="text-center text-xs font-black text-blue-500 uppercase tracking-[0.5em] mb-4 italic">El Proceso CoreFix</h3>
-        <h2 class="text-center text-4xl md:text-5xl font-black uppercase mb-16 italic">Reparación <span class="text-blue-500">Sin Estrés</span></h2>
-        <div class="grid md:grid-cols-3 gap-8 relative">
-            <div class="hidden md:block absolute top-1/2 left-1/4 right-1/4 h-0.5 bg-blue-500/20 -z-10 -translate-y-1/2"></div>
-            <div class="text-center">
-                <div class="w-20 h-20 mx-auto bg-slate-800 border-2 border-blue-500 rounded-full flex items-center justify-center text-2xl mb-6 shadow-[0_0_20px_rgba(59,130,246,0.3)]"><i class="fas fa-file-invoice text-blue-400"></i></div>
-                <h4 class="text-lg font-black uppercase mb-2">1. Cotiza en Web</h4>
-                <p class="text-xs text-slate-400 uppercase tracking-tighter">Usa el sistema modular interactivo para saber el costo estimado de tu reparación de forma instantánea.</p>
-            </div>
-            <div class="text-center">
-                <div class="w-20 h-20 mx-auto bg-slate-800 border-2 border-blue-500 rounded-full flex items-center justify-center text-2xl mb-6 shadow-[0_0_20px_rgba(59,130,246,0.3)]"><i class="fas fa-microscope text-blue-400"></i></div>
-                <h4 class="text-lg font-black uppercase mb-2">2. Envía tu Orden</h4>
-                <p class="text-xs text-slate-400 uppercase tracking-tighter">La plataforma genera un desglose listo que se envía directamente a nuestros canales de WhatsApp.</p>
-            </div>
-            <div class="text-center">
-                <div class="w-20 h-20 mx-auto bg-slate-800 border-2 border-green-500 rounded-full flex items-center justify-center text-2xl mb-6 shadow-[0_0_20px_rgba(34,197,94,0.3)]"><i class="fas fa-box-open text-green-400"></i></div>
-                <h4 class="text-lg font-black uppercase mb-2">3. Entrega Garantizada</h4>
-                <p class="text-xs text-slate-400 uppercase tracking-tighter">Dejas tu dispositivo en taller y te lo entregamos optimizado con 90 días de respaldo oficial.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- SECCIÓN PERFIL (ACCESO OCULTO) -->
-    <section class="py-24 relative overflow-hidden border-y border-white/5 bg-slate-900">
-        <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-600/5 rounded-full blur-[100px] -z-10"></div>
-        <div class="container mx-auto px-6 max-w-5xl">
-            <div class="flex flex-col md:flex-row items-center gap-12 bg-slate-900/80 p-8 md:p-12 rounded-[3rem] border border-slate-800 shadow-2xl backdrop-blur-md">
-                <!-- Haz clic en tu foto para activar el login secreto -->
-                <div class="w-48 h-48 md:w-64 md:h-64 shrink-0 relative group cursor-pointer" onclick="window.loginSecretoAdmin()">
-                    <div class="absolute inset-0 bg-blue-500 rounded-full blur-xl opacity-20 group-hover:opacity-40 transition-opacity duration-500"></div>
-                    <img src="img/foto_mia.jpg" alt="Jose Luis Merino Mota" class="w-full h-full object-cover rounded-full border-2 border-blue-500/30 relative z-10 shadow-2xl transition-transform duration-500 group-hover:scale-105">
-                    <div class="absolute -bottom-2 -right-2 bg-blue-600 text-white w-14 h-14 rounded-full flex items-center justify-center border-4 border-slate-900 z-20 shadow-lg">
-                        <i class="fas fa-user-shield text-xl"></i>
-                    </div>
+                <!-- Laptops -->
+                <div class="card-servicio bg-white p-8 rounded-2xl shadow-sm border border-slate-100 transition">
+                    <div class="w-12 h-12 bg-slate-900/10 text-slate-900 text-2xl rounded-xl flex items-center justify-center mb-6">💻</div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-4">Laptops & PCs</h3>
+                    <ul class="text-slate-600 space-y-3 text-sm">
+                        <li class="flex items-center"><span class="text-slate-900 mr-2">✔</span> Instalación de unidades SSD</li>
+                        <li class="flex items-center"><span class="text-slate-900 mr-2">✔</span> Limpieza física y pasta térmica</li>
+                        <li class="flex items-center"><span class="text-slate-900 mr-2">✔</span> Reparación de carcasas y bisagras</li>
+                        <li class="flex items-center"><span class="text-slate-900 mr-2">✔</span> Formateo de sistemas operativos</li>
+                    </ul>
                 </div>
-                <div class="text-center md:text-left z-10">
-                    <h3 class="text-xs font-black text-blue-500 uppercase tracking-[0.5em] mb-2 italic">Ingeniero a Cargo</h3>
-                    <h2 class="text-4xl md:text-5xl font-black uppercase mb-4 italic">Jose Luis Merino</h2>
-                    <p class="text-slate-400 text-sm md:text-base leading-relaxed mb-6 font-medium">
-                        Estudiante de Ingeniería en <span class="text-blue-400">Desarrollo y Gestión de Software en la UTTECAM</span>. Fundador de CoreFix con la misión de brindar un servicio técnico ético, transparente y de alta precisión a las comunidades de Xochitlán Todos Santos y Tepexi de Rodríguez.
-                    </p>
-                    <div class="mt-4 bg-slate-800/50 p-4 rounded-2xl border border-white/5 flex items-center gap-4 text-left">
-                        <div class="w-12 h-12 rounded-full bg-slate-900 flex items-center justify-center text-xl shrink-0 shadow-inner">🐈‍⬛</div>
-                        <div>
-                            <p class="text-[10px] font-black uppercase text-blue-400 tracking-widest">Control de Calidad</p>
-                            <p class="text-xs text-slate-400 italic">Supervisión nocturna a cargo de dos pequeños gatitos negros que le dan brillo al taller. 🐾 Frijola siempre en el equipo.</p>
-                        </div>
-                    </div>
+
+                <!-- Impresoras -->
+                <div class="card-servicio bg-white p-8 rounded-2xl shadow-sm border border-slate-100 transition">
+                    <div class="w-12 h-12 bg-blue-50 text-azulCielo text-2xl rounded-xl flex items-center justify-center mb-6">🖨️</div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-4">Impresoras</h3>
+                    <ul class="text-slate-600 space-y-3 text-sm">
+                        <li class="flex items-center"><span class="text-azulCielo mr-2">✔</span> Mantenimiento preventivo general</li>
+                        <li class="flex items-center"><span class="text-azulCielo mr-2">✔</span> Destape de inyectores y cabezales</li>
+                        <li class="flex items-center"><span class="text-azulCielo mr-2">✔</span> Reseteo de almohadillas digitales</li>
+                        <li class="flex items-center"><span class="text-azulCielo mr-2">✔</span> Solución a problemas de arrastre</li>
+                    </ul>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
+
+        <!-- PORTAFOLIO PÚBLICO -->
+        <section id="portafolio" class="bg-slate-100 py-20 px-4">
+            <div class="max-w-6xl mx-auto">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-extrabold text-slate-900">Evidencia de Trabajos Realizados</h2>
+                    <p class="text-slate-500 mt-2">Fotos reales de los dispositivos que reparamos con éxito en COREFIX.</p>
+                </div>
+                
+                <div id="galeria-publica" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                    <!-- Se carga dinámicamente con script.js -->
+                </div>
+            </div>
+        </section>
+    </main>
 
     <!-- FOOTER -->
-    <footer class="py-16 bg-slate-950 border-t border-white/5 text-center">
-        <h1 class="text-3xl font-black italic mb-2 uppercase">CORE<span class="text-blue-500">FIX</span></h1>
-        <p class="text-[10px] text-slate-600 uppercase font-black tracking-[0.3em] mb-8">Engineering Services © 2026</p>
-        <div class="flex justify-center gap-6 mb-8 mt-6">
-            <a href="https://wa.me/5212231059545" target="_blank" class="w-12 h-12 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-500 hover:text-green-500 hover:border-green-500 transition-all shadow-lg hover:scale-110"><i class="fab fa-whatsapp text-xl"></i></a>
-            <a href="https://www.facebook.com/CoreFixReparaciones/" target="_blank" class="w-12 h-12 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-500 hover:text-blue-500 hover:border-blue-500 transition-all shadow-lg hover:scale-110"><i class="fab fa-facebook-f text-xl"></i></a>
-        </div>
-        <p class="text-[8px] text-slate-700 font-black uppercase tracking-[0.5em]">Desarrollado por Jose Luis Merino Mota - UTTECAM</p>
+    <footer class="bg-slate-900 text-slate-500 text-center py-8 text-xs border-t border-slate-800">
+        <p class="font-bold text-slate-400">COREFIX &copy; 2026</p>
+        <p class="mt-1">Calidad y Precisión en Electrónica y Sistemas</p>
     </footer>
+
+    <script src="script.js"></script>
+    <!-- Registro del Service Worker -->
+    <script>
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('sw.js')
+                .then(reg => console.log('Service Worker de COREFIX registrado con éxito', reg))
+                .catch(err => console.warn('Error al registrar el Service Worker', err));
+        });
+    }
+    </script>
+
     
-    <script type="module" src="script.js"></script>
 </body>
 </html>
