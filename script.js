@@ -1,37 +1,14 @@
 /**
- * CoreFix System Master - Edición de Ingeniería Cloud UTTECAM
+ * CoreFix System - Edición Vitrina Cloud Interactiva (Producción)
  * Ingeniería: Jose Luis Merino Mota
- * Práctica 4: Implementación de Logs Profesionales
+ * Control de Evidencias en Tiempo Real & Cotizador Modular
  */
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getDatabase, ref, set, push, onValue, update, remove } 
-from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
 // ==========================================
-// CONFIGURACIÓN DE LOGS (PRÁCTICA 4)
-// ==========================================
-const CoreFixLogger = {
-    registrar: function(nivel, mensaje) {
-        const timestamp = new Date().toLocaleString();
-        const formato = `[${timestamp}] [${nivel.toUpperCase()}]: ${mensaje}`;
-        
-        switch(nivel.toLowerCase()) {
-            case 'info':
-                console.log(`%c${formato}`, "color: #007bff; font-weight: bold;");
-                break;
-            case 'warn':
-                console.warn(formato);
-                break;
-            case 'error':
-                console.error(formato);
-                break;
-        }
-    }
-};
-
-// ==========================================
-// PUNTO 1: CONFIGURACIÓN Y CONEXIÓN
+// CONFIGURACIÓN Y CONEXIÓN CLOUD
 // ==========================================
 const firebaseConfig = {
   apiKey: "AIzaSyBgoQDuWsn8_alITK2FwQQ0RF3T5kW1k20",
@@ -40,78 +17,120 @@ const firebaseConfig = {
   databaseURL: "https://corefix-system-default-rtdb.firebaseio.com",
   storageBucket: "corefix-system.appspot.com",
   messagingSenderId: "1081209996313",
-  appId: "1:1081209996313:web:6c89f5936f328da1c3d688",
-  measurementId: "G-2BC2F8JBWM"
+  appId: "1:1081209996313:web:6c89f5936f328da1c3d688"
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
-const META_MENSUAL = 10000;
-
-// Log de Inicio de Sistema
-CoreFixLogger.registrar('info', 'CoreFix Cloud: Conexión establecida con Firebase RTDB.');
 
 // ==========================================
-// PUNTO 2: MOTOR DE ACCESO Y REGISTRO
+// LOGIN SECRETO (AL HACER CLIC EN TU FOTO DE PERFIL)
 // ==========================================
-window.ejecutarRegistro = function(e) {
+window.loginSecretoAdmin = function() {
+    const pass = prompt("🔐 Introduzca la clave maestra del Laboratorio CoreFix:");
+    if (pass === "CoreFix2026") {
+        localStorage.setItem('adminCoreFix', 'true');
+        document.getElementById('adminPanelTrabajos')?.classList.remove('hidden');
+        alert("✅ Modo Ingeniero activado. Panel de evidencias de la nube desbloqueado.");
+        window.location.href = "#marcas";
+        listenTrabajosTerminados(); 
+    } else if (pass !== null) {
+        alert("❌ Clave incorrecta. Acceso denegado.");
+    }
+};
+
+window.cerrarSesionAdmin = function() {
+    localStorage.removeItem('adminCoreFix');
+    document.getElementById('adminPanelTrabajos')?.classList.add('hidden');
+    location.reload();
+};
+
+// ==========================================
+// PUBLICAR NUEVOS TRABAJOS (ESCRITURA EXCLUSIVA ADMIN)
+// ==========================================
+window.publicarTrabajo = function(e) {
     if(e) e.preventDefault();
-    const emailRaw = document.getElementById('regEmail').value.trim();
-    const emailKey = emailRaw.replace(/\./g, '_'); 
-    const nuevoUser = {
-        name: document.getElementById('regName').value,
-        email: emailRaw,
-        pass: document.getElementById('regPass').value,
-        fechaRegistro: new Date().toLocaleDateString()
+    if(localStorage.getItem('adminCoreFix') !== 'true') return;
+
+    const nuevoTrabajo = {
+        modelo: document.getElementById('admModelo').value.trim(),
+        marca: document.getElementById('admMarca').value,
+        sede: document.getElementById('admSede').value.trim(),
+        falla: document.getElementById('admFalla').value.trim(),
+        solucion: document.getElementById('admSolucion').value.trim(),
+        foto: document.getElementById('admUrlFoto').value.trim()
     };
-    set(ref(db, 'usuarios/' + emailKey), nuevoUser).then(() => {
-        CoreFixLogger.registrar('info', `Nuevo usuario registrado: ${emailRaw}`);
-        alert("✅ Registro exitoso en CoreFix Cloud.");
-        window.location.href = 'login.html';
-    }).catch(err => {
-        CoreFixLogger.registrar('error', `Fallo en registro: ${err.message}`);
+
+    push(ref(db, 'trabajos_terminados'), nuevoTrabajo).then(() => {
+        alert("🎯 Caso de éxito publicado con éxito en la nube.");
+        document.getElementById('formNuevoTrabajo').reset();
     });
 };
 
-window.loginUsuario = function(e) {
-    if(e) e.preventDefault();
-    const userInput = document.getElementById('logEmail').value.trim();
-    const pass = document.getElementById('logPass').value;
-    const role = document.querySelector('input[name="userRole"]:checked').value;
-
-    if (userInput === "merinomotajoseluis@gmail.com" && pass === "CoreFix2026") {
-        CoreFixLogger.registrar('info', 'Acceso de Administrador Maestro detectado.');
-        localStorage.setItem('isLoggedIn', 'true');
-        localStorage.setItem('userRole', 'admin');
-        localStorage.setItem('staffUser', JSON.stringify({ name: "José Luis" }));
-        return window.location.href = 'admin.html';
+// ==========================================
+// ELIMINACIÓN DE REGISTROS (SEGURIDAD ADMIN)
+// ==========================================
+window.eliminarTrabajo = function(key) {
+    if(localStorage.getItem('adminCoreFix') !== 'true') return;
+    
+    if(confirm("¿Eliminar este caso de éxito de la vitrina de forma permanente?")) {
+        remove(ref(db, `trabajos_terminados/${key}`));
     }
-
-    onValue(ref(db, 'usuarios'), (snapshot) => {
-        const users = snapshot.val();
-        let encontrado = false;
-        if (users) {
-            for (let key in users) {
-                if (users[key].email === userInput && users[key].pass === pass) {
-                    encontrado = true;
-                    CoreFixLogger.registrar('info', `Sesión iniciada: ${userInput}`);
-                    localStorage.setItem('isLoggedIn', 'true');
-                    localStorage.setItem('userRole', role);
-                    localStorage.setItem('staffUser', JSON.stringify(users[key]));
-                    window.location.href = 'index.html';
-                    break;
-                }
-            }
-        }
-        if (!encontrado) {
-            CoreFixLogger.registrar('warn', `Intento de acceso fallido: ${userInput}`);
-            alert('❌ Datos incorrectos.');
-        }
-    }, { onlyOnce: true });
 };
 
 // ==========================================
-// PUNTO 3: COTIZADOR PRO Y MODO EXPRESS
+// RENDERIZAR VITRINA EN TIEMPO REAL (VISTA PÚBLICA)
+// ==========================================
+function listenTrabajosTerminados() {
+    const contenedor = document.getElementById('contenedorCasosExito');
+    const isAdmin = localStorage.getItem('adminCoreFix') === 'true';
+
+    if (!contenedor) return;
+
+    onValue(ref(db, 'trabajos_terminados'), (snapshot) => {
+        const data = snapshot.val();
+        if(!data) {
+            contenedor.innerHTML = `<p class="text-center md:col-span-3 text-slate-500 uppercase tracking-widest text-xs py-12">No hay trabajos registrados en la vitrina todavía.</p>`;
+            return;
+        }
+
+        contenedor.innerHTML = Object.entries(data).reverse().map(([key, val]) => {
+            let badgeColor = "bg-blue-600";
+            if(val.marca === 'Apple') badgeColor = "bg-white text-black";
+            if(val.marca === 'Motorola') badgeColor = "bg-red-600";
+            if(val.marca === 'Xiaomi') badgeColor = "bg-orange-600";
+
+            return `
+            <div class="p-6 rounded-[2.5rem] glass-card border border-white/5 hover:border-blue-500/40 transition-all group overflow-hidden relative flex flex-col justify-between">
+                <div>
+                    <div class="relative rounded-2xl overflow-hidden mb-6 h-48 bg-slate-900 flex items-center justify-center">
+                        <img src="${val.foto}" alt="${val.modelo}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.src='img/Logo.png'">
+                        <span class="absolute top-4 left-4 ${badgeColor} text-[8px] font-black px-2 py-1 rounded-full uppercase tracking-widest">
+                            ${val.marca}
+                        </span>
+                        <span class="absolute top-4 right-4 bg-green-500 text-white text-[8px] font-black px-2 py-1 rounded-full uppercase tracking-widest">
+                            Entregado
+                        </span>
+                    </div>
+                    <div class="px-2">
+                        <h4 class="text-xl font-black uppercase italic mb-1">${val.modelo}</h4>
+                        <p class="text-[10px] text-slate-500 uppercase font-black tracking-widest mb-4">📍 Sede ${val.sede}</p>
+                        <div class="space-y-2 text-xs border-t border-white/5 pt-4 text-slate-400 font-medium">
+                            <p><b class="text-slate-200 uppercase text-[10px]">Falla:</b> ${val.falla}</p>
+                            <p><b class="text-slate-200 uppercase text-[10px]">Solución:</b> ${val.solucion}</p>
+                        </div>
+                    </div>
+                </div>
+                ${isAdmin ? `
+                    <button onclick="window.eliminarTrabajo('${key}')" class="mt-6 w-full bg-red-600/20 text-red-400 border border-red-500/30 py-3 rounded-xl text-[10px] font-black uppercase hover:bg-red-600 hover:text-white transition-all tracking-widest">Eliminar Evidencia</button>
+                ` : ''}
+            </div>`;
+        }).join('');
+    });
+}
+
+// ==========================================
+// MOTOR DEL COTIZADOR (PÁGINA COTIZAR)
 // ==========================================
 window.updatePrice = function() {
     let base = parseInt(document.getElementById('damageType').value) || 0;
@@ -120,99 +139,41 @@ window.updatePrice = function() {
 };
 
 window.aceptarCotizacion = function() {
-    const damageType = document.getElementById('damageType');
-    const newOrder = {
-        id: 'CF-' + Math.floor(1000 + Math.random() * 9000),
-        nombre: document.getElementById('clientName').value,
-        telefono: document.getElementById('clientPhone').value,
-        marca: document.getElementById('clientBrand').value,
-        modelo: document.getElementById('clientModel').value,
-        falla: damageType.options[damageType.selectedIndex].text,
-        precio: parseInt(document.getElementById('priceDisplay').innerText),
-        ubicacion: document.getElementById('deliveryPoint').value,
-        fecha: new Date().toLocaleDateString(),
-        estado: "EN REVISIÓN"
-    };
-    push(ref(db, 'cotizaciones'), newOrder).then(() => {
-        CoreFixLogger.registrar('info', `Cotización generada: ${newOrder.id} para ${newOrder.nombre}`);
-        localStorage.setItem('currentOrder', JSON.stringify(newOrder));
-        alert("📩 Orden enviada a la nube.");
-        window.location.href = 'ticket.html';
-    });
-};
+    const nombre = document.getElementById('clientName').value.trim();
+    const telefono = document.getElementById('clientPhone').value.trim();
+    const marca = document.getElementById('clientBrand').value.trim();
+    const modelo = document.getElementById('clientModel').value.trim();
+    const damageSelect = document.getElementById('damageType');
+    const falla = damageSelect.options[damageSelect.selectedIndex].text;
+    const precio = document.getElementById('priceDisplay').innerText;
+    const ubicacion = document.getElementById('deliveryPoint').value;
+    const expressActive = document.getElementById('expressMode')?.checked ? "SÍ (Alta Prioridad)" : "No";
 
-// ==========================================
-// PUNTO 4: PANEL ADMIN REALTIME
-// ==========================================
-function listenAdminData(filtro = 'TODOS') {
-    const tableBody = document.getElementById('adminTableBody');
-    if (!tableBody) return;
-
-    onValue(ref(db, 'cotizaciones'), (snapshot) => {
-        const data = snapshot.val();
-        let cajaReal = 0;
-        let logs = data ? Object.entries(data).map(([key, val]) => ({...val, fbKey: key})) : [];
-        
-        if (filtro !== 'TODOS') logs = logs.filter(l => l.ubicacion === filtro);
-
-        tableBody.innerHTML = logs.reverse().map(log => {
-            if (log.estado === "ENTREGADO") cajaReal += log.precio;
-            const datosString = JSON.stringify(log).replace(/"/g, '&quot;');
-
-            return `
-            <tr class="hover:bg-blue-500/[0.03] border-b border-slate-700/50">
-                <td class="p-8">${log.fecha}<br><b class="text-blue-500 text-lg">${log.id}</b></td>
-                <td class="p-8"><b class="text-white">${log.nombre}</b></td>
-                <td class="p-8"><span class="text-blue-400 text-[10px] font-black uppercase">${log.falla}</span><br><small>${log.ubicacion}</small></td>
-                <td class="p-8 text-green-400 font-black">$${log.precio}</td>
-                <td class="p-8 text-center"><span class="px-4 py-1.5 rounded-full border border-blue-500/20 uppercase text-[10px]">${log.estado}</span></td>
-                <td class="p-8 text-right">
-                    ${log.estado !== 'ENTREGADO' ? `
-                        <button onclick="cambiarEstadoNube('${log.fbKey}', '${log.estado}', ${datosString})" 
-                                class="${log.estado === 'LISTO PARA RECOGER' ? 'bg-blue-600' : 'bg-green-600'} p-3 rounded-xl text-white shadow-lg">
-                            <i class="fas ${log.estado === 'LISTO PARA RECOGER' ? 'fa-handshake' : 'fa-check'}"></i>
-                        </button>
-                    ` : '<span class="text-green-500 font-black text-[10px]">FINALIZADO</span>'}
-                    <button onclick="eliminarOrdenNube('${log.fbKey}')" class="bg-red-600/10 p-3 rounded-xl text-red-500 mx-1"><i class="fas fa-trash"></i></button>
-                </td>
-            </tr>`;
-        }).join('');
-        actualizarWidgets(cajaReal);
-    });
-}
-
-// ==========================================
-// PUNTO 5: ALMACÉN E INVENTARIO
-// ==========================================
-window.editarStockNube = (p, a) => {
-    const n = prompt(`Stock para ${p}:`, a);
-    if (n !== null) {
-        update(ref(db, 'inventario/' + p), { cantidad: parseInt(n) });
-        CoreFixLogger.registrar('warn', `Inventario modificado: ${p} ahora tiene ${n} unidades.`);
+    if (!nombre || !modelo || damageSelect.value === "0") {
+        alert("🚨 Por favor, introduce tu nombre, modelo del equipo y selecciona la falla.");
+        return;
     }
-};
 
-// ==========================================
-// SEGURIDAD: ELIMINAR REGISTROS
-// ==========================================
-window.eliminarOrdenNube = (key) => {
-    if (confirm("¿Eliminar registro permanentemente?")) {
-        remove(ref(db, `cotizaciones/${key}`));
-        CoreFixLogger.registrar('error', `Registro eliminado de la base de datos: ${key}`);
-    }
+    const mensaje = `*🔥 NUEVA COTIZACIÓN EN COREFIX* %0A%0A` +
+                    `*👤 Cliente:* ${nombre}%0A` +
+                    `*📱 Celular/WhatsApp:* ${telefono}%0A` +
+                    `*📦 Equipo:* ${marca} ${modelo}%0A` +
+                    `*🛠️ Falla Reportada:* ${falla}%0A` +
+                    `*⚡ Servicio Express:* ${expressActive}%0A` +
+                    `*💰 Inversión Estimada:* $${precio} MXN%0A` +
+                    `*📍 Sucursal de Entrega:* ${ubicacion}%0A%0A` +
+                    `_¡Hola! Vengo desde la página web y me gustaría agendar la reparación de mi equipo._`;
+
+    window.open(`https://wa.me/5212231059545?text=${mensaje}`, '_blank');
 };
 
 // ==========================================
 // ARRANQUE GLOBAL
 // ==========================================
 document.addEventListener('DOMContentLoaded', () => {
-    listenAdminData();
-    // Log final de carga
-    CoreFixLogger.registrar('info', 'CoreFix: Interfaz de usuario lista y monitoreada.');
-});
+    listenTrabajosTerminados();
 
-window.logout = () => { 
-    CoreFixLogger.registrar('warn', 'Cierre de sesión manual ejecutado.');
-    localStorage.clear(); 
-    window.location.href = 'index.html'; 
-};
+    if (localStorage.getItem('adminCoreFix') === 'true' && document.getElementById('adminPanelTrabajos')) {
+        document.getElementById('adminPanelTrabajos').classList.remove('hidden');
+    }
+});
