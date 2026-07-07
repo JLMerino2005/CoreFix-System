@@ -1,8 +1,11 @@
-/* PALETA DE COLORES PERSONALIZADA PARA COREFIX */
+/* ==========================================
+   PALETA DE COLORES PREMIUM - COREFIX 2026
+   ========================================== */
 :root {
     --azulCielo: #38bdf8;
-    --azulMarino: #0f172a;
-    --azulMedia: #1e3a8a;
+    --azulMarino: #0b0f19; /* Gris espacial profundo que elimina el tono lavado */
+    --azulMedia: #0f172a;  /* Tono intermedio para degradados y secciones */
+    --techGlow: rgba(56, 189, 248, 0.15); /* Resplandor azul cielo premium */
 }
 
 /* Clases de utilidad extendidas */
@@ -15,22 +18,47 @@
 .bg-azulMarino {
     background-color: var(--azulMarino);
 }
-
-/* Efectos visuales de las secciones */
-.card-servicio:hover {
-    transform: translateY(-4px);
-    border-color: var(--azulCielo);
-    box-shadow: 0 10px 15px -3px rgba(56, 189, 248, 0.1);
+.bg-azulMedia {
+    background-color: var(--azulMedia);
 }
 
+/* Efectos visuales de las secciones (Catálogo) */
 .card-servicio {
     transition: all 0.3s ease;
 }
 
-/* Ajustes finos para la carga de imágenes */
+.card-servicio:hover {
+    transform: translateY(-4px);
+    border-color: var(--azulCielo);
+    /* Aplicamos el resplandor refinado de alta tecnología */
+    box-shadow: 0 10px 25px -5px var(--techGlow); 
+}
+
+/* Ajustes finos para el Portafolio Dinámico de Imágenes */
 img {
     transition: transform 0.5s ease;
 }
+
 .group:hover img {
     transform: scale(1.05);
+}
+
+/* ==========================================
+   INTERFAZ DEL LOGO CIRCULAR OPTIMIZADO
+   ========================================== */
+.logo-empresa {
+    height: 82px;
+    width: 82px;          /* Forzamos el cuadrado perfecto */
+    object-fit: cover;    /* Evita la deformación del contenido */
+    border-radius: 50%;   /* Recorte circular impecable */
+    background-color: #ffffff; /* Mantiene el fondo blanco interno */
+    border: 2px solid var(--azulCielo); /* Borde estético integrado */
+    box-sizing: border-box; /* Previene que el borde altere el tamaño real */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25); /* Sutil separación tridimensional */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.logo-empresa:hover {
+    transform: scale(1.06);
+    box-shadow: 0 4px 16px var(--techGlow); /* El logo también resplandece al hover */
 }
