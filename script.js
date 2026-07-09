@@ -3,14 +3,16 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/fireba
 import { getFirestore, collection, addDoc, onSnapshot, doc, getDoc, updateDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
 
-// ⚠️ REEMPLAZA ESTAS LÍNEAS CON TUS DATOS REALES DE FIREBASE CONSOLE
+// ✅ CREDENCIALES REALES EXTRAÍDAS DE TU CONSOLA DE FIREBASE
 const firebaseConfig = {
-    apiKey: "TU_API_KEY_REAL",
+    apiKey: "AIzaSyBgoQDuWsn8_aITK2FwQQ0RF3T5kW1k20",
     authDomain: "corefix-system.firebaseapp.com",
+    databaseURL: "https://corefix-system-default-rtdb.firebaseio.com",
     projectId: "corefix-system",
-    storageBucket: "corefix-system.appspot.com",
-    messagingSenderId: "TU_MESSAGING_SENDER_ID",
-    appId: "TU_APP_ID"
+    storageBucket: "corefix-system.firebasestorage.app",
+    messagingSenderId: "1081209996313",
+    appId: "1:1081209996313:web:6c89f5936f328da1c3d688",
+    measurementId: "G-2BC2F8JBWM"
 };
 
 // Inicializar servicios de Firebase
@@ -137,7 +139,52 @@ function escucharGaleriaFirebase() {
     });
 }
 
+// ==========================================
+// 🖼️ LÓGICA DE CONTROL DEL MODAL DE DETALLES
+// ==========================================
+function abrirDetalles(servicio) {
+    const modal = document.getElementById('modal-detalles');
+    const titulo = document.getElementById('modal-titulo');
+    const lista = document.getElementById('modal-lista');
+    
+    if (!modal || !titulo || !lista) return;
+    lista.innerHTML = "";
+
+    if (servicio === 'celulares') {
+        titulo.innerText = "Soporte Especializado en Celulares";
+        lista.innerHTML = `
+            <li>• Reemplazo de módulos de pantalla (Calidad Original y OLED)</li>
+            <li>• Rebalanceo de ciclos de carga y cambio de baterías certificadas</li>
+            <li>• Microelectrónica en centros de carga Tipo-C y Lightning</li>
+            <li>• Flasheo de ROMs de fábrica y recuperación de sistemas colapsados</li>
+        `;
+    } else if (servicio === 'laptops') {
+        titulo.innerText = "Soporte en Cómputo y Laptops";
+        lista.innerHTML = `
+            <li>• Clonación de sistemas operativos hacia unidades de estado sólido SSD</li>
+            <li>• Mantenimiento de cooling térmico preventivo con pasta de alta gama</li>
+            <li>• Reconstrucción estructural y alineación mecánica de bisagras dañadas</li>
+            <li>• Diagnósticos lógicos avanzados de fallas en placas base</li>
+        `;
+    } else if (servicio === 'impresoras') {
+        titulo.innerText = "Soporte Técnico en Impresión";
+        lista.innerHTML = `
+            <li>• Ultrasonido y destape profundo de inyectores/cabezales térmicos</li>
+            <li>• Reajuste y reseteo por software de almohadillas digitales de desecho</li>
+            <li>• Mantenimiento correctivo a rodillos de arrastre y trenes de engranajes</li>
+            <li>• Solución de atascos críticos y calibración óptica de escáneres</li>
+        `;
+    }
+    modal.classList.remove('hidden');
+}
+
+function cerrarDetalles() {
+    const modal = document.getElementById('modal-detalles');
+    if (modal) modal.classList.add('hidden');
+}
+
 // Vinculación definitiva con el entorno global de la página
 window.registrarIngreso = registrarIngreso;
-window.publicarTrabajo =公开Trabajo; // Fallback idiomático
 window.publicarTrabajo = publicarTrabajo;
+window.abrirDetalles = abrirDetalles;
+window.cerrarDetalles = cerrarDetalles;
