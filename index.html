@@ -4,95 +4,82 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>COREFIX | Servicio Técnico Especializado</title>
-    <!-- Tailwind CSS desde CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="style.css">
-    <!-- Enlace al Manifiesto de la PWA -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0f172a">
 </head>
-<body class="bg-slate-50 text-slate-800 font-sans flex flex-col min-h-screen">
+<body class="bg-slate-50 text-slate-800 font-sans flex flex-col min-h-screen overflow-x-hidden">
 
-    <!-- CINTILLO INTERACTIVO SUPERIOR -->
-<div class="bg-azulCielo text-slate-950 text-center py-2 px-4 text-[11px] font-black tracking-wide flex justify-center items-center space-x-2 border-b border-sky-400">
-        <span class="bg-slate-950 text-azulCielo text-[9px] font-black uppercase px-1.5 py-0.5 rounded animate-pulse">Aviso</span>
-        <span>Soporte técnico activo y recepción de equipos disponible en toda la región de Puebla.</span>
+    <div class="bg-azulCielo text-slate-950 text-center py-2 px-4 text-[11px] font-black tracking-wide flex flex-wrap justify-center items-center gap-2 border-b border-sky-400">
+        <span class="bg-slate-950 text-azulCielo text-[9px] font-black uppercase px-1.5 py-0.5 rounded animate-pulse shrink-0">Aviso</span>
+        <span class="text-center">Soporte técnico activo y recepción de equipos disponible en toda la región de Puebla.</span>
     </div>
 
-    <!-- BARRA DE NAVEGACIÓN -->
     <nav class="bg-azulMarino text-white sticky top-0 z-50 shadow-md">
         <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
             <div class="flex items-center space-x-2">
                 <img src="img/Logo.png" alt="Logo COREFIX" class="logo-empresa">
                 <span class="text-xl font-black tracking-wider text-azulCielo">CORE<span class="text-white">FIX</span></span>
             </div>
-            <div class="space-x-6">
-                <a href="#servicios" class="hidden md:inline hover:text-azulCielo transition font-medium">Catálogo</a>
-                <a href="#portafolio" class="hidden md:inline hover:text-azulCielo transition font-medium">Nuestros Trabajos</a>
-                <a href="login.html" class="bg-azulCielo text-slate-900 px-4 py-1.5 rounded-md font-bold hover:bg-white transition shadow-sm">Admin</a>
+            <div class="space-x-3 sm:space-x-6 flex items-center">
+                <a href="#servicios" class="hidden sm:inline hover:text-azulCielo transition font-medium text-sm">Catálogo</a>
+                <a href="#portafolio" class="hidden sm:inline hover:text-azulCielo transition font-medium text-sm">Nuestros Trabajos</a>
+                <a href="login.html" class="bg-azulCielo text-slate-900 px-3 sm:px-4 py-1.5 rounded-md font-bold hover:bg-white transition shadow-sm text-xs sm:text-sm">Admin</a>
             </div>
         </div>
     </nav>
 
-    <!-- HERO SECTION CON CINTILLO FLOTANTE DE MARCAS ORIGINALES -->
-    <header class="bg-gradient-to-br from-slate-900 via-slate-800 to-blue-900 text-white pt-24 pb-32 px-4 text-center header-bg relative">
+    <header class="bg-gradient-to-br from-slate-900 via-slate-800 to-blue-900 text-white pt-20 pb-40 md:pb-32 px-4 text-center header-bg relative">
         <div class="max-w-3xl mx-auto">
             <span class="bg-azulCielo/10 text-azulCielo text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full border border-azulCielo/20">Soporte Técnico de Confianza</span>
-            <h1 class="text-4xl md:text-5xl font-black mt-4 mb-6 leading-tight">Reparación Profesional de Dispositivos</h1>
-            <p class="text-base md:text-lg text-slate-300 mb-8 max-w-xl mx-auto">Soluciones rápidas y diagnósticos certeros para celulares, laptops, PCs e impresoras.</p>
-            <div class="flex justify-center space-x-4 mb-8">
-                <a href="#servicios" class="bg-azulCielo text-slate-900 px-6 py-3 rounded-lg font-bold shadow-md hover:bg-white transition">Ver Catálogo</a>
-                <a href="https://wa.me/522231059545" target="_blank" class="bg-transparent border border-slate-500 text-white px-6 py-3 rounded-lg font-bold hover:bg-white/10 transition">Cotizar por WhatsApp</a>
+            <h1 class="text-3xl md:text-5xl font-black mt-4 mb-6 leading-tight">Reparación Profesional de Dispositivos</h1>
+            <p class="text-sm md:text-lg text-slate-300 mb-8 max-w-xl mx-auto">Soluciones rápidas y diagnósticos certeros para celulares, laptops, PCs e impresoras.</p>
+            <div class="flex flex-col sm:flex-row justify-center items-center gap-4 mb-8">
+                <a href="#servicios" class="w-full sm:w-auto bg-azulCielo text-slate-900 px-6 py-3 rounded-lg font-bold shadow-md hover:bg-white transition text-sm">Ver Catálogo</a>
+                <a href="https://wa.me/522231059545" target="_blank" class="w-full sm:w-auto bg-transparent border border-slate-500 text-white px-6 py-3 rounded-lg font-bold hover:bg-white/10 transition text-sm">Cotizar por WhatsApp</a>
             </div>
         </div>
 
-        <!-- CINTILLO FLOTANTE DE MARCAS (LOGOS ORIGINALES VECTORIALES) -->
         <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 w-11/12 max-w-5xl z-10">
-            <div class="bg-slate-900/90 backdrop-blur-md border border-slate-700/50 rounded-2xl p-6 shadow-2xl">
-                <p class="text-[10px] font-black uppercase tracking-widest text-azulCielo text-center mb-5">Soporte Multimarca Especializado</p>
+            <div class="bg-slate-900/90 backdrop-blur-md border border-slate-700/50 rounded-2xl p-4 md:p-6 shadow-2xl">
+                <p class="text-[10px] font-black uppercase tracking-widest text-azulCielo text-center mb-4">Soporte Multimarca Especializado</p>
                 
-                <div class="grid grid-cols-3 md:grid-cols-7 gap-y-6 gap-x-4 items-center justify-items-center">
+                <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-7 gap-y-5 gap-x-2 items-center justify-items-center">
                     
-                    <!-- Apple -->
-                    <div class="flex flex-col items-center space-y-1.5 group cursor-default">
-                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/apple.svg" alt="Apple" class="w-6 h-6 invert opacity-70 group-hover:opacity-100 transition duration-200">
-                        <span class="text-[10px] font-bold tracking-wider text-slate-400 group-hover:text-white transition">APPLE</span>
+                    <div class="flex flex-col items-center space-y-1 group cursor-default">
+                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/apple.svg" alt="Apple" class="w-5 h-5 md:w-6 md:h-6 invert opacity-70 group-hover:opacity-100 transition duration-200">
+                        <span class="text-[9px] md:text-[10px] font-bold tracking-wider text-slate-400 group-hover:text-white transition">APPLE</span>
                     </div>
 
-                    <!-- Samsung -->
-                    <div class="flex flex-col items-center space-y-1.5 group cursor-default">
-                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/samsung.svg" alt="Samsung" class="w-10 h-6 invert opacity-70 group-hover:opacity-100 group-hover:brightness-125 transition duration-200 object-contain">
-                        <span class="text-[10px] font-bold tracking-wider text-slate-400 group-hover:text-blue-400 transition">SAMSUNG</span>
+                    <div class="flex flex-col items-center space-y-1 group cursor-default">
+                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/samsung.svg" alt="Samsung" class="w-8 h-5 md:w-10 md:h-6 invert opacity-70 group-hover:opacity-100 group-hover:brightness-125 transition duration-200 object-contain">
+                        <span class="text-[9px] md:text-[10px] font-bold tracking-wider text-slate-400 group-hover:text-blue-400 transition">SAMSUNG</span>
                     </div>
 
-                    <!-- Motorola -->
-                    <div class="flex flex-col items-center space-y-1.5 group cursor-default">
-                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/motorola.svg" alt="Motorola" class="w-6 h-6 invert opacity-70 group-hover:opacity-100 transition duration-200">
-                        <span class="text-[10px] font-bold tracking-wider text-slate-400 group-hover:text-white transition">MOTOROLA</span>
+                    <div class="flex flex-col items-center space-y-1 group cursor-default">
+                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/motorola.svg" alt="Motorola" class="w-5 h-5 md:w-6 md:h-6 invert opacity-70 group-hover:opacity-100 transition duration-200">
+                        <span class="text-[9px] md:text-[10px] font-bold tracking-wider text-slate-400 group-hover:text-white transition">MOTOROLA</span>
                     </div>
 
-                    <!-- Huawei -->
-                    <div class="flex flex-col items-center space-y-1.5 group cursor-default">
-                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/huawei.svg" alt="Huawei" class="w-6 h-6 invert opacity-70 group-hover:opacity-100 transition duration-200">
-                        <span class="text-[10px] font-bold tracking-wider text-slate-400 group-hover:text-red-500 transition">HUAWEI</span>
+                    <div class="flex flex-col items-center space-y-1 group cursor-default">
+                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/huawei.svg" alt="Huawei" class="w-5 h-5 md:w-6 md:h-6 invert opacity-70 group-hover:opacity-100 transition duration-200">
+                        <span class="text-[9px] md:text-[10px] font-bold tracking-wider text-slate-400 group-hover:text-red-500 transition">HUAWEI</span>
                     </div>
 
-                    <!-- Dell -->
-                    <div class="flex flex-col items-center space-y-1.5 group cursor-default">
-                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/dell.svg" alt="Dell" class="w-6 h-6 invert opacity-70 group-hover:opacity-100 transition duration-200">
-                        <span class="text-[10px] font-bold tracking-wider text-slate-400 group-hover:text-blue-400 transition">DELL</span>
+                    <div class="flex flex-col items-center space-y-1 group cursor-default">
+                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/dell.svg" alt="Dell" class="w-5 h-5 md:w-6 md:h-6 invert opacity-70 group-hover:opacity-100 transition duration-200">
+                        <span class="text-[9px] md:text-[10px] font-bold tracking-wider text-slate-400 group-hover:text-blue-400 transition">DELL</span>
                     </div>
 
-                    <!-- HP -->
-                    <div class="flex flex-col items-center space-y-1.5 group cursor-default">
-                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/hp.svg" alt="HP" class="w-6 h-6 invert opacity-70 group-hover:opacity-100 transition duration-200">
-                        <span class="text-[10px] font-bold tracking-wider text-slate-400 group-hover:text-white transition">HP</span>
+                    <div class="flex flex-col items-center space-y-1 group cursor-default">
+                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/hp.svg" alt="HP" class="w-5 h-5 md:w-6 md:h-6 invert opacity-70 group-hover:opacity-100 transition duration-200">
+                        <span class="text-[9px] md:text-[10px] font-bold tracking-wider text-slate-400 group-hover:text-white transition">HP</span>
                     </div>
 
-                    <!-- Epson -->
-                    <div class="flex flex-col items-center space-y-1.5 group cursor-default">
-                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/epson.svg" alt="Epson" class="w-10 h-6 invert opacity-70 group-hover:opacity-100 transition duration-200 object-contain">
-                        <span class="text-[10px] font-bold tracking-wider text-slate-400 group-hover:text-azulCielo transition">EPSON</span>
+                    <div class="flex flex-col items-center space-y-1 group cursor-default col-span-3 sm:col-span-1">
+                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/epson.svg" alt="Epson" class="w-8 h-5 md:w-10 md:h-6 invert opacity-70 group-hover:opacity-100 transition duration-200 object-contain">
+                        <span class="text-[9px] md:text-[10px] font-bold tracking-wider text-slate-400 group-hover:text-azulCielo transition">EPSON</span>
                     </div>
 
                 </div>
@@ -100,42 +87,39 @@
         </div>
     </header>
 
-    <!-- SECCIÓN DE MÉTRICAS / CONTADORES -->
-    <section class="bg-white pt-24 pb-12 px-4">
-        <div class="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-            <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100">
-                <span class="text-3xl md:text-4xl font-black text-azulMarino block mb-1">+1,200</span>
-                <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Equipos Reparados</span>
+    <section class="bg-white pt-28 pb-12 px-4">
+        <div class="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 text-center">
+            <div class="p-3 md:p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                <span class="text-2xl md:text-4xl font-black text-azulMarino block mb-1">+1,200</span>
+                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Equipos Reparados</span>
             </div>
-            <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100">
-                <span class="text-3xl md:text-4xl font-black text-azulCielo block mb-1">99.4%</span>
-                <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Clientes Satisfechos</span>
+            <div class="p-3 md:p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                <span class="text-2xl md:text-4xl font-black text-azulCielo block mb-1">99.4%</span>
+                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Clientes Satisfechos</span>
             </div>
-            <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100">
-                <span class="text-3xl md:text-4xl font-black text-azulMarino block mb-1">24/48h</span>
-                <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Tiempo de Entrega</span>
+            <div class="p-3 md:p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                <span class="text-2xl md:text-4xl font-black text-azulMarino block mb-1">24/48h</span>
+                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Tiempo de Entrega</span>
             </div>
-            <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100">
-                <span class="text-3xl md:text-4xl font-black text-azulCielo block mb-1">3</span>
-                <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Zonas de Cobertura</span>
+            <div class="p-3 md:p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                <span class="text-2xl md:text-4xl font-black text-azulCielo block mb-1">3</span>
+                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Zonas de Cobertura</span>
             </div>
         </div>
     </section>
 
-    <!-- CATÁLOGO POR SECCIONES -->
     <main class="flex-grow">
-        <section id="servicios" class="max-w-6xl mx-auto px-4 py-20">
-            <div class="text-center mb-16">
+        <section id="servicios" class="max-w-6xl mx-auto px-4 py-12 md:py-20">
+            <div class="text-center mb-12 md:mb-16">
                 <h2 class="text-3xl font-extrabold text-slate-900">Servicios de CoreFix</h2>
-                <p class="text-slate-500 mt-2">Especialistas en hardware y software para mantener tus equipos al 100%</p>
+                <p class="text-slate-500 mt-2 text-sm">Especialistas en hardware y software para mantener tus equipos al 100%</p>
             </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <!-- Celulares -->
-                <div class="card-servicio bg-white p-8 rounded-2xl shadow-sm border border-slate-100 flex flex-col justify-between transition">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+                <div class="card-servicio bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-100 flex flex-col justify-between transition">
                     <div>
-                        <div class="w-12 h-12 bg-blue-50 text-azulCielo text-2xl rounded-xl flex items-center justify-center mb-6">📱</div>
-                        <h3 class="text-xl font-bold text-slate-900 mb-4">Celulares</h3>
+                        <div class="w-11 h-11 bg-blue-50 text-azulCielo text-xl rounded-xl flex items-center justify-center mb-5">📱</div>
+                        <h3 class="text-lg md:text-xl font-bold text-slate-900 mb-4">Celulares</h3>
                         <ul class="text-slate-600 space-y-3 text-sm">
                             <li class="flex items-center"><span class="text-azulCielo mr-2">✔</span> Cambio de pantallas y Gorilla Glass</li>
                             <li class="flex items-center"><span class="text-azulCielo mr-2">✔</span> Reemplazo de baterías dañadas</li>
@@ -148,11 +132,10 @@
                     </button>
                 </div>
 
-                <!-- Laptops -->
-                <div class="card-servicio bg-white p-8 rounded-2xl shadow-sm border border-slate-100 flex flex-col justify-between transition">
+                <div class="card-servicio bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-100 flex flex-col justify-between transition">
                     <div>
-                        <div class="w-12 h-12 bg-slate-900/10 text-slate-900 text-2xl rounded-xl flex items-center justify-center mb-6">💻</div>
-                        <h3 class="text-xl font-bold text-slate-900 mb-4">Laptops & PCs</h3>
+                        <div class="w-11 h-11 bg-slate-900/10 text-slate-900 text-xl rounded-xl flex items-center justify-center mb-5">💻</div>
+                        <h3 class="text-lg md:text-xl font-bold text-slate-900 mb-4">Laptops & PCs</h3>
                         <ul class="text-slate-600 space-y-3 text-sm">
                             <li class="flex items-center"><span class="text-slate-900 mr-2">✔</span> Instalación de unidades SSD</li>
                             <li class="flex items-center"><span class="text-slate-900 mr-2">✔</span> Limpieza física y pasta térmica</li>
@@ -165,11 +148,10 @@
                     </button>
                 </div>
 
-                <!-- Impresoras -->
-                <div class="card-servicio bg-white p-8 rounded-2xl shadow-sm border border-slate-100 flex flex-col justify-between transition">
+                <div class="card-servicio bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-100 flex flex-col justify-between transition">
                     <div>
-                        <div class="w-12 h-12 bg-blue-50 text-azulCielo text-2xl rounded-xl flex items-center justify-center mb-6">🖨️</div>
-                        <h3 class="text-xl font-bold text-slate-900 mb-4">Impresoras</h3>
+                        <div class="w-11 h-11 bg-blue-50 text-azulCielo text-xl rounded-xl flex items-center justify-center mb-5">🖨️</div>
+                        <h3 class="text-lg md:text-xl font-bold text-slate-900 mb-4">Impresoras</h3>
                         <ul class="text-slate-600 space-y-3 text-sm">
                             <li class="flex items-center"><span class="text-azulCielo mr-2">✔</span> Mantenimiento preventivo general</li>
                             <li class="flex items-center"><span class="text-azulCielo mr-2">✔</span> Destape de inyectores y cabezales</li>
@@ -184,50 +166,47 @@
             </div>
         </section>
 
-        <!-- SECCIÓN DE TRATO HONESTO / BENEFICIOS -->
         <section class="bg-white py-16 px-4 border-b border-slate-100">
-            <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
-                <div class="p-4">
-                    <div class="text-3xl mb-3 text-azulCielo">⏱️</div>
-                    <h4 class="font-bold text-slate-900 mb-1">Diagnóstico Rápido</h4>
+            <div class="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 text-center">
+                <div class="p-2">
+                    <div class="text-3xl mb-2 text-azulCielo">⏱️</div>
+                    <h4 class="font-bold text-slate-900 mb-1 text-sm">Diagnóstico Rápido</h4>
                     <p class="text-xs text-slate-500">Evaluamos tu equipo a la brevedad para que no te quedes incomunicado.</p>
                 </div>
-                <div class="p-4">
-                    <div class="text-3xl mb-3 text-azulCielo">🛡️</div>
-                    <h4 class="font-bold text-slate-900 mb-1">Garantía Real</h4>
+                <div class="p-2">
+                    <div class="text-3xl mb-2 text-azulCielo">🛡️</div>
+                    <h4 class="font-bold text-slate-900 mb-1 text-sm">Garantía Real</h4>
                     <p class="text-xs text-slate-500">Todas nuestras reparaciones de hardware cuentan con respaldo directo.</p>
                 </div>
-                <div class="p-4">
-                    <div class="text-3xl mb-3 text-azulCielo">🔬</div>
-                    <h4 class="font-bold text-slate-900 mb-1">Componentes de Calidad</h4>
+                <div class="p-2">
+                    <div class="text-3xl mb-2 text-azulCielo">🔬</div>
+                    <h4 class="font-bold text-slate-900 mb-1 text-sm">Componentes de Calidad</h4>
                     <p class="text-xs text-slate-500">Utilizamos refacciones de primer nivel para asegurar la durabilidad del equipo.</p>
                 </div>
-                <div class="p-4">
-                    <div class="text-3xl mb-3 text-azulCielo">🤝</div>
-                    <h4 class="font-bold text-slate-900 mb-1">Trato Honesto</h4>
+                <div class="p-2">
+                    <div class="text-3xl mb-2 text-azulCielo">🤝</div>
+                    <h4 class="font-bold text-slate-900 mb-1 text-sm">Trato Honesto</h4>
                     <p class="text-xs text-slate-500">Precios justos, sin letras chiquitas ni cargos sorpresa.</p>
                 </div>
             </div>
         </section>
 
-        <!-- SECCIÓN DE UBICACIONES MÁS PRO (ESTILO INGENIERÍA / TECH) -->
-        <section class="bg-slate-950 py-20 px-4 border-t border-slate-900 text-white">
+        <section class="bg-slate-950 py-16 px-4 border-t border-slate-900 text-white">
             <div class="max-w-6xl mx-auto">
-                <div class="text-center mb-12">
+                <div class="text-center mb-10">
                     <span class="text-xs font-bold uppercase tracking-widest text-azulCielo bg-azulCielo/10 px-3 py-1 rounded-full border border-azulCielo/20">Logística de Entrega</span>
-                    <h2 class="text-3xl font-black text-white mt-3">Puntos de Cobertura y Recepción</h2>
-                    <p class="text-slate-400 mt-2 max-w-md mx-auto text-sm">Selecciona el punto de control más cercano para desplegar tu ruta de navegación en Google Maps.</p>
+                    <h2 class="text-2xl md:text-3xl font-black text-white mt-3">Puntos de Cobertura y Recepción</h2>
+                    <p class="text-slate-400 mt-2 max-w-md mx-auto text-xs md:text-sm">Selecciona el punto de control más cercano para desplegar tu ruta de navegación en Google Maps.</p>
                 </div>
                 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-                    <!-- Tarjeta Xochitlán -->
-                    <a href="https://www.google.com/maps/search/?api=1&query=18.709972,-97.773639" 
+                    <a href="https://maps.google.com/?q=18.7100,-97.7736" 
                        target="_blank" 
                        class="group relative bg-slate-900 rounded-2xl p-6 border border-slate-800 hover:border-azulCielo/60 transition-all duration-300 shadow-xl flex flex-col justify-between overflow-hidden">
                         <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-azulCielo to-azulMedia"></div>
                         <div>
                             <div class="w-10 h-10 bg-azulCielo/10 text-azulCielo rounded-xl flex items-center justify-center font-bold mb-4 text-lg group-hover:scale-110 transition">📍</div>
-                            <h3 class="text-lg font-bold text-white mb-1">Xochitlán Todos Santos</h3>
+                            <h3 class="text-base md:text-lg font-bold text-white mb-1">Xochitlán Todos Santos</h3>
                             <p class="text-xs text-slate-400">Punto principal de atención y servicios técnicos.</p>
                         </div>
                         <div class="mt-6 flex items-center text-xs font-bold text-azulCielo group-hover:underline">
@@ -235,15 +214,14 @@
                         </div>
                     </a>
 
-                    <!-- Tarjeta Tepexi 1 -->
-                    <a href="https://www.google.com/maps/search/?api=1&query=18.581444,-97.925722" 
+                    <a href="https://maps.google.com/?q=18.5814,-97.9257" 
                        target="_blank" 
                        class="group relative bg-slate-900 rounded-2xl p-6 border border-slate-800 hover:border-azulCielo/40 transition-all duration-300 shadow-xl flex flex-col justify-between overflow-hidden">
                         <div class="absolute top-0 left-0 w-full h-1 bg-slate-800 group-hover:bg-azulCielo/30 transition"></div>
                         <div>
                             <div class="w-10 h-10 bg-slate-800 text-slate-300 rounded-xl flex items-center justify-center font-bold mb-4 text-lg group-hover:scale-110 transition">📍</div>
-                            <h3 class="text-lg font-bold text-white mb-1">Tepexi de Rodríguez</h3>
-                            <span class="inline-block bg-slate-800 text-slate-400 text-[10px] font-bold px-2 py-0.5 rounded mb-2">Zona Norte</span>
+                            <h3 class="text-base md:text-lg font-bold text-white mb-1">Tepexi de Rodríguez</h3>
+                            <span class="inline-block bg-slate-800 text-slate-400 text-[9px] font-bold px-2 py-0.5 rounded mb-2">Zona Norte</span>
                             <p class="text-xs text-slate-400">Módulo alterno para recepción y diagnóstico express.</p>
                         </div>
                         <div class="mt-6 flex items-center text-xs font-bold text-slate-400 group-hover:text-azulCielo transition">
@@ -251,15 +229,14 @@
                         </div>
                     </a>
 
-                    <!-- Tarjeta Tepexi 2 -->
-                    <a href="https://www.google.com/maps/search/?api=1&query=18.576167,-97.929333" 
+                    <a href="https://maps.google.com/?q=18.5762,-97.9293" 
                        target="_blank" 
                        class="group relative bg-slate-900 rounded-2xl p-6 border border-slate-800 hover:border-azulCielo/40 transition-all duration-300 shadow-xl flex flex-col justify-between overflow-hidden">
                         <div class="absolute top-0 left-0 w-full h-1 bg-slate-800 group-hover:bg-azulCielo/30 transition"></div>
                         <div>
                             <div class="w-10 h-10 bg-slate-800 text-slate-300 rounded-xl flex items-center justify-center font-bold mb-4 text-lg group-hover:scale-110 transition">📍</div>
-                            <h3 class="text-lg font-bold text-white mb-1">Tepexi de Rodríguez</h3>
-                            <span class="inline-block bg-slate-800 text-slate-400 text-[10px] font-bold px-2 py-0.5 rounded mb-2">Zona Centro</span>
+                            <h3 class="text-base md:text-lg font-bold text-white mb-1">Tepexi de Rodríguez</h3>
+                            <span class="inline-block bg-slate-800 text-slate-400 text-[9px] font-bold px-2 py-0.5 rounded mb-2">Zona Centro</span>
                             <p class="text-xs text-slate-400">Punto de recolección y logística de entregas coordinadas.</p>
                         </div>
                         <div class="mt-6 flex items-center text-xs font-bold text-slate-400 group-hover:text-azulCielo transition">
@@ -272,76 +249,67 @@
             </div>
         </section>
 
-        <!-- PROCESO DE TRABAJO -->
         <section class="bg-slate-900 text-white py-16 px-4 border-t border-b border-slate-800">
             <div class="max-w-6xl mx-auto">
                 <div class="text-center mb-12">
-                    <h2 class="text-3xl font-extrabold">Nuestro Proceso de Soporte</h2>
+                    <h2 class="text-2xl md:text-3xl font-extrabold">Nuestro Proceso de Soporte</h2>
                     <p class="text-slate-400 mt-2 text-sm">Garantizamos precisión en cada etapa del diagnóstico y la reparación.</p>
                 </div>
                 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center relative">
-                    <!-- Paso 1 -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 text-center relative">
                     <div class="p-6 bg-slate-800/50 rounded-2xl border border-slate-700/50 relative">
-                        <div class="w-12 h-12 bg-azulCielo text-slate-900 font-black rounded-xl flex items-center justify-center text-lg mx-auto mb-4">1</div>
-                        <h3 class="font-bold text-lg mb-2">Recepción y Registro</h3>
+                        <div class="w-11 h-11 bg-azulCielo text-slate-900 font-black rounded-xl flex items-center justify-center text-base mx-auto mb-4">1</div>
+                        <h3 class="font-bold text-base mb-2">Recepción y Registro</h3>
                         <p class="text-xs text-slate-400">Ingresamos tu equipo al sistema, recopilamos los síntomas iniciales y te entregamos tu orden de servicio digital.</p>
                     </div>
-                    <!-- Paso 2 -->
                     <div class="p-6 bg-slate-800/50 rounded-2xl border border-slate-700/50">
-                        <div class="w-12 h-12 bg-azulCielo text-slate-900 font-black rounded-xl flex items-center justify-center text-lg mx-auto mb-4">2</div>
-                        <h3 class="font-bold text-lg mb-2">Diagnóstico Preciso</h3>
+                        <div class="w-11 h-11 bg-azulCielo text-slate-900 font-black rounded-xl flex items-center justify-center text-base mx-auto mb-4">2</div>
+                        <h3 class="font-bold text-base mb-2">Diagnóstico Preciso</h3>
                         <p class="text-xs text-slate-400">Analizamos el hardware y software minuciosamente para localizar la falla exacta sin adivinanzas.</p>
                     </div>
-                    <!-- Paso 3 -->
                     <div class="p-6 bg-slate-800/50 rounded-2xl border border-slate-700/50">
-                        <div class="w-12 h-12 bg-azulCielo text-slate-900 font-black rounded-xl flex items-center justify-center text-lg mx-auto mb-4">3</div>
-                        <h3 class="font-bold text-lg mb-2">Reparación y Pruebas</h3>
+                        <div class="w-11 h-11 bg-azulCielo text-slate-900 font-black rounded-xl flex items-center justify-center text-base mx-auto mb-4">3</div>
+                        <h3 class="font-bold text-base mb-2">Reparación y Pruebas</h3>
                         <p class="text-xs text-slate-400">Sustituimos los componentes dañados y realizamos pruebas de control de calidad antes de regresarte tu equipo al 100%.</p>
                     </div>
                 </div>
             </div>
         </section>
 
-<!-- BANNER DE COMPROMISO TÉCNICO CORREGIDO -->
-<section class="max-w-6xl mx-auto px-4 py-8">
-    <!-- Cambiamos de 'from-slate-900 to-azulMedia' a un fondo sólido o un degradado sutil premium -->
-    <div class="bg-gradient-to-r from-slate-950 via-slate-900 to-slate-950 rounded-2xl p-8 text-white flex flex-col md:flex-row items-center justify-between shadow-2xl border border-slate-800">
-        <div class="mb-6 md:mb-0 md:max-w-xl">
-            <span class="text-xs font-bold uppercase tracking-widest text-azulCielo">Política de Transparencia</span>
-            <h3 class="text-xl font-black mt-1 mb-2">Ingeniería Ética de Soporte</h3>
-            <p class="text-xs text-slate-300 leading-relaxed">En CoreFix no realizamos prácticas que pongan en riesgo la integridad de tu tarjeta madre. Te garantizamos diagnósticos precisos mediante instrumental especializado, componentes certificados y cero cargos sorpresa.</p>
-        </div>
-        <div class="flex-shrink-0">
-            <a href="https://wa.me/522231059545" target="_blank" class="bg-azulCielo text-slate-900 px-5 py-3 rounded-xl font-bold text-xs uppercase tracking-wider shadow-md hover:bg-white transition block text-center">
-                Consultar con un Técnico
-            </a>
-        </div>
-    </div>
-</section>
+        <section class="max-w-6xl mx-auto px-4 py-8">
+            <div class="bg-gradient-to-r from-slate-950 via-slate-900 to-slate-950 rounded-2xl p-6 md:p-8 text-white flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xl border border-slate-800">
+                <div class="mb-2 md:mb-0 md:max-w-xl">
+                    <span class="text-xs font-bold uppercase tracking-widest text-azulCielo">Política de Transparencia</span>
+                    <h3 class="text-lg md:text-xl font-black mt-1 mb-2">Ingeniería Ética de Soporte</h3>
+                    <p class="text-xs text-slate-300 leading-relaxed">En CoreFix no realizamos prácticas que pongan en riesgo la integridad de tu tarjeta madre. Te garantizamos diagnósticos precisos mediante instrumental especializado, componentes certificados y cero cargos sorpresa.</p>
+                </div>
+                <div class="flex-shrink-0 w-full md:w-auto">
+                    <a href="https://wa.me/522231059545" target="_blank" class="w-full md:w-auto bg-azulCielo text-slate-900 px-5 py-3 rounded-xl font-bold text-xs uppercase tracking-wider shadow-md hover:bg-white transition block text-center">
+                        Consultar con un Técnico
+                    </a>
+                </div>
+            </div>
+        </section>
 
-        <!-- PORTAFOLIO PÚBLICO -->
-        <section id="portafolio" class="bg-slate-100 py-20 px-4">
+        <section id="portafolio" class="bg-slate-100 py-16 px-4">
             <div class="max-w-6xl mx-auto">
-                <div class="text-center mb-12">
-                    <h2 class="text-3xl font-extrabold text-slate-900">Evidencia de Trabajos Realizados</h2>
-                    <p class="text-slate-500 mt-2">Fotos reales de los dispositivos que reparamos con éxito en COREFIX.</p>
+                <div class="text-center mb-10">
+                    <h2 class="text-2xl md:text-3xl font-extrabold text-slate-900">Evidencia de Trabajos Realizados</h2>
+                    <p class="text-slate-500 mt-2 text-xs md:text-sm">Fotos reales de los dispositivos que reparamos con éxito en COREFIX.</p>
                 </div>
                 
                 <div id="galeria-publica" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                    <!-- Se carga dinámicamente con script.js -->
-                </div>
+                    </div>
             </div>
         </section>
     </main>
 
-<!-- SECCIÓN DE PROYECTOS ESPECIALES / INGENIERÍA CORREGIDA -->
-    <section class="max-w-6xl mx-auto px-4 py-16">
-        <div class="bg-gradient-to-r from-slate-950 via-slate-900 to-slate-950 rounded-3xl p-8 md:p-12 text-white relative overflow-hidden shadow-2xl border border-slate-800">
+    <section class="max-w-6xl mx-auto px-4 py-12">
+        <div class="bg-gradient-to-r from-slate-950 via-slate-900 to-slate-950 rounded-3xl p-6 md:p-12 text-white relative overflow-hidden shadow-2xl border border-slate-800">
             <div class="absolute top-0 right-0 p-8 text-7xl opacity-10 select-none hidden md:block text-azulCielo">⚡</div>
             <div class="max-w-2xl">
                 <span class="text-xs font-bold uppercase tracking-widest text-azulCielo bg-azulCielo/10 px-3 py-1 rounded-full border border-azulCielo/20">Desarrollo e Innovación</span>
-                <h3 class="text-2xl md:text-3xl font-black mt-4 mb-4">Integración de Circuitos y Sistemas Avanzados</h3>
+                <h3 class="text-xl md:text-3xl font-black mt-4 mb-4">Integración de Circuitos y Sistemas Avanzados</h3>
                 <p class="text-xs md:text-sm text-slate-300 leading-relaxed mb-6">
                     En CoreFix no solo reparamos, también diseñamos soluciones que conectan el hardware con el software. Trabajamos en el desarrollo de circuitos integrados, sensores de pisadas y monitoreo de generación de energía en tiempo real aplicados a superficies inteligentes.
                 </p>
@@ -354,26 +322,24 @@
         </div>
     </section>
 
-    <!-- RASTREO SIMULADO DE ORDEN DE SERVICIO -->
     <section class="bg-slate-100 py-16 px-4 border-t border-b border-slate-200">
         <div class="max-w-xl mx-auto text-center">
-            <div class="w-12 h-12 bg-azulMarino text-white rounded-2xl flex items-center justify-center font-bold text-xl mx-auto mb-4 shadow">🔍</div>
-            <h3 class="text-2xl font-extrabold text-slate-900 mb-2">Consulta el Estado de tu Equipo</h3>
+            <div class="w-11 h-11 bg-azulMarino text-white rounded-2xl flex items-center justify-center font-bold text-lg mx-auto mb-4 shadow">🔍</div>
+            <h3 class="text-xl md:text-2xl font-extrabold text-slate-900 mb-2">Consulta el Estado de tu Equipo</h3>
             <p class="text-xs text-slate-500 mb-6">Ingresa el folio de tu nota de remisión para verificar los avances en tiempo real de tu reparación.</p>
             
             <div class="flex shadow-sm rounded-xl overflow-hidden bg-white border p-1.5 focus-within:ring-2 focus-within:ring-azulCielo transition">
                 <input type="text" placeholder="Ej: CF-1001" class="w-full px-4 py-2 text-sm text-slate-700 outline-none uppercase font-semibold">
-                <button onclick="alert('Sistema de rastreo en mantenimiento. Por favor consulta el estatus de tu folio directamente por WhatsApp.')" class="bg-azulMarino text-white px-5 py-2 rounded-lg text-xs font-bold hover:bg-azulMedia transition whitespace-nowrap">
+                <button onclick="alert('Sistema de rastreo en mantenimiento. Por favor consulta el estatus de tu folio directamente por WhatsApp.')" class="bg-azulMarino text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-azulMedia transition whitespace-nowrap">
                     Verificar Folio
                 </button>
             </div>
         </div>
     </section>
 
-    <!-- PREGUNTAS FRECUENTES -->
-    <section class="bg-white py-16 px-4">
+    <section class="bg-white py-12 px-4">
         <div class="max-w-4xl mx-auto">
-            <h2 class="text-3xl font-extrabold text-center text-slate-900 mb-10">Preguntas Frecuentes</h2>
+            <h2 class="text-2xl md:text-3xl font-extrabold text-center text-slate-900 mb-8">Preguntas Frecuentes</h2>
             
             <div class="space-y-4">
                 <div class="p-4 bg-slate-50 rounded-xl border border-slate-100">
@@ -394,14 +360,12 @@
         </div>
     </section>
 
-    <!-- FOOTER -->
-    <footer class="bg-slate-900 text-slate-500 text-center py-8 text-xs border-t border-slate-800">
-        <p class="font-bold text-slate-400">COREFIX &copy; 2026</p>
+    <footer class="bg-slate-900 text-slate-500 text-center py-6 text-xs border-t border-slate-800">
+        <p class="font-bold text-slate-400">COREFIX © 2026</p>
         <p class="mt-1">Calidad y Precisión en Electrónica y Sistemas</p>
     </footer>
 
     <script src="script.js"></script>
-    <!-- Registro del Service Worker -->
     <script>
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
@@ -412,15 +376,13 @@
     }
     </script>
 
-    <!-- MODAL DE DETALLES TÉCNICOS -->
     <div id="modal-detalles" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
         <div class="bg-white p-6 rounded-2xl max-w-md w-full relative border border-slate-100 shadow-2xl">
             <button onclick="cerrarDetalles()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 font-bold">✕</button>
             <h3 id="modal-titulo" class="text-xl font-black text-azulMarino mb-2">—</h3>
             <p class="text-xs text-slate-400 mb-4">Instrumental de laboratorio y software especializado para diagnóstico certero.</p>
             <ul id="modal-lista" class="space-y-2 text-xs text-slate-600 mb-6">
-                <!-- Se llena dinámicamente con JS -->
-            </ul>
+                </ul>
             <a href="https://wa.me/522231059545" target="_blank" class="block text-center bg-azulMarino text-white py-2.5 rounded-xl font-bold text-xs hover:bg-azulCielo hover:text-slate-900 transition">
                 Cotizar Falla Específica
             </a>

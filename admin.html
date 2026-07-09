@@ -45,13 +45,14 @@
                     </div>
                 </div>
 
-                <!-- CARGA DE TRABAJOS REALIZADOS -->
+                <!-- CARGA DE TRABAJOS REALIZADOS (CORREGIDO PARA GALERÍA DE TELEFONO/LAP) -->
                 <div class="bg-slate-50 p-6 rounded-xl border border-slate-200">
                     <h3 class="font-bold text-slate-900 mb-4 flex items-center">📸 Publicar Nuevo Trabajo</h3>
                     <div class="space-y-4">
                         <div>
-                            <label class="block text-xs font-bold text-slate-500 mb-1">URL de la Imagen de Evidencia</label>
-                            <input type="text" id="input-url" placeholder="https://enlace-imagen.com/foto.jpg" class="w-full border p-2.5 rounded-lg focus:ring-2 focus:ring-azulCielo outline-none text-sm">
+                            <label class="block text-xs font-bold text-slate-500 mb-1">Seleccionar Evidencia desde Galería / Archivos</label>
+                            <!-- Modificado: Ahora es un input de archivo que acepta cualquier formato de imagen -->
+                            <input type="file" id="input-archivo" accept="image/*" class="w-full bg-white border p-2 rounded-lg text-sm outline-none focus:ring-2 focus:ring-azulCielo">
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-slate-500 mb-1">Descripción del Trabajo Reparado</label>
@@ -68,7 +69,8 @@
         <p>Panel protegido localmente de COREFIX</p>
     </footer>
 
-    <script src="script.js"></script>
+    <!-- Cargamos el script como módulo porque maneja las importaciones de Firebase -->
+    <script type="module" src="script.js"></script>
     <script>
         // Proteger vista de administración
         if (sessionStorage.getItem("corefix_session") !== "activa") {
