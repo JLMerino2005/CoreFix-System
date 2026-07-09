@@ -1,9 +1,9 @@
 // IMPORTACIÓN DE MÓDULOS DE FIREBASE DESDE CDN
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, onSnapshot, doc, getDoc, updateDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
 
-// ⚠️ Coloca aquí tus credenciales del botón "CoreFix-Web" de tu consola de Firebase
+// ⚠️ Asegúrate de colocar aquí tus credenciales reales del botón "CoreFix-Web"
 const firebaseConfig = {
     apiKey: "TU_API_KEY_AQUÍ",
     authDomain: "corefix-system.firebaseapp.com",
@@ -18,13 +18,57 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const storage = getStorage(app);
 
-// INICIALIZADOR DE VISTAS
+// INICIALIZADOR DE VISTAS AUTOMÁTICAS
 document.addEventListener("DOMContentLoaded", () => {
     // Si la página tiene el contenedor de la galería, activamos la escucha en tiempo real
     if (document.getElementById("galeria-publica")) {
         escucharGaleriaFirebase();
     }
+    // Si la página tiene el elemento de caja acumulada, activamos la escucha en tiempo real
+    if (document.getElementById("caja-total")) {
+        escucharCajaFirebase();
+    }
 });
+
+// ==========================================
+// 💵 GESTIÓN FINANCIERA (FIRESTORE) - INTEGRADO
+// ==========================================
+async function registrarIngreso() {
+    const inputMonto = document.getElementById("input-monto");
+    const valor = parseFloat(inputMonto.value);
+
+    if (!isNaN(valor) && valor > 0) {
+        try {
+            const cajaRef = doc(db, "finanzas", "caja_principal");
+            const docSnap = await getDoc(cajaRef);
+            
+            let nuevoTotal = valor;
+            if (docSnap.exists()) {
+                nuevoTotal += docSnap.data().totalRecibido || 0;
+                await updateDoc(cajaRef, { totalRecibido: nuevoTotal });
+            } else {
+                await setDoc(cajaRef, { totalRecibido: nuevoTotal });
+            }
+
+            inputMonto.value = "";
+            alert("💰 Cantidad guardada de manera segura en Firebase.");
+        } catch (error) {
+            console.error("Error al registrar dinero: ", error);
+            alert("Hubo un error al guardar en la base de datos.");
+        }
+    } else {
+        alert("Por favor ingresa un monto válido.");
+    }
+}
+
+function escucharCajaFirebase() {
+    onSnapshot(doc(db, "finanzas", "caja_principal"), (docSnap) => {
+        const elementoCaja = document.getElementById("caja-total");
+        if (elementoCaja && docSnap.exists()) {
+            elementoCaja.innerText = `$${(docSnap.data().totalRecibido || 0).toFixed(2)}`;
+        }
+    });
+}
 
 // ==========================================
 // 📸 SUBIDA DE IMÁGENES REALES (STORAGE + FIRESTORE)
@@ -110,5 +154,6 @@ function escucharGaleriaFirebase() {
     });
 }
 
-// Exponer la función al entorno global para el botón del formulario de administración
+// Exponer las funciones al entorno global para los botones del formulario de administración
+window.registrarIngreso = registrarIngreso;
 window.publicarTrabajo = publicarTrabajo;

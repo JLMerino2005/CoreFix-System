@@ -71,17 +71,13 @@
 
     <!-- Cargamos el script como módulo porque maneja las importaciones de Firebase -->
     <script type="module" src="script.js"></script>
-    <script>
-        // Proteger vista de administración
-        if (sessionStorage.getItem("corefix_session") !== "activa") {
-            alert("Acceso denegado. Por favor inicia sesión.");
-            window.location.href = "login.html";
-        }
-
-        function cerrarSesion() {
-            sessionStorage.removeItem("corefix_session");
-            window.location.href = "index.html";
-        }
+<!-- CORRECCIÓN EN EL SCRIPT PARA QUE ESCUCHE A FIREBASE -->
+    <script type="module">
+        import { registrarIngreso, publicarTrabajo } from './script.js';
+        // Vinculamos las funciones al entorno global de la ventana (window)
+        // para que los botones onclick="registrarIngreso()" y onclick="publicarTrabajo()" cobren vida.
+        window.registrarIngreso = registrarIngreso;
+        window.publicarTrabajo = publicarTrabajo;
     </script>
 </body>
 </html>
