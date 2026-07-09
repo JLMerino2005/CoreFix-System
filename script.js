@@ -3,7 +3,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/fireba
 import { getFirestore, collection, addDoc, onSnapshot, doc, getDoc, updateDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
 
-// ✅ CREDENCIALES REALES EXTRAÍDAS DE TU CONSOLA DE FIREBASE
+// ✅ CREDENCIALES REALES EXTRAÍDAS DE TU CONSOLA DE FIREBASE[cite: 20]
 const firebaseConfig = {
     apiKey: "AIzaSyBgoQDuWsn8_aITK2FwQQ0RF3T5kW1k20",
     authDomain: "corefix-system.firebaseapp.com",
@@ -20,7 +20,7 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const storage = getStorage(app);
 
-// INICIALIZADOR DE VISTAS AUTOMÁTICAS
+// INICIALIZADOR Y VINCULACIÓN DIRECTA DE EVENTOS
 document.addEventListener("DOMContentLoaded", () => {
     if (document.getElementById("galeria-publica")) {
         escucharGaleriaFirebase();
@@ -28,10 +28,21 @@ document.addEventListener("DOMContentLoaded", () => {
     if (document.getElementById("caja-total")) {
         escucharCajaFirebase();
     }
+
+    // Vincular botones del panel administrador por ID para evitar problemas de modulo
+    const btnCaja = document.getElementById("btn-guardar-caja");
+    if (btnCaja) {
+        btnCaja.addEventListener("click", registrarIngreso);
+    }
+
+    const btnTrabajo = document.getElementById("btn-subir-trabajo");
+    if (btnTrabajo) {
+        btnTrabajo.addEventListener("click", publicarTrabajo);
+    }
 });
 
 // ==========================================
-// 💵 GESTIÓN FINANCIERA (FIRESTORE)
+// 💵 GESTIÓN FINANCIERA (FIRESTORE)[cite: 20]
 // ==========================================
 async function registrarIngreso() {
     const inputMonto = document.getElementById("input-monto");
@@ -71,7 +82,7 @@ function escucharCajaFirebase() {
 }
 
 // ==========================================
-// 📸 SUBIDA DE IMÁGENES REALES (STORAGE + FIRESTORE)
+// 📸 SUBIDA DE IMÁGENES REALES (STORAGE + FIRESTORE)[cite: 20]
 // ==========================================
 async function publicarTrabajo() {
     const archivoInput = document.getElementById("input-archivo");
@@ -140,7 +151,7 @@ function escucharGaleriaFirebase() {
 }
 
 // ==========================================
-// 🖼️ LÓGICA DE CONTROL DEL MODAL DE DETALLES
+// 🖼️ LÓGICA DE CONTROL DEL MODAL DE DETALLES[cite: 20]
 // ==========================================
 function abrirDetalles(servicio) {
     const modal = document.getElementById('modal-detalles');
@@ -183,8 +194,6 @@ function cerrarDetalles() {
     if (modal) modal.classList.add('hidden');
 }
 
-// Vinculación definitiva con el entorno global de la página
-window.registrarIngreso = registrarIngreso;
-window.publicarTrabajo = publicarTrabajo;
+// Vinculación para funciones que siguen usándose inline en el index público
 window.abrirDetalles = abrirDetalles;
 window.cerrarDetalles = cerrarDetalles;
