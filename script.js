@@ -2,7 +2,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getFirestore, collection, addDoc, onSnapshot, doc, getDoc, updateDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-// ✅ CREDENCIALES REALES DE TU CONSOLA DE FIREBASE
+// ✅ CREDENCIALES REALES DE TU CONSOLA DE FIREBASE[cite: 32]
 const firebaseConfig = {
     apiKey: "AIzaSyBgoQDuWsn8_aITK2FwQQ0RF3T5kW1k20",
     authDomain: "corefix-system.firebaseapp.com",
@@ -14,11 +14,11 @@ const firebaseConfig = {
     measurementId: "G-2BC2F8JBWM"
 };
 
-// Inicializar servicios de Firebase
+// Inicializar servicios de Firebase[cite: 32]
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// INICIALIZADOR Y VINCULACIÓN DIRECTA DE EVENTOS
+// INICIALIZADOR Y VINCULACIÓN DIRECTA DE EVENTOS[cite: 32]
 document.addEventListener("DOMContentLoaded", () => {
     if (document.getElementById("galeria-publica")) {
         escucharGaleriaFirebase();
@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
         escucharCajaFirebase();
     }
 
-    // Vincular botones del panel administrador por ID
+    // Vincular botones del panel administrador por ID[cite: 32]
     const btnCaja = document.getElementById("btn-guardar-caja");
     if (btnCaja) {
         btnCaja.addEventListener("click", registrarIngreso);
@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // ==========================================
-// 💵 GESTIÓN FINANCIERA (FIRESTORE)
+// 💵 GESTIÓN FINANCIERA (FIRESTORE)[cite: 32]
 // ==========================================
 async function registrarIngreso() {
     const inputMonto = document.getElementById("input-monto");
@@ -80,7 +80,7 @@ function escucharCajaFirebase() {
 }
 
 // ==========================================
-// 📸 SUBIDA DE IMÁGENES COMPRIMIDAS A FIRESTORE (SIN STORAGE)
+// 📸 SUBIDA DE IMÁGENES COMPRIMIDAS A FIRESTORE (SIN STORAGE)[cite: 32]
 // ==========================================
 async function publicarTrabajo() {
     const archivoInput = document.getElementById("input-archivo");
@@ -99,10 +99,10 @@ async function publicarTrabajo() {
     try {
         alert("Procesando y optimizando imagen... Espera un momento.");
         
-        // 1. Convertir y comprimir la imagen
+        // 1. Convertir y comprimir la imagen[cite: 32]
         const imagenBase64 = await comprimirImagen(file);
 
-        // 2. Guardar directamente en Firestore
+        // 2. Guardar directamente en Firestore[cite: 32]
         await addDoc(collection(db, "portafolio"), {
             url: imagenBase64,
             descripcion: descInput,
@@ -119,7 +119,7 @@ async function publicarTrabajo() {
     }
 }
 
-// Función auxiliar para optimizar y convertir imagen a Base64
+// Función auxiliar para optimizar y convertir imagen a Base64[cite: 32]
 function comprimirImagen(file) {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -129,7 +129,7 @@ function comprimirImagen(file) {
             img.src = event.target.result;
             img.onload = () => {
                 const canvas = document.createElement("canvas");
-                const MAX_WIDTH = 800; // Ajuste óptimo para móviles y web
+                const MAX_WIDTH = 800; // Ajuste óptimo para móviles y web[cite: 32]
                 const scaleSize = MAX_WIDTH / img.width;
                 canvas.width = MAX_WIDTH;
                 canvas.height = img.height * scaleSize;
@@ -137,7 +137,7 @@ function comprimirImagen(file) {
                 const ctx = canvas.getContext("2d");
                 ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
                 
-                resolve(canvas.toDataURL("image/jpeg", 0.7)); // Calidad 70%
+                resolve(canvas.toDataURL("image/jpeg", 0.7)); // Calidad 70%[cite: 32]
             };
             img.onerror = (err) => reject(err);
         };
@@ -151,9 +151,17 @@ function escucharGaleriaFirebase() {
 
     onSnapshot(collection(db, "portafolio"), (snapshot) => {
         contenedor.innerHTML = "";
+        
+        if (snapshot.empty) {
+            contenedor.innerHTML = `<p class="col-span-full text-center text-slate-400 text-xs py-8">No hay evidencias publicadas todavía.</p>`;
+            return;
+        }
+
         const trabajos = [];
         snapshot.forEach((doc) => trabajos.push(doc.data()));
-        trabajos.sort((a, b) => b.fecha - a.fecha);
+
+        // Ordenamiento con seguro anti-errores por si alguna fecha viene vacía
+        trabajos.sort((a, b) => (b.fecha || 0) - (a.fecha || 0));
 
         trabajos.forEach(trabajo => {
             const tarjeta = document.createElement("div");
@@ -163,8 +171,8 @@ function escucharGaleriaFirebase() {
                 <div class="h-48 overflow-hidden bg-slate-200 flex items-center justify-center">
                     <img src="${trabajo.url}" alt="Evidencia COREFIX" class="w-full h-full object-cover">
                 </div>
-                <div class="p-4 bg-white border-t">
-                    <p class="font-bold text-xs text-azulCielo uppercase tracking-wide mb-1">COREFIX TALLER</p>
+                <div class="p-4 bg-white border-t border-slate-100">
+                    <p class="font-bold text-xs text-sky-500 uppercase tracking-wide mb-1">COREFIX TALLER</p>
                     <p class="text-sm font-semibold text-slate-700">${trabajo.descripcion}</p>
                 </div>
             `;
@@ -174,7 +182,7 @@ function escucharGaleriaFirebase() {
 }
 
 // ==========================================
-// 🖼️ LÓGICA DE CONTROL DEL MODAL DE DETALLES
+// 🖼️ LÓGICA DE CONTROL DEL MODAL DE DETALLES[cite: 32]
 // ==========================================
 function abrirDetalles(servicio) {
     const modal = document.getElementById('modal-detalles');
@@ -217,7 +225,7 @@ function cerrarDetalles() {
     if (modal) modal.classList.add('hidden');
 }
 
-// Vinculación explícita al entorno global
+// Vinculación explícita al entorno global[cite: 32]
 window.registrarIngreso = registrarIngreso;
 window.publicarTrabajo = publicarTrabajo;
 window.abrirDetalles = abrirDetalles;
