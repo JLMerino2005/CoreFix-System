@@ -1,9 +1,8 @@
-// IMPORTACIÓN DE MÓDULOS DE FIREBASE DESDE CDN
+// IMPORTACIÓN DE MÓDULOS DE FIREBASE (SOLO FIRESTORE)
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getFirestore, collection, addDoc, onSnapshot, doc, getDoc, updateDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
 
-// ✅ CREDENCIALES REALES EXTRAÍDAS DE TU CONSOLA DE FIREBASE[cite: 20]
+// ✅ CREDENCIALES REALES DE TU CONSOLA DE FIREBASE
 const firebaseConfig = {
     apiKey: "AIzaSyBgoQDuWsn8_aITK2FwQQ0RF3T5kW1k20",
     authDomain: "corefix-system.firebaseapp.com",
@@ -18,7 +17,6 @@ const firebaseConfig = {
 // Inicializar servicios de Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-const storage = getStorage(app);
 
 // INICIALIZADOR Y VINCULACIÓN DIRECTA DE EVENTOS
 document.addEventListener("DOMContentLoaded", () => {
@@ -29,7 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
         escucharCajaFirebase();
     }
 
-    // Vincular botones del panel administrador por ID para evitar problemas de modulo
+    // Vincular botones del panel administrador por ID
     const btnCaja = document.getElementById("btn-guardar-caja");
     if (btnCaja) {
         btnCaja.addEventListener("click", registrarIngreso);
@@ -42,7 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // ==========================================
-// 💵 GESTIÓN FINANCIERA (FIRESTORE)[cite: 20]
+// 💵 GESTIÓN FINANCIERA (FIRESTORE)
 // ==========================================
 async function registrarIngreso() {
     const inputMonto = document.getElementById("input-monto");
@@ -82,7 +80,7 @@ function escucharCajaFirebase() {
 }
 
 // ==========================================
-// 📸 SUBIDA DE IMÁGENES REALES (STORAGE + FIRESTORE)[cite: 20]
+// 📸 SUBIDA DE IMÁGENES COMPRIMIDAS A FIRESTORE (SIN STORAGE)
 // ==========================================
 async function publicarTrabajo() {
     const archivoInput = document.getElementById("input-archivo");
@@ -99,15 +97,14 @@ async function publicarTrabajo() {
     }
 
     try {
-        alert("Subiendo imagen a los servidores de CoreFix... Espera un momento.");
+        alert("Procesando y optimizando imagen... Espera un momento.");
         
-        const nombreUnico = `${Date.now()}_${file.name}`;
-        const storageRef = ref(storage, `trabajos/${nombreUnico}`);
-        const snapshot = await uploadBytes(storageRef, file);
-        const urlPublica = await getDownloadURL(snapshot.ref);
+        // 1. Convertir y comprimir la imagen
+        const imagenBase64 = await comprimirImagen(file);
 
+        // 2. Guardar directamente en Firestore
         await addDoc(collection(db, "portafolio"), {
-            url: urlPublica,
+            url: imagenBase64,
             descripcion: descInput,
             fecha: Date.now()
         });
@@ -117,9 +114,35 @@ async function publicarTrabajo() {
         alert("📸 ¡Trabajo publicado con éxito en tu catálogo público!");
 
     } catch (error) {
-        console.error("Error crítico al subir a Firebase: ", error);
-        alert("Hubo un error al intentar guardar la imagen.");
+        console.error("Error al publicar trabajo: ", error);
+        alert("Hubo un error al procesar la imagen.");
     }
+}
+
+// Función auxiliar para optimizar y convertir imagen a Base64
+function comprimirImagen(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = (event) => {
+            const img = new Image();
+            img.src = event.target.result;
+            img.onload = () => {
+                const canvas = document.createElement("canvas");
+                const MAX_WIDTH = 800; // Ajuste óptimo para móviles y web
+                const scaleSize = MAX_WIDTH / img.width;
+                canvas.width = MAX_WIDTH;
+                canvas.height = img.height * scaleSize;
+
+                const ctx = canvas.getContext("2d");
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                
+                resolve(canvas.toDataURL("image/jpeg", 0.7)); // Calidad 70%
+            };
+            img.onerror = (err) => reject(err);
+        };
+        reader.onerror = (err) => reject(err);
+    });
 }
 
 function escucharGaleriaFirebase() {
@@ -151,7 +174,7 @@ function escucharGaleriaFirebase() {
 }
 
 // ==========================================
-// 🖼️ LÓGICA DE CONTROL DEL MODAL DE DETALLES[cite: 20]
+// 🖼️ LÓGICA DE CONTROL DEL MODAL DE DETALLES
 // ==========================================
 function abrirDetalles(servicio) {
     const modal = document.getElementById('modal-detalles');
@@ -194,6 +217,8 @@ function cerrarDetalles() {
     if (modal) modal.classList.add('hidden');
 }
 
-// Vinculación para funciones que siguen usándose inline en el index público
+// Vinculación explícita al entorno global
+window.registrarIngreso = registrarIngreso;
+window.publicarTrabajo = publicarTrabajo;
 window.abrirDetalles = abrirDetalles;
 window.cerrarDetalles = cerrarDetalles;
